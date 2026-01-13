@@ -223,12 +223,18 @@ body.dark .card-header{
 
 /* Buttons */
 .btn-actions{
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-top: 8px;
+  gap: 4px;
+  margin-top: 6px;
 }
-.btn-actions .button{ border-radius: 12px; font-weight: 900; }
+
+.btn-actions .button{
+  border-radius: 10px;
+  font-weight: 900;
+  padding: 0.35rem 0.45rem;
+  min-width: 0;
+}
 
 /* Popup toast */
 #popup{
@@ -1595,43 +1601,43 @@ function generateTimingFields(){
   const col = "is-full-mobile is-half-tablet is-half-desktop";
 
   const fieldHTML = (id,label)=>`
-    <div class="column ${col}">
-      <div class="field">
-        <label class="label">${label}</label>
-        <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
-        <div class="btn-actions">
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
-        </div>
+  <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+    <div class="field">
+      <label class="label">${label}</label>
+      <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
+      <div class="btn-actions">
+        <button class="button is-small is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+        <button class="button is-small is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+        <button class="button is-small is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
       </div>
-    </div>`;
-
-  container.innerHTML = `
-    <div class="columns is-multiline">
-      ${fieldHTML('ArrPNT','Arrivée PNT')}
-      ${fieldHTML('ArrPNC','Arrivée PNC')}
-
-      ${fieldHTML('PremierDebarque','Premier débarqué')}
-      ${fieldHTML('DernierDebarque','Dernier débarqué')}
-
-      ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
-      ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
-
-      ${fieldHTML('ArriveeFuel','Arrivée fuel')}
-      ${fieldHTML('DepartFuel','Départ fuel')}
-
-      ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
-      ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
-
-      ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
-      ${fieldHTML('DepartLift','Départ lift (dep)')}
-
-      ${fieldHTML('RemiseLID','Remise LID/LDS')}
-      ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
     </div>
-  `;
-}
+  </div>`;
+
+ container.innerHTML = `
+  <div class="columns is-multiline">
+    ${fieldHTML('ArrPNT','Arrivée PNT')}
+    ${fieldHTML('ArrPNC','Arrivée PNC')}
+
+    ${fieldHTML('PremierDebarque','Premier débarqué')}
+    ${fieldHTML('DernierDebarque','Dernier débarqué')}
+
+    ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+    ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+
+    ${fieldHTML('ArriveeFuel','Arrivée Avitair')}
+    ${fieldHTML('DepartFuel','Départ Avitair')}
+
+    ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
+    ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
+
+    ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
+    ${fieldHTML('DepartLift','Départ lift (dep)')}
+
+    ${fieldHTML('RemiseLID','Remise LID/LDS')}
+    ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+  </div>
+`;
+
 
 /* LID visible FR/RK */
 function updateLIDVisibility(){
