@@ -1687,19 +1687,22 @@ function updateSOBTDefault() {
   const sobtEl = document.getElementById('SOBT');
   if(!sobtEl) return;
 
-  if ((sobtEl.value || '').trim() !== '') return;
+  // On bloque seulement si SOBT a été modifiée volontairement
+  if (manualSOBT) return;
 
   const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const sibt = document.getElementById('SIBT')?.value || '';
   const arrPNT = document.getElementById('ArrPNT')?.value || '';
   const arrPNC = document.getElementById('ArrPNC')?.value || '';
-  if (!sibt) return;
+  if (!sibt) { sobtEl.value = ''; return; }
   if (!(cie === "FR" || cie === "RK" || cie === "W4" || cie === "W6")) return;
 
   let [sH, sM] = sibt.split(':').map(Number);
-  const base = new Date(); base.setHours(sH, sM);
+  const base = new Date(); base.setHours(sH, sM, 0, 0);
+
   let add = 35;
   if (cie === "FR" || cie === "RK") add = (arrPNT || arrPNC) ? 35 : 25;
+
   const sobtCalc = new Date(base.getTime() + add * 60000);
   sobtEl.value = `${String(sobtCalc.getHours()).padStart(2, '0')}:${String(sobtCalc.getMinutes()).padStart(2, '0')}`;
 }
@@ -1871,18 +1874,28 @@ function setNow(fieldId) {
   const now = new Date();
   const hh = isUTC ? now.getUTCHours() : now.getHours();
   const mm = isUTC ? now.getUTCMinutes() : now.getMinutes();
-  document.getElementById(fieldId).value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+  document.getElementById(fieldId).value =
+    `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+
+  if (fieldId === 'SOBT') manualSOBT = true;
 }
-function adjustTime(fieldId, delta) {
+
+ function adjustTime(fieldId, delta) {
   const input = document.getElementById(fieldId);
   if (!input || !input.value) return;
+
   let [hh, mm] = input.value.split(':').map(Number);
   let total = hh * 60 + mm + delta;
+
   if (total < 0) total += 1440;
   if (total >= 1440) total -= 1440;
+
   hh = Math.floor(total / 60);
   mm = total % 60;
+
   input.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+
+  if (fieldId === 'SOBT') manualSOBT = true;
 }
 
 /* Switches */
