@@ -94,7 +94,7 @@ body.dark .fixed-bar{
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 14px 14px 14px;
+  padding: 14px 14px 14px; /* au lieu de calc(...) */
 }
 
 /* Tabs row */
@@ -178,10 +178,10 @@ body.dark .fixed-bar{
 .ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
 
 #timer-tobt{ background:#16a34a !important; }
-#timer-h8{ background:#facc15 !important; color:#fff !important; }
+#timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
 #timer-cd{ background:#93c5fd !important; color:#111 !important; }
 
-/* CD en dépassement */
+/* CD en dépassement (après 0) */
 #timer-cd.cd-over{
   background: #fee2e2 !important;
   color: #ef4444 !important;
@@ -217,7 +217,7 @@ body.dark .card-header{
 .input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 .field .label{ font-weight: 900; color: var(--text) !important; }
 
-/* FORCE couleur TOB */
+/* FORCE couleur TOB (sinon Bulma + !important bloque) */
 #FinalTOB.is-invalid{ color:#ef4444 !important; }
 #FinalTOB.is-valid{ color: var(--field-text) !important; }
 
@@ -228,6 +228,7 @@ body.dark .card-header{
   gap: 4px;
   margin-top: 6px;
 }
+
 .btn-actions .button{
   border-radius: 10px;
   font-weight: 900;
@@ -432,6 +433,22 @@ body.dark .timeline-scroll{
     flex: 0 0 50% !important;
     width: 50% !important;
   }
+}
+
+/* =========================
+   CENTRAGE HEURES / DATES
+   ========================= */
+input[type="time"]{
+  text-align: center !important;
+}
+input[type="time"]::-webkit-datetime-edit{
+  text-align: center;
+}
+input[type="time"]::-webkit-datetime-edit-fields-wrapper{
+  justify-content: center;
+}
+input[type="date"]{
+  text-align: center !important;
 }
 </style>
 </head>
