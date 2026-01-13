@@ -71,8 +71,8 @@ body.dark{
 
 /* ===== FIXED BAR (tabs + timers only) ===== */
 .fixed-bar{
-  position: fixed;
-  inset: 0 0 auto 0;
+  position: sticky;
+  top: 0;
   z-index: 3000;
   background: rgba(246,247,251,.82);
   backdrop-filter: blur(10px);
@@ -94,7 +94,7 @@ body.dark .fixed-bar{
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
+  padding: 14px 14px 14px; /* au lieu de calc(...) */
 }
 
 /* Tabs row */
