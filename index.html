@@ -1593,12 +1593,11 @@ function loadTabData(id){
 
 function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
+
 /* TIMING FIELDS – SINGLE PAGE (no arrival/depart toggle) */
 function generateTimingFields(){
   const container=document.getElementById('timing-grid');
   if(!container) return;
-
-  const col = "is-full-mobile is-half-tablet is-half-desktop";
 
   const fieldHTML = (id,label)=>`
   <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
@@ -1613,35 +1612,35 @@ function generateTimingFields(){
     </div>
   </div>`;
 
- container.innerHTML = `
-  <div class="columns is-multiline">
-    ${fieldHTML('ArrPNT','Arrivée PNT')}
-    ${fieldHTML('ArrPNC','Arrivée PNC')}
+  container.innerHTML = `
+    <div class="columns is-multiline">
+      ${fieldHTML('ArrPNT','Arrivée PNT')}
+      ${fieldHTML('ArrPNC','Arrivée PNC')}
 
-    ${fieldHTML('PremierDebarque','Premier débarqué')}
-    ${fieldHTML('DernierDebarque','Dernier débarqué')}
+      ${fieldHTML('PremierDebarque','Premier débarqué')}
+      ${fieldHTML('DernierDebarque','Dernier débarqué')}
 
-    ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
-    ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+      ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+      ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
 
-    ${fieldHTML('ArriveeFuel','Arrivée Avitair')}
-    ${fieldHTML('DepartFuel','Départ Avitair')}
+      ${fieldHTML('ArriveeFuel','Arrivée Avitair')}
+      ${fieldHTML('DepartFuel','Départ Avitair')}
 
-    ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
-    ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
+      ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
+      ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
 
-    ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
-    ${fieldHTML('DepartLift','Départ lift (dep)')}
+      ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
+      ${fieldHTML('DepartLift','Départ lift (dep)')}
 
-    ${fieldHTML('RemiseLID','Remise LID/LDS')}
-    ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
-  </div>
-`;
-
+      ${fieldHTML('RemiseLID','Remise LID/LDS')}
+      ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+    </div>
+  `;
+} // ✅ FIN DE generateTimingFields()
 
 /* LID visible FR/RK */
 function updateLIDVisibility(){
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const lid = document.getElementById('lidBlock');
   if(!lid) return;
   lid.style.display = (cie === 'FR' || cie === 'RK') ? '' : 'none';
@@ -1689,21 +1688,21 @@ function updateLID() {
   el.textContent = fmtHHMM(tobtRawMins - 8);
 }
 
+/* SOBT auto */
 function updateSOBTDefault() {
   const sobtEl = document.getElementById('SOBT');
   if(!sobtEl) return;
 
-  // On bloque seulement si SOBT a été modifiée volontairement
   if (manualSOBT) return;
 
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibt = document.getElementById('SIBT')?.value || '';
   const arrPNT = document.getElementById('ArrPNT')?.value || '';
   const arrPNC = document.getElementById('ArrPNC')?.value || '';
   if (!sibt) { sobtEl.value = ''; return; }
   if (!(cie === "FR" || cie === "RK" || cie === "W4" || cie === "W6")) return;
 
-  let [sH, sM] = sibt.split(':').map(Number);
+  const [sH, sM] = sibt.split(':').map(Number);
   const base = new Date(); base.setHours(sH, sM, 0, 0);
 
   let add = 35;
@@ -1715,14 +1714,15 @@ function updateSOBTDefault() {
 
 /* TOBT + règle CTOT */
 function updateTOBT() {
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
   const sobttxt = document.getElementById('SOBT')?.value || '';
   const ctottxt = document.getElementById('CTOT')?.value || '';
 
   if (!cie || !sibttxt || !sobttxt) {
-    document.getElementById('timer-tobt').textContent = '--:--';
+    const t = document.getElementById('timer-tobt');
+    if(t) t.textContent = '--:--';
     window._tobtRawMins = null;
     window._tobtAdjMins = null;
     return;
@@ -1778,8 +1778,10 @@ function updateTOBT() {
 
   window._tobtAdjMins = TOBT_adj.getHours() * 60 + TOBT_adj.getMinutes();
 
-  document.getElementById('timer-tobt').textContent =
-    `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
+  const t = document.getElementById('timer-tobt');
+  if(t){
+    t.textContent = `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
+  }
 }
 
 /* DL CODES */
