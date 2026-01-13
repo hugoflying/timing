@@ -94,7 +94,7 @@ body.dark .fixed-bar{
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 14px 14px 14px; /* au lieu de calc(...) */
+  padding: 14px 14px 14px;
 }
 
 /* Tabs row */
@@ -178,10 +178,10 @@ body.dark .fixed-bar{
 .ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
 
 #timer-tobt{ background:#16a34a !important; }
-#timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
+#timer-h8{ background:#facc15 !important; color:#fff !important; }
 #timer-cd{ background:#93c5fd !important; color:#111 !important; }
 
-/* CD en dépassement (après 0) */
+/* CD en dépassement */
 #timer-cd.cd-over{
   background: #fee2e2 !important;
   color: #ef4444 !important;
@@ -217,7 +217,7 @@ body.dark .card-header{
 .input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 .field .label{ font-weight: 900; color: var(--text) !important; }
 
-/* FORCE couleur TOB (sinon Bulma + !important bloque) */
+/* FORCE couleur TOB */
 #FinalTOB.is-invalid{ color:#ef4444 !important; }
 #FinalTOB.is-valid{ color: var(--field-text) !important; }
 
@@ -228,7 +228,6 @@ body.dark .card-header{
   gap: 4px;
   margin-top: 6px;
 }
-
 .btn-actions .button{
   border-radius: 10px;
   font-weight: 900;
@@ -755,7 +754,6 @@ body.dark .timeline-scroll{
           </div>
         </div>
 
-        <!-- Row REG / A/C / PARK -->
         <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
           <div class="field">
             <label class="label">REGISTRATION</label>
@@ -801,7 +799,6 @@ body.dark .timeline-scroll{
           </div>
         </div>
 
-        <!-- LOAD buttons row -->
         <div class="column is-12">
           <div class="load-row-below">
             <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
@@ -832,43 +829,8 @@ body.dark .timeline-scroll{
       <span class="card-header-icon"><span class="icon">⌄</span></span>
     </header>
     <div class="card-content">
-      <div class="columns is-multiline">
-
-        <script>
-          function timeField(id,label,onchange, colClass){
-            return `
-            <div class="column ${colClass}">
-              <div class="field">
-                <label class="label">${label}</label>
-                <div class="control">
-                  <input class="input" type="time" id="${id}" onchange="${onchange}">
-                </div>
-                <div class="btn-actions">
-                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-                  <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
-                </div>
-              </div>
-            </div>`;
-          }
-        </script>
-
-        <div id="horairesMount" class="column is-12"></div>
-        <script>
-          document.addEventListener("DOMContentLoaded", ()=>{
-            const mount = document.getElementById('horairesMount');
-            if(!mount) return;
-            const half = "is-full-mobile is-half-tablet is-half-desktop";
-            mount.innerHTML = `<div class="columns is-multiline">
-              ${timeField('SIBT','SIBT',"updateAllCalculations()", half)}
-              ${timeField('AIBT','AIBT',"updateAllCalculations()", half)}
-              ${timeField('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
-              ${timeField('AOBT','AOBT',"updateAllCalculations()", half)}
-            </div>`;
-          });
-        </script>
-
-      </div>
+      <!-- ✅ plus de <script> ici -->
+      <div id="horairesMount"></div>
     </div>
   </div>
 
@@ -973,7 +935,9 @@ body.dark .timeline-scroll{
 </div>
 
 <script>
-/* Collapse */
+/* =========================
+   UI / COLLAPSE
+========================= */
 function toggleCardBody(headerEl){
   const card = headerEl.closest('.card');
   if(!card) return;
@@ -1015,7 +979,9 @@ let lastDLChanged = 1;
 /* digits only */
 function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g,''); }
 
-/* ===== COUNTDOWN (CD) ===== */
+/* =========================
+   COUNTDOWN (CD)
+========================= */
 let countdownTimer = null;
 
 function getNowMinutes(){
@@ -1142,7 +1108,9 @@ function ensureCountdownRunning(){
   }
 }
 
-/* Timeline zoom */
+/* =========================
+   TIMELINE ZOOM
+========================= */
 function timelineZoomIn(){ timelineSetZoom(timelineZoom + TL_ZOOM_STEP); }
 function timelineZoomOut(){ timelineSetZoom(timelineZoom - TL_ZOOM_STEP); }
 function timelineZoomReset(){ timelineSetZoom(1); }
@@ -1158,7 +1126,9 @@ function timelineSetZoom(z){
   scroller.scrollLeft = prevCenterRatio * scroller.scrollWidth - scroller.clientWidth/2;
 }
 
-/* ===== LOAD POPovers ===== */
+/* =========================
+   LOAD POPOVERS
+========================= */
 function showBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = ''; }
 function hideBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = 'none'; }
 function hideAllLoadPopovers(){
@@ -1179,7 +1149,9 @@ function toggleLoadExp(){ showPopover('loadExpPopover'); renderPRMRows('exp'); }
 function toggleLoadFinal(){ showPopover('loadFinalPopover'); updateFinalTOB(); }
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hideAllLoadPopovers(); });
 
-/* ===== PRM multi-lignes (ARR/EXP) ===== */
+/* =========================
+   PRM multi-lignes (ARR/EXP)
+========================= */
 const PRM_TYPES = ['WCHR','WCHS','WCHC','BLND','DPNA','UMNR','OTHER'];
 
 function getPRMIds(mode){
@@ -1275,7 +1247,9 @@ function onPRMInput(inp){
   saveCurrentTabData();
 }
 
-/* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
+/* =========================
+   FINAL : ADULT + TOB + OA/OB/OC/OD
+========================= */
 function asInt(id){
   const v = (document.getElementById(id)?.value || '').trim();
   if(v === '') return null;
@@ -1334,16 +1308,54 @@ function updateFinalTOB(){
   setTOBValidity(sum === main);
 }
 
-/* INIT */
+/* =========================
+   HORAIRES (✅ centralisé)
+========================= */
+function timeFieldHTML(id,label,onchange, colClass){
+  return `
+    <div class="column ${colClass}">
+      <div class="field">
+        <label class="label">${label}</label>
+        <div class="control">
+          <input class="input" type="time" id="${id}" onchange="${onchange}">
+        </div>
+        <div class="btn-actions">
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+        </div>
+      </div>
+    </div>`;
+}
+function renderHoraires(){
+  const mount = document.getElementById('horairesMount');
+  if(!mount) return;
+  const half = "is-full-mobile is-half-tablet is-half-desktop";
+  mount.innerHTML = `
+    <div class="columns is-multiline">
+      ${timeFieldHTML('SIBT','SIBT',"updateAllCalculations()", half)}
+      ${timeFieldHTML('AIBT','AIBT',"updateAllCalculations()", half)}
+      ${timeFieldHTML('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
+      ${timeFieldHTML('AOBT','AOBT',"updateAllCalculations()", half)}
+    </div>
+  `;
+}
+
+/* =========================
+   INIT
+========================= */
 function initForm(){
   renderTabs();
-  let lastTab=localStorage.getItem('lastTabId');
-  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+
+  let lastTab = localStorage.getItem('lastTabId');
+  let tabs = JSON.parse(localStorage.getItem('flightTabs')||'[]');
   if(tabs.length===0) createNewTab();
   else if(lastTab && tabs.includes(parseInt(lastTab))) switchTab(parseInt(lastTab));
   else switchTab(tabs[0]);
 
-  generateTimingFields(); /* <-- now single page */
+  renderHoraires();
+  generateTimingFields();
+
   attachAutoSave();
   window.addEventListener('beforeunload', saveCurrentTabData);
 
@@ -1438,7 +1450,9 @@ function attachAutoSave(){
   document.addEventListener('change', handler, true);
 }
 
-/* Tabs */
+/* =========================
+   TABS
+========================= */
 function renderTabs(){
   const tabBar=document.getElementById('tab-bar');
   if(!tabBar) return;
@@ -1582,6 +1596,11 @@ function loadTabData(id){
   if(darkLabel) darkLabel.textContent = document.body.classList.contains('dark') ? 'Sombre' : 'Clair';
 
   setDefaultDateToTodayIfEmpty();
+
+  // ✅ IMPORTANT : si horaires/timing pas encore mountés (cas rare), on les remonte
+  if(!document.getElementById('SIBT')) renderHoraires();
+  if(!document.getElementById('ArrPNT')) generateTimingFields();
+
   updateAllCalculations();
 
   renderPRMRows('arr');
@@ -1593,8 +1612,9 @@ function loadTabData(id){
 
 function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
-
-/* TIMING FIELDS – SINGLE PAGE (no arrival/depart toggle) */
+/* =========================
+   TIMING FIELDS – SINGLE PAGE
+========================= */
 function generateTimingFields(){
   const container=document.getElementById('timing-grid');
   if(!container) return;
@@ -1636,7 +1656,7 @@ function generateTimingFields(){
       ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
     </div>
   `;
-} // ✅ FIN DE generateTimingFields()
+}
 
 /* LID visible FR/RK */
 function updateLIDVisibility(){
@@ -1786,7 +1806,7 @@ function updateTOBT() {
 
 /* DL CODES */
 function updateDLCode() {
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
   if (!sibttxt || !aibttxt) return;
@@ -1837,8 +1857,7 @@ function redistributeDL(){
 
   if(lastDLChanged === 1){
     let remain = total - d1;
-    d2 = Math.min(remain, Math.max(0, d2));
-    d2 = Math.min(remain, d2 + (remain - d2));
+    d2 = Math.max(0, Math.min(d2, remain));
     remain = total - d1 - d2;
     d3 = Math.max(0, remain);
   } else if (lastDLChanged === 2){
@@ -1882,13 +1901,12 @@ function setNow(fieldId) {
   const now = new Date();
   const hh = isUTC ? now.getUTCHours() : now.getHours();
   const mm = isUTC ? now.getUTCMinutes() : now.getMinutes();
-  document.getElementById(fieldId).value =
-    `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-
+  const el = document.getElementById(fieldId);
+  if(!el) return;
+  el.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
   if (fieldId === 'SOBT') manualSOBT = true;
 }
-
- function adjustTime(fieldId, delta) {
+function adjustTime(fieldId, delta) {
   const input = document.getElementById(fieldId);
   if (!input || !input.value) return;
 
@@ -1902,7 +1920,6 @@ function setNow(fieldId) {
   mm = total % 60;
 
   input.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-
   if (fieldId === 'SOBT') manualSOBT = true;
 }
 
@@ -2228,7 +2245,9 @@ function renderTimeline(){
   if(lbl) lbl.textContent = `${Math.round(timelineZoom*100)}%`;
 }
 
-/* validateForm */
+/* =========================
+   validateForm / save / reset
+========================= */
 function validateForm() {
   const val = id => (document.getElementById(id)?.value || "");
   const dateRaw = val("Date");
@@ -2334,7 +2353,7 @@ BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB"
 ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
 
   window.location.href =
-      `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
+    `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
 }
 
 function manualSave() {
