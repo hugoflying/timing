@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SUIVI PERFORMANCE</title>
+
+<!-- Bulma -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+
+<style>
+:root{
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --shadow: 0 10px 28px rgba(0,0,0,.08);
+  --shadow2: 0 6px 18px rgba(0,0,0,.10);
+  --radius: 14px;
+
+  --field-bg: #ffffff;
+  --field-text: #111827;
+  --field-border: rgba(17,24,39,.18);
+  --field-placeholder: rgba(107,114,128,.95);
+
+  /* hauteur DU SEUL bandeau figé (tabs + timers) */
+  --fixed-header-h: 92px;
+}
+
+body{ background: var(--bg); color: var(--text); margin: 0; }
+body.dark{
+  --bg: #0f1115;
+  --card: #151922;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --shadow: 0 10px 28px rgba(0,0,0,.45);
+  --shadow2: 0 6px 18px rgba(0,0,0,.50);
+
+  --field-bg: #0f172a;
+  --field-text: #e5e7eb;
+  --field-border: rgba(229,231,235,.16);
+  --field-placeholder: rgba(156,163,175,.95);
+}
+
+/* ===== TOP (NON-FIXED) ===== */
+.topbar{
+  position: relative;
+  z-index: 10;
+  background: transparent;
+}
+.topbar-inner{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 14px 6px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Titre centré */
+.brandline{
+  flex: 1 1 100%;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+}
+.brand-title{ text-align:center; line-height: 1.05; }
+.brand-title strong{ display:block; font-size: 1.2rem; color: var(--text); }
+
+/* ===== FIXED BAR (tabs + timers only) ===== */
+.fixed-bar{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 3000;
+  background: rgba(246,247,251,.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .fixed-bar{
+  background: rgba(15,17,21,.82);
+  border-bottom-color: rgba(255,255,255,.08);
+}
+.fixed-bar-inner{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 14px 10px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-wrap{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
+}
+
+/* Tabs row */
+.tabs-row{ display:flex; justify-content:center; }
+.tabs-chip{
+  width: 100%;
+  max-width: 1120px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+.tabs-chip .button{
+  border-radius: 999px;
+  flex: 0 0 auto;
+  font-weight: 900;
+}
+
+/* Timers chips */
+.timer-row{
+  display:flex;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.timer-chip{
+  min-width: 140px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap:10px;
+  color: var(--text);
+}
+.timer-chip .k{ font-weight: 900; color: var(--text); }
+.timer-chip .v{
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background:#ef4444;
+  color:#fff;
+  min-width: 70px;
+  text-align:center;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* CTOT éditable */
+.ctot-pill{
+  width: auto;
+  min-width: 70px;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background:#334155 !important;
+  color:#fff !important;
+  font-weight: 900 !important;
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
+  text-align:center;
+  height: auto;
+  line-height: 1.2;
+  font-size: 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ctot-pill::-webkit-datetime-edit{ color:#fff; }
+.ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
+
+#timer-tobt{ background:#16a34a !important; }
+#timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
+#timer-cd{ background:#93c5fd !important; color:#111 !important; }
+
+/* CD en dépassement (après 0) */
+#timer-cd.cd-over{
+  background: #fee2e2 !important;
+  color: #ef4444 !important;
+}
+
+/* Bulma tweaks */
+.card{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--card);
+  color: var(--text);
+}
+.card-header{
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  background: color-mix(in srgb, var(--card) 85%, #3b82f6 15%);
+}
+body.dark .card-header{
+  background: color-mix(in srgb, var(--card) 80%, #60a5fa 20%);
+}
+.card-header-title{ font-weight: 900; color: var(--text) !important; }
+.section-collapse{ cursor: pointer; user-select: none; }
+.collapsed-body{ display: none; }
+
+/* Inputs */
+.input, .select select, .textarea{
+  border-radius: 12px;
+  background: var(--field-bg) !important;
+  color: var(--field-text) !important;
+  border-color: var(--field-border) !important;
+}
+.input.uppercase{ text-transform: uppercase; }
+.input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
+.field .label{ font-weight: 900; color: var(--text) !important; }
+
+/* FORCE couleur TOB (sinon Bulma + !important bloque) */
+#FinalTOB.is-invalid{ color:#ef4444 !important; }
+#FinalTOB.is-valid{ color: var(--field-text) !important; }
+
+/* Buttons */
+.btn-actions{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+.btn-actions .button{ border-radius: 12px; font-weight: 900; }
+
+/* Popup toast */
+#popup{
+  position: fixed;
+  top: calc(var(--fixed-header-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 16px;
+  border-radius: 12px;
+  color:#fff;
+  z-index: 4000;
+  box-shadow: var(--shadow);
+}
+
+/* ===== Toggle switch ===== */
+.toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  cursor:pointer;
+  user-select:none;
+  font-weight: 900;
+  color: var(--text);
+}
+.toggle input{ position:absolute; opacity:0; pointer-events:none; }
+.toggle .track{
+  width: 44px; height: 26px; border-radius: 999px;
+  background: rgba(148,163,184,.55);
+  position: relative; flex: 0 0 auto;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.toggle .thumb{
+  width: 22px; height: 22px; border-radius: 999px;
+  background: #fff; position:absolute; top: 2px; left: 2px;
+  transition: transform .18s ease, background .18s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+}
+.toggle input:checked + .track{
+  background: color-mix(in srgb, #3b82f6 70%, #22c55e 30%);
+}
+.toggle input:checked + .track .thumb{ transform: translateX(18px); }
+
+/* ===== LOAD popovers ===== */
+.chip-btn{ border: none; cursor: pointer; }
+.chip-btn:active{ transform: translateY(1px); }
+
+#loadArrPopover, #loadExpPopover, #loadFinalPopover{
+  position: fixed;
+  top: calc(var(--fixed-header-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(520px, calc(100vw - 28px));
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  z-index: 4500;
+  display: none;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+body.dark #loadArrPopover, body.dark #loadExpPopover, body.dark #loadFinalPopover{
+  border-color: rgba(255,255,255,.10);
+}
+#loadArrPopover .hdr, #loadExpPopover .hdr, #loadFinalPopover .hdr{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+#loadArrPopover .hdr strong, #loadExpPopover .hdr strong, #loadFinalPopover .hdr strong{ font-weight: 900; }
+#loadArrPopover .grid, #loadExpPopover .grid, #loadFinalPopover .grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+#loadArrPopover .field .label, #loadExpPopover .field .label, #loadFinalPopover .field .label{
+  font-size: .9rem;
+}
+
+#loadArrBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  z-index: 4400;
+  display:none;
+}
+
+/* PRM rows */
+.prm-row{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:10px;
+}
+.prm-row .button{ border-radius: 12px; }
+
+/* LOAD buttons row */
+.load-row-below{
+  display:flex;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+.load-row-below .timer-chip{ min-width: 170px; }
+
+/* === TIMELINE === */
+.timeline-track {
+  position: absolute; left:6%; right:6%;
+  height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
+}
+body.dark .timeline-track{ background:#2e2e2e; }
+
+.timeline-tick { position: absolute; width: 1px; background:rgba(0,0,0,0.08); }
+body.dark .timeline-tick { background:#3e444b; }
+
+.timeline-tick-label {
+  position: absolute; transform: translateX(-50%);
+  font-size: 14px; font-weight: 800; color:#111827;
+}
+body.dark .timeline-tick-label { color:#cfd4da; }
+
+.tl-event, .tl-range { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height:1; z-index: 1; }
+.tl-dot {
+  width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+  margin: 0 auto 4px;
+}
+.tl-label {
+  padding: 4px 10px; border-radius: 999px; background: #f1f3f5; color:#111; font-size: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.07);
+  font-weight: 900;
+}
+body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+
+.tl--std  { --c:#64748b; }
+.tl--tobt { --c:#16a34a; }
+.tl--ctot { --c:#334155; }
+.tl--ops  { --c:#2563eb; }
+.tl--turn { --c:#ef4444; }
+.tl-event .tl-dot { background: var(--c); }
+
+.tl-range {
+  height: 16px; background: color-mix(in srgb, var(--c) 42%, transparent);
+  border: 2px solid var(--c); border-radius: 999px; z-index: 2;
+}
+.tl-range-label {
+  position:absolute; top: -22px; left:50%; transform: translateX(-50%);
+  font-size: 13px; background: rgba(255,255,255,.92);
+  padding: 2px 8px; border-radius: 10px; font-weight: 900;
+  color: #111;
+}
+body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
+
+.timeline-toolbar{
+  display:flex; align-items:center; gap:8px; margin: 4px 0 10px;
+  flex-wrap: wrap;
+}
+.timeline-scroll{
+  overflow-x:auto; overflow-y:hidden;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+body.dark .timeline-scroll{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.timeline-canvas{ position:relative; min-width:600px; width:100%; }
+
+/* DL error */
+.dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px){
+  .timer-chip{ min-width: 128px; }
+  .timeline-canvas{ min-width: 720px; }
+}
+@media (max-width: 420px){
+  .timer-chip{ min-width: 120px; padding: 9px 12px; }
+  .timer-chip .v{ min-width: 64px; }
+  .ctot-pill{ min-width: 64px; }
+}
+
+/* Forcer 2 colonnes sur "petites tablettes" (600–768px) */
+@media (min-width: 600px) and (max-width: 768px){
+  .columns.is-multiline > .column.is-full-mobile.is-one-quarter-tablet,
+  .columns.is-multiline > .column.is-full-mobile.is-one-third-tablet,
+  .columns.is-multiline > .column.is-full-mobile.is-half-tablet,
+  .column.is-full-mobile.is-half-tablet,
+  .column.is-full-mobile.is-one-third-tablet,
+  .column.is-full-mobile.is-one-quarter-tablet{
+    flex: 0 0 50% !important;
+    width: 50% !important;
+  }
+}
+</style>
+</head>
+
+<body onload="initForm()">
+
+<!-- BACKDROP commun -->
+<div id="loadArrBackdrop" onclick="hideAllLoadPopovers()" style="display:none;"></div>
+
+<!-- ===== LOAD ARR popover ===== -->
+<div id="loadArrPopover" role="dialog" aria-modal="true">
+  <div class="hdr">
+    <strong>LOAD ARR.</strong>
+    <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label class="label">PAX</label>
+      <div class="control">
+        <input class="input" id="LoadPAX" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">BAGS</label>
+      <div class="control">
+        <input class="input" id="LoadBAGS" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">CARGO</label>
+      <div class="control">
+        <input class="input" id="LoadCARGO" type="text" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
+    <strong style="font-weight:900;">PRM</strong>
+    <button class="button is-small is-link" type="button" onclick="addPRMRow('arr')">+ Ajouter</button>
+  </div>
+
+  <input type="hidden" id="LoadPRMData" value="[]">
+  <div id="LoadPRMRows"></div>
+</div>
+
+<!-- ===== LOAD EXP popover ===== -->
+<div id="loadExpPopover" role="dialog" aria-modal="true">
+  <div class="hdr">
+    <strong>LOAD EXP.</strong>
+    <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label class="label">PAX</label>
+      <div class="control">
+        <input class="input" id="ExpPAX" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">BAGS</label>
+      <div class="control">
+        <input class="input" id="ExpBAGS" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">CARGO</label>
+      <div class="control">
+        <input class="input" id="ExpCARGO" type="text" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
+    <strong style="font-weight:900;">PRM</strong>
+    <button class="button is-small is-link" type="button" onclick="addPRMRow('exp')">+ Ajouter</button>
+  </div>
+
+  <input type="hidden" id="ExpPRMData" value="[]">
+  <div id="ExpPRMRows"></div>
+</div>
+
+<!-- ===== LOAD FINAL popover ===== -->
+<div id="loadFinalPopover" role="dialog" aria-modal="true">
+  <div class="hdr">
+    <strong>LOAD FINAL</strong>
+    <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
+  </div>
+
+  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+    <div class="field">
+      <label class="label">MALE</label>
+      <div class="control">
+        <input class="input" id="FinalMALE" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); syncAdultIfNeeded(); updateFinalTOB();">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">FEMALE</label>
+      <div class="control">
+        <input class="input" id="FinalFEMALE" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); syncAdultIfNeeded(); updateFinalTOB();">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">ADULT</label>
+      <div class="control">
+        <input class="input" id="FinalADULT" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); updateFinalTOB();">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">CHILD</label>
+      <div class="control">
+        <input class="input" id="FinalCHILD" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); updateFinalTOB();">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">INFANT</label>
+      <div class="control">
+        <input class="input" id="FinalINFANT" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); updateFinalTOB();">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">TOB</label>
+      <div class="control">
+        <input class="input is-valid" id="FinalTOB" type="text" readonly style="font-weight:900; text-align:center;">
+      </div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
+
+  <div class="grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+    <div class="field">
+      <label class="label">OA</label>
+      <div class="control"><input class="input" id="FinalOA" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
+    </div>
+    <div class="field">
+      <label class="label">OB</label>
+      <div class="control"><input class="input" id="FinalOB" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
+    </div>
+    <div class="field">
+      <label class="label">OC</label>
+      <div class="control"><input class="input" id="FinalOC" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
+    </div>
+    <div class="field">
+      <label class="label">OD</label>
+      <div class="control"><input class="input" id="FinalOD" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
+
+  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+    <div class="field">
+      <label class="label">BAGS</label>
+      <div class="control"><input class="input" id="FinalBAGS" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+    </div>
+    <div class="field">
+      <label class="label">POIDS</label>
+      <div class="control"><input class="input" id="FinalPOIDS" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+    </div>
+    <div class="field">
+      <label class="label">GB</label>
+      <div class="control"><input class="input" id="FinalGB" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOPBAR (NOT FIXED) ===== -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brandline">
+      <div class="brand-title">
+        <strong>SUIVI PERFORMANCE</strong>
+      </div>
+    </div>
+
+    <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
+      <label class="toggle">
+        <span id="darkLabel">Clair</span>
+        <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+
+      <label class="toggle">
+        <span id="tzLabel">Locale</span>
+        <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FIXED BAR (tabs + timers only) ===== -->
+<div class="fixed-bar" id="fixedBar">
+  <div class="fixed-bar-inner">
+
+    <div class="tabs-row">
+      <div id="tab-bar" class="tabs-chip"></div>
+    </div>
+
+    <div class="timer-row">
+      <div class="timer-chip">
+        <div class="k">HLE</div>
+        <div id="timer-h40" class="v">--:--</div>
+      </div>
+      <div class="timer-chip">
+        <div class="k">H-15</div>
+        <div id="timer-h15" class="v">--:--</div>
+      </div>
+
+      <div id="lidBlock" class="timer-chip" style="display:none;">
+        <div class="k">LID</div>
+        <div id="timer-h8" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">TOBT</div>
+        <div id="timer-tobt" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CTOT</div>
+        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CD</div>
+        <div id="timer-cd" class="v">--:--</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="app-wrap">
+
+  <!-- INFO VOL -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">INFO VOL</p>
+      <span class="card-header-icon" aria-label="more options"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+
+        <div class="column is-6">
+          <div class="field">
+            <label class="label">DATE</label>
+            <div class="control">
+              <input class="input" type="date" id="Date">
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="field">
+            <label class="label">RZA</label>
+            <div class="control">
+              <input class="input uppercase" type="text" id="RZA" maxlength="3">
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">AIRLINE</label>
+            <div class="control select is-fullwidth">
+              <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
+                <option value="">--</option>
+                <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+                <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+                <option>V7</option><option>Autre</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">FLT. NUMBER</label>
+            <div class="control">
+              <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">FROM</label>
+            <div class="control">
+              <input class="input uppercase" type="text" id="From" maxlength="3">
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">TO</label>
+            <div class="control">
+              <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Row REG / A/C / PARK -->
+        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+          <div class="field">
+            <label class="label">REGISTRATION</label>
+            <div class="control">
+              <input class="input uppercase" type="text" id="Immat" maxlength="6">
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+          <div class="field">
+            <label class="label">A/C TYPE</label>
+            <div class="control select is-fullwidth">
+              <select id="TypeAvion" onchange="updateAllCalculations()">
+                <option value="">--</option>
+                <option>OTHER</option>
+                <option>A319</option>
+                <option>A320</option>
+                <option>A20N</option>
+                <option>A321</option>
+                <option>A21N</option>
+                <option>A21NY</option>
+                <option>B737-400</option>
+                <option>B737-700</option>
+                <option>B737-800</option>
+                <option>B737-8200</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+          <div class="field">
+            <label class="label">PARKING</label>
+            <div class="control select is-fullwidth">
+              <select id="Parking">
+                <option value="">--</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOAD buttons row -->
+        <div class="column is-12">
+          <div class="load-row-below">
+            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
+              <div class="k">LOAD</div>
+              <div class="v" style="background:#2563eb;">ARR.</div>
+            </button>
+
+            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadExp()">
+              <div class="k">LOAD</div>
+              <div class="v" style="background:#0ea5e9;">EXP.</div>
+            </button>
+
+            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadFinal()">
+              <div class="k">LOAD</div>
+              <div class="v" style="background:#7c3aed;">FINAL</div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- HORAIRES -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">HORAIRES</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+
+        <script>
+          function timeField(id,label,onchange, colClass){
+            return `
+            <div class="column ${colClass}">
+              <div class="field">
+                <label class="label">${label}</label>
+                <div class="control">
+                  <input class="input" type="time" id="${id}" onchange="${onchange}">
+                </div>
+                <div class="btn-actions">
+                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+                  <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+                </div>
+              </div>
+            </div>`;
+          }
+        </script>
+
+        <div id="horairesMount" class="column is-12"></div>
+        <script>
+          document.addEventListener("DOMContentLoaded", ()=>{
+            const mount = document.getElementById('horairesMount');
+            if(!mount) return;
+            const half = "is-full-mobile is-half-tablet is-half-desktop";
+            mount.innerHTML = `<div class="columns is-multiline">
+              ${timeField('SIBT','SIBT',"updateAllCalculations()", half)}
+              ${timeField('AIBT','AIBT',"updateAllCalculations()", half)}
+              ${timeField('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
+              ${timeField('AOBT','AOBT',"updateAllCalculations()", half)}
+            </div>`;
+          });
+        </script>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMING -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMING</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div id="timing-grid"></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMELINE</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="timeline-toolbar">
+        <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
+        <span class="tag is-light" id="timelineZoomLabel">100%</span>
+        <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
+        <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
+      </div>
+
+      <div class="timeline-scroll" id="timelineScroll">
+        <div id="timelineCanvas" class="timeline-canvas"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETARDS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">RETARDS (Départ)</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 1</label>
+            <div class="control"><input class="input" type="text" id="DLcode1"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 1 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 2</label>
+            <div class="control"><input class="input" type="text" id="DLcode2"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 2 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 3</label>
+            <div class="control"><input class="input" type="text" id="DLcode3"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 3 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAITS SAILLANTS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">FAITS SAILLANTS</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
+    </div>
+  </div>
+
+  <div class="buttons is-centered">
+    <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
+    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
+    <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
+  </div>
+
+</div>
+
+<script>
+/* Collapse */
+function toggleCardBody(headerEl){
+  const card = headerEl.closest('.card');
+  if(!card) return;
+  const content = card.querySelector('.card-content');
+  if(!content) return;
+  const collapsed = content.classList.toggle('collapsed-body');
+  const icon = headerEl.querySelector('.icon');
+  if(icon) icon.textContent = collapsed ? '›' : '⌄';
+}
+
+/* Header height (ONLY fixed bar) */
+function updateHeaderOffset(){
+  const header = document.getElementById('fixedBar');
+  if(!header) return;
+  const h = Math.ceil(header.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
+}
+
+/* Vars */
+let isUTC=false;
+let manualSOBT=false;
+let currentTabId=null;
+let saveTimer=null;
+
+/* Timeline */
+let timelineZoom = 1;
+const TL_ZOOM_MIN = 0.5;
+const TL_ZOOM_MAX = 8;
+const TL_ZOOM_STEP = 0.25;
+window._timelineCurrentRange = null;
+
+/* TOBT brut + TOBT affiché */
+window._tobtRawMins = null;
+window._tobtAdjMins = null;
+
+/* DL */
+let lastDLChanged = 1;
+
+/* digits only */
+function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g,''); }
+
+/* ===== COUNTDOWN (CD) ===== */
+let countdownTimer = null;
+
+function getNowMinutes(){
+  const now = new Date();
+  const h = isUTC ? now.getUTCHours() : now.getHours();
+  const m = isUTC ? now.getUTCMinutes() : now.getMinutes();
+  const s = isUTC ? now.getUTCSeconds() : now.getSeconds();
+  return { mins: h*60 + m, secs: s };
+}
+
+function stopCountdown(resetDisplay=true){
+  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer = null; }
+  const el = document.getElementById('timer-cd');
+  if(!el) return;
+  if(resetDisplay){
+    el.textContent = '--:--';
+    el.classList.remove('cd-over');
+  }
+}
+function freezeCountdown(){
+  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer = null; }
+}
+
+function updateCountdownOnce(){
+  const el = document.getElementById('timer-cd');
+  if(!el) return;
+
+  const sibtTxt = document.getElementById('SIBT')?.value || '';
+  const aibtTxt = document.getElementById('AIBT')?.value || '';
+  const sobtTxt = document.getElementById('SOBT')?.value || '';
+  const aobtTxt = document.getElementById('AOBT')?.value || '';
+
+  if(!aibtTxt || !sobtTxt || !sibtTxt){
+    el.textContent = '--:--';
+    el.classList.remove('cd-over');
+    return;
+  }
+
+  const SIBT = parseHHMM(sibtTxt);
+  const AIBT = parseHHMM(aibtTxt);
+  const SOBT = parseHHMM(sobtTxt);
+  if(SIBT == null || AIBT == null || SOBT == null){
+    el.textContent = '--:--';
+    el.classList.remove('cd-over');
+    return;
+  }
+
+  let targetMin = null;
+  if (AIBT <= SIBT) targetMin = SOBT;
+  else {
+    const tobt = window._tobtAdjMins;
+    if(tobt == null){
+      el.textContent = '--:--';
+      el.classList.remove('cd-over');
+      return;
+    }
+    targetMin = tobt;
+  }
+
+  if(aobtTxt){
+    const AOBT = parseHHMM(aobtTxt);
+    if(AOBT == null){
+      el.textContent = '--:--';
+      el.classList.remove('cd-over');
+      return;
+    }
+
+    let diffMin = AOBT - targetMin;
+    if(diffMin > 720) diffMin -= 1440;
+    if(diffMin < -720) diffMin += 1440;
+
+    const totalSeconds = diffMin * 60;
+    const sign = totalSeconds >= 0 ? '+' : '-';
+    const abs = Math.abs(totalSeconds);
+    const mm = Math.floor(abs / 60);
+    const ss = abs % 60;
+
+    el.textContent = `${sign}${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+    el.classList.toggle('cd-over', totalSeconds > 0);
+    return;
+  }
+
+  const now = getNowMinutes();
+
+  let diffMin = targetMin - now.mins;
+  if(diffMin < -720) diffMin += 1440;
+  if(diffMin > 720) diffMin -= 1440;
+
+  const remainingSeconds = diffMin * 60 - now.secs;
+
+  const sign = remainingSeconds <= 0 ? '+' : '';
+  const abs = Math.abs(remainingSeconds);
+  const mm = Math.floor(abs / 60);
+  const ss = abs % 60;
+
+  el.textContent = `${sign}${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  el.classList.toggle('cd-over', remainingSeconds < 0);
+}
+
+function ensureCountdownRunning(){
+  const sibtTxt = document.getElementById('SIBT')?.value || '';
+  const aibtTxt = document.getElementById('AIBT')?.value || '';
+  const sobtTxt = document.getElementById('SOBT')?.value || '';
+  const aobtTxt = document.getElementById('AOBT')?.value || '';
+
+  const baseOK = !!(sibtTxt && aibtTxt && sobtTxt);
+
+  if(baseOK && aobtTxt){
+    freezeCountdown();
+    updateCountdownOnce();
+    return;
+  }
+
+  if(!baseOK){
+    stopCountdown(true);
+    return;
+  }
+
+  if(!countdownTimer){
+    updateCountdownOnce();
+    countdownTimer = setInterval(updateCountdownOnce, 1000);
+  } else {
+    updateCountdownOnce();
+  }
+}
+
+/* Timeline zoom */
+function timelineZoomIn(){ timelineSetZoom(timelineZoom + TL_ZOOM_STEP); }
+function timelineZoomOut(){ timelineSetZoom(timelineZoom - TL_ZOOM_STEP); }
+function timelineZoomReset(){ timelineSetZoom(1); }
+function timelineSetZoom(z){
+  const scroller = document.getElementById('timelineScroll');
+  const canvas   = document.getElementById('timelineCanvas');
+  if(!scroller || !canvas) return;
+  const prevCenterRatio = (scroller.scrollLeft + scroller.clientWidth/2) / Math.max(1, scroller.scrollWidth);
+  timelineZoom = Math.max(TL_ZOOM_MIN, Math.min(TL_ZOOM_MAX, z));
+  const lbl = document.getElementById('timelineZoomLabel');
+  if(lbl) lbl.textContent = `${Math.round(timelineZoom*100)}%`;
+  renderTimeline();
+  scroller.scrollLeft = prevCenterRatio * scroller.scrollWidth - scroller.clientWidth/2;
+}
+
+/* ===== LOAD POPovers ===== */
+function showBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = ''; }
+function hideBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = 'none'; }
+function hideAllLoadPopovers(){
+  ['loadArrPopover','loadExpPopover','loadFinalPopover'].forEach(id=>{
+    const p = document.getElementById(id);
+    if(p) p.style.display = 'none';
+  });
+  hideBackdrop();
+}
+function showPopover(id){
+  hideAllLoadPopovers();
+  showBackdrop();
+  const p = document.getElementById(id);
+  if(p) p.style.display = 'block';
+}
+function toggleLoadArr(){ showPopover('loadArrPopover'); renderPRMRows('arr'); }
+function toggleLoadExp(){ showPopover('loadExpPopover'); renderPRMRows('exp'); }
+function toggleLoadFinal(){ showPopover('loadFinalPopover'); updateFinalTOB(); }
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hideAllLoadPopovers(); });
+
+/* ===== PRM multi-lignes (ARR/EXP) ===== */
+const PRM_TYPES = ['WCHR','WCHS','WCHC','BLND','DPNA','UMNR','OTHER'];
+
+function getPRMIds(mode){
+  if(mode === 'exp') return { dataId:'ExpPRMData', rowsId:'ExpPRMRows' };
+  return { dataId:'LoadPRMData', rowsId:'LoadPRMRows' };
+}
+function readPRMData(mode){
+  const {dataId} = getPRMIds(mode);
+  const raw = document.getElementById(dataId)?.value || '[]';
+  try{
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  }catch(e){ return []; }
+}
+function writePRMData(mode, arr){
+  const {dataId} = getPRMIds(mode);
+  const el = document.getElementById(dataId);
+  if(el) el.value = JSON.stringify(arr || []);
+}
+function addPRMRow(mode){
+  const arr = readPRMData(mode);
+  arr.push({ type:'WCHR', seat:'' });
+  writePRMData(mode, arr);
+  renderPRMRows(mode);
+  saveCurrentTabData();
+}
+function removePRMRow(mode, idx){
+  const arr = readPRMData(mode);
+  arr.splice(idx,1);
+  writePRMData(mode, arr);
+  renderPRMRows(mode);
+  saveCurrentTabData();
+}
+function renderPRMRows(mode){
+  const {rowsId} = getPRMIds(mode);
+  const wrap = document.getElementById(rowsId);
+  if(!wrap) return;
+
+  const data = readPRMData(mode);
+  if(!data.length){
+    wrap.innerHTML = `<p class="has-text-grey" style="margin:6px 0 0;">Aucune assistance.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = data.map((row, idx)=>{
+    const opts = PRM_TYPES.map(t=>`<option value="${t}" ${row.type===t?'selected':''}>${t}</option>`).join('');
+    return `
+      <div class="prm-row">
+        <div class="field">
+          <label class="label">TYPE</label>
+          <div class="control select is-fullwidth">
+            <select data-mode="${mode}" data-idx="${idx}" data-k="type" onchange="onPRMChange(this)">${opts}</select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">SIÈGE</label>
+          <div class="control">
+            <input class="input uppercase" type="text" maxlength="4"
+              value="${(row.seat||'')}"
+              data-mode="${mode}" data-idx="${idx}" data-k="seat"
+              oninput="onPRMInput(this)">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">&nbsp;</label>
+          <button class="button is-light" type="button" onclick="removePRMRow('${mode}',${idx})">Suppr.</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+function onPRMChange(sel){
+  const mode = sel.getAttribute('data-mode');
+  const idx = parseInt(sel.getAttribute('data-idx'),10);
+  const k = sel.getAttribute('data-k');
+  const data = readPRMData(mode);
+  if(!data[idx]) return;
+  data[idx][k] = sel.value;
+  writePRMData(mode, data);
+  saveCurrentTabData();
+}
+function onPRMInput(inp){
+  inp.value = (inp.value||'').toUpperCase();
+  const mode = inp.getAttribute('data-mode');
+  const idx = parseInt(inp.getAttribute('data-idx'),10);
+  const k = inp.getAttribute('data-k');
+  const data = readPRMData(mode);
+  if(!data[idx]) return;
+  data[idx][k] = inp.value;
+  writePRMData(mode, data);
+  saveCurrentTabData();
+}
+
+/* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
+function asInt(id){
+  const v = (document.getElementById(id)?.value || '').trim();
+  if(v === '') return null;
+  const n = parseInt(v,10);
+  return isNaN(n) ? null : n;
+}
+function syncAdultIfNeeded(){
+  const m = asInt('FinalMALE');
+  const f = asInt('FinalFEMALE');
+  const adultEl = document.getElementById('FinalADULT');
+  if(!adultEl) return;
+
+  if(m != null && f != null){
+    adultEl.value = String(m + f);
+    adultEl.readOnly = true;
+  }else{
+    adultEl.readOnly = false;
+  }
+}
+function setTOBValidity(isValid){
+  const tobEl = document.getElementById('FinalTOB');
+  if(!tobEl) return;
+  tobEl.classList.toggle('is-invalid', !isValid);
+  tobEl.classList.toggle('is-valid', isValid);
+}
+function updateFinalTOB(){
+  syncAdultIfNeeded();
+
+  const m = asInt('FinalMALE');
+  const f = asInt('FinalFEMALE');
+  const a = asInt('FinalADULT');
+  const c = asInt('FinalCHILD')  ?? 0;
+  const i = asInt('FinalINFANT') ?? 0;
+
+  let main = null;
+  if(m != null && f != null) main = (m + f) + c;
+  else if(a != null) main = a + c;
+
+  const tobEl = document.getElementById('FinalTOB');
+  if(!tobEl) return;
+
+  if(main == null){
+    tobEl.value = '';
+    setTOBValidity(true);
+    return;
+  }
+
+  tobEl.value = `${main} + ${i}`;
+
+  const oa = asInt('FinalOA') ?? 0;
+  const ob = asInt('FinalOB') ?? 0;
+  const oc = asInt('FinalOC') ?? 0;
+  const od = asInt('FinalOD') ?? 0;
+  const sum = oa + ob + oc + od;
+
+  setTOBValidity(sum === main);
+}
+
+/* INIT */
+function initForm(){
+  renderTabs();
+  let lastTab=localStorage.getItem('lastTabId');
+  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  if(tabs.length===0) createNewTab();
+  else if(lastTab && tabs.includes(parseInt(lastTab))) switchTab(parseInt(lastTab));
+  else switchTab(tabs[0]);
+
+  generateTimingFields(); /* <-- now single page */
+  attachAutoSave();
+  window.addEventListener('beforeunload', saveCurrentTabData);
+
+  document.getElementById('Parking')?.addEventListener('change', updateTabLabelInstant);
+  document.getElementById('Cie')?.addEventListener('change', ()=>{
+    updateTabLabelInstant();
+    updateAllCalculations();
+  });
+  document.getElementById('NVol')?.addEventListener('input', updateTabLabelInstant);
+  document.getElementById('To')?.addEventListener('input', updateTabLabelInstant);
+
+  setupUppercaseInputs(['NVol','From','To','Immat','RZA']);
+
+  const storedDark = (localStorage.getItem('modeDark')||'0')==='1';
+  const storedUTC  = (localStorage.getItem('modeUTC')||'0')==='1';
+  setDarkMode(storedDark, true);
+  setTimeModeUTC(storedUTC, true);
+
+  [
+    'AIBT','SOBT','SIBT','AOBT','CTOT','ArrPNT','ArrPNC','TypeAvion',
+    'LoadPAX','LoadBAGS','LoadCARGO','ExpPAX','ExpBAGS','ExpCARGO',
+    'FinalMALE','FinalFEMALE','FinalADULT','FinalCHILD','FinalINFANT','FinalOA','FinalOB','FinalOC','FinalOD',
+    'FinalBAGS','FinalPOIDS','FinalGB'
+  ].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{ updateAllCalculations(); updateFinalTOB(); });
+  });
+
+  const scroller = document.getElementById('timelineScroll');
+  if(scroller){
+    let isDown=false, startX=0, startLeft=0;
+    scroller.addEventListener('mousedown', e=>{ isDown=true; startX=e.clientX; startLeft=scroller.scrollLeft; });
+    scroller.addEventListener('mouseleave', ()=>{ isDown=false; });
+    scroller.addEventListener('mouseup', ()=>{ isDown=false; });
+    scroller.addEventListener('mousemove', e=>{
+      if(!isDown) return;
+      const dx = e.clientX - startX;
+      scroller.scrollLeft = startLeft - dx;
+      e.preventDefault();
+    });
+    ['wheel','mousedown','touchstart','keydown','scroll'].forEach(ev=>{
+      scroller.addEventListener(ev, ()=>{ timelineUserScrolled = true; }, {passive:true});
+    });
+  }
+
+  if (currentTabId) loadTabData(currentTabId);
+  setDefaultDateToTodayIfEmpty();
+
+  updateHeaderOffset();
+  window.addEventListener('resize', ()=>{
+    updateHeaderOffset();
+    renderTimeline();
+  });
+
+  renderTimeline();
+  ensureCountdownRunning();
+
+  renderPRMRows('arr');
+  renderPRMRows('exp');
+  updateFinalTOB();
+}
+
+/* date défaut */
+function setDefaultDateToTodayIfEmpty(){
+  const d = document.getElementById('Date');
+  if(d && !d.value){ d.valueAsDate = new Date(); }
+}
+
+/* uppercase */
+function setupUppercaseInputs(ids){
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    const toUpper = ()=>{ el.value = (el.value||'').toUpperCase(); };
+    el.addEventListener('input', toUpper);
+    el.addEventListener('blur', toUpper);
+  });
+}
+
+/* Autosave */
+function attachAutoSave(){
+  const handler=()=>{
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      saveCurrentTabData();
+      renderTimeline();
+      updateHeaderOffset();
+    }, 300);
+  };
+  document.addEventListener('input', handler, true);
+  document.addEventListener('change', handler, true);
+}
+
+/* Tabs */
+function renderTabs(){
+  const tabBar=document.getElementById('tab-bar');
+  if(!tabBar) return;
+
+  tabBar.innerHTML = `
+    <button class="button is-success is-light" type="button" onclick="createNewTab()">+ Ajouter vol</button>
+  `;
+
+  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  tabs.forEach((id)=>{
+    const data=JSON.parse(localStorage.getItem('tab-'+id)||'{}');
+
+    const cie = (data.Cie||'').toUpperCase();
+    const nvol = (data.NVol||'').toUpperCase();
+    const to = (data.To||'').toUpperCase();
+
+    let left = `${cie}${nvol||''}`.trim();
+    let label = left || to ? (to ? `${left} | ${to}`.trim() : left) : 'VOL';
+
+    const btn=document.createElement('button');
+    btn.className = `button ${id===currentTabId ? 'is-link' : 'is-light'}`;
+    btn.textContent = label || 'VOL';
+    btn.onclick=()=>switchTab(id);
+    btn.ondblclick=()=>deleteTab(id);
+    tabBar.appendChild(btn);
+  });
+
+  updateHeaderOffset();
+}
+
+function createNewTab(){
+  const newId=Date.now();
+  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  tabs.push(newId);
+  localStorage.setItem('flightTabs',JSON.stringify(tabs));
+  clearFormFields();
+  currentTabId=newId;
+  localStorage.setItem('lastTabId',newId);
+  saveCurrentTabData();
+  renderTabs();
+  updateHeaderOffset();
+}
+
+function switchTab(id){
+  stopCountdown();
+  saveCurrentTabData();
+  currentTabId=id;
+  localStorage.setItem('lastTabId',id);
+  loadTabData(id);
+  renderTabs();
+  renderTimeline();
+  updateHeaderOffset();
+}
+
+function deleteTab(id){
+  stopCountdown();
+  if(!confirm("Supprimer cet onglet ?")) return;
+  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  tabs=tabs.filter(t=>t!==id);
+  localStorage.setItem('flightTabs',JSON.stringify(tabs));
+  localStorage.removeItem('tab-'+id);
+  if(tabs.length>0) switchTab(tabs[0]);
+  else createNewTab();
+  renderTabs();
+  renderTimeline();
+  updateHeaderOffset();
+}
+
+function clearFormFields(){
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(el.type==='checkbox'||el.type==='radio') el.checked=false;
+    else if(el.tagName==='SELECT') el.selectedIndex=0;
+    else el.value='';
+  });
+  const d = document.getElementById('Date');
+  if(d) d.valueAsDate=new Date();
+
+  const prmA = document.getElementById('LoadPRMData');
+  const prmE = document.getElementById('ExpPRMData');
+  if(prmA) prmA.value = '[]';
+  if(prmE) prmE.value = '[]';
+
+  updateAllCalculations();
+  updateFinalTOB();
+  renderPRMRows('arr');
+  renderPRMRows('exp');
+}
+
+function saveCurrentTabData(){
+  if(!currentTabId) return;
+  let data={};
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(!el.id) return;
+    if(el.type==='checkbox') data[el.id]=el.checked ? '1':'0';
+    else data[el.id]=el.value;
+  });
+  data.modeDark=document.body.classList.contains('dark')?'1':'0';
+  data.modeUTC=isUTC?'1':'0';
+
+  data.timer_h40=document.getElementById('timer-h40')?.textContent || '--:--';
+  data.timer_h15=document.getElementById('timer-h15')?.textContent || '--:--';
+  data.timer_h8=document.getElementById('timer-h8')?.textContent || '--:--';
+  data.timer_tobt=document.getElementById('timer-tobt')?.textContent || '--:--';
+  data.timer_cd=document.getElementById('timer-cd')?.textContent || '--:--';
+
+  localStorage.setItem('tab-'+currentTabId,JSON.stringify(data));
+  localStorage.setItem('lastTabId',currentTabId);
+  renderTabs();
+}
+
+function loadTabData(id){
+  stopCountdown();
+  const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
+
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(!el.id || data[el.id] === undefined) return;
+    if(el.type === 'checkbox') el.checked = (data[el.id] === '1');
+    else el.value = data[el.id];
+  });
+
+  if(data.modeDark === '1') document.body.classList.add('dark');
+  else document.body.classList.remove('dark');
+
+  isUTC = (data.modeUTC === '1');
+
+  document.getElementById('timer-h40').textContent  = data.timer_h40  || '--:--';
+  document.getElementById('timer-h15').textContent  = data.timer_h15  || '--:--';
+  document.getElementById('timer-h8').textContent   = data.timer_h8   || '--:--';
+  document.getElementById('timer-tobt').textContent = data.timer_tobt || '--:--';
+  document.getElementById('timer-cd').textContent   = data.timer_cd   || '--:--';
+
+  const dt = document.getElementById('darkToggle');
+  const ut = document.getElementById('utcToggle');
+  if(dt) dt.checked = document.body.classList.contains('dark');
+  if(ut) ut.checked = isUTC;
+
+  const tzLabel = document.getElementById('tzLabel');
+  if(tzLabel) tzLabel.textContent = isUTC ? 'UTC' : 'Locale';
+
+  const darkLabel = document.getElementById('darkLabel');
+  if(darkLabel) darkLabel.textContent = document.body.classList.contains('dark') ? 'Sombre' : 'Clair';
+
+  setDefaultDateToTodayIfEmpty();
+  updateAllCalculations();
+
+  renderPRMRows('arr');
+  renderPRMRows('exp');
+  updateFinalTOB();
+
+  updateHeaderOffset();
+}
+
+function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
+
+/* TIMING FIELDS – SINGLE PAGE (no arrival/depart toggle) */
+function generateTimingFields(){
+  const container=document.getElementById('timing-grid');
+  if(!container) return;
+
+  const col = "is-full-mobile is-half-tablet is-half-desktop";
+
+  const fieldHTML = (id,label)=>`
+    <div class="column ${col}">
+      <div class="field">
+        <label class="label">${label}</label>
+        <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
+        <div class="btn-actions">
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+        </div>
+      </div>
+    </div>`;
+
+  container.innerHTML = `
+    <div class="columns is-multiline">
+      ${fieldHTML('ArrPNT','Arrivée PNT')}
+      ${fieldHTML('ArrPNC','Arrivée PNC')}
+
+      ${fieldHTML('PremierDebarque','Premier débarqué')}
+      ${fieldHTML('DernierDebarque','Dernier débarqué')}
+
+      ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+      ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+
+      ${fieldHTML('ArriveeFuel','Arrivée fuel')}
+      ${fieldHTML('DepartFuel','Départ fuel')}
+
+      ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
+      ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
+
+      ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
+      ${fieldHTML('DepartLift','Départ lift (dep)')}
+
+      ${fieldHTML('RemiseLID','Remise LID/LDS')}
+      ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+    </div>
+  `;
+}
+
+/* LID visible FR/RK */
+function updateLIDVisibility(){
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const lid = document.getElementById('lidBlock');
+  if(!lid) return;
+  lid.style.display = (cie === 'FR' || cie === 'RK') ? '' : 'none';
+  updateHeaderOffset();
+}
+
+/* CALCULS */
+function updateAllCalculations() {
+  updateTimers();
+  updateSOBTDefault();
+  updateTOBT();
+  updateDLCode();
+  redistributeDL();
+  updateLID();
+  updateLIDVisibility();
+  ensureCountdownRunning();
+  renderTimeline();
+  updateHeaderOffset();
+}
+
+/* TIMERS HLE/H-15 */
+function updateTimers() {
+  const sobt = document.getElementById('SOBT')?.value || '';
+  if (!sobt) {
+    ['timer-h40', 'timer-h15', 'timer-h8'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.textContent = '--:--';
+    });
+    return;
+  }
+  const [hh, mm] = sobt.split(':').map(Number);
+  const base = new Date(); base.setHours(hh, mm, 0, 0);
+  const h40 = new Date(base.getTime() - 40 * 60000);
+  const h15 = new Date(base.getTime() - 15 * 60000);
+  document.getElementById('timer-h40').textContent = `${String(h40.getHours()).padStart(2, '0')}:${String(h40.getMinutes()).padStart(2, '0')}`;
+  document.getElementById('timer-h15').textContent = `${String(h15.getHours()).padStart(2, '0')}:${String(h15.getMinutes()).padStart(2, '0')}`;
+}
+
+/* LID = TOBT - 8 */
+function updateLID() {
+  const tobtRawMins = window._tobtRawMins;
+  const el = document.getElementById('timer-h8');
+  if (!el) return;
+  if (tobtRawMins == null) { el.textContent = "--:--"; return; }
+  el.textContent = fmtHHMM(tobtRawMins - 8);
+}
+
+function updateSOBTDefault() {
+  const sobtEl = document.getElementById('SOBT');
+  if(!sobtEl) return;
+
+  if ((sobtEl.value || '').trim() !== '') return;
+
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const sibt = document.getElementById('SIBT')?.value || '';
+  const arrPNT = document.getElementById('ArrPNT')?.value || '';
+  const arrPNC = document.getElementById('ArrPNC')?.value || '';
+  if (!sibt) return;
+  if (!(cie === "FR" || cie === "RK" || cie === "W4" || cie === "W6")) return;
+
+  let [sH, sM] = sibt.split(':').map(Number);
+  const base = new Date(); base.setHours(sH, sM);
+  let add = 35;
+  if (cie === "FR" || cie === "RK") add = (arrPNT || arrPNC) ? 35 : 25;
+  const sobtCalc = new Date(base.getTime() + add * 60000);
+  sobtEl.value = `${String(sobtCalc.getHours()).padStart(2, '0')}:${String(sobtCalc.getMinutes()).padStart(2, '0')}`;
+}
+
+/* TOBT + règle CTOT */
+function updateTOBT() {
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const sibttxt = document.getElementById('SIBT')?.value || '';
+  const aibttxt = document.getElementById('AIBT')?.value || '';
+  const sobttxt = document.getElementById('SOBT')?.value || '';
+  const ctottxt = document.getElementById('CTOT')?.value || '';
+
+  if (!cie || !sibttxt || !sobttxt) {
+    document.getElementById('timer-tobt').textContent = '--:--';
+    window._tobtRawMins = null;
+    window._tobtAdjMins = null;
+    return;
+  }
+
+  const [sH, sM] = sibttxt.split(':').map(Number);
+  const [aH, aM] = aibttxt ? aibttxt.split(':').map(Number) : [sH, sM];
+  const [soH, soM] = sobttxt.split(':').map(Number);
+
+  const SIBT = new Date(); SIBT.setHours(sH, sM, 0, 0);
+  const AIBT = new Date(); AIBT.setHours(aH, aM, 0, 0);
+  const SOBT = new Date(); SOBT.setHours(soH, soM, 0, 0);
+
+  const isDelayed = (aibttxt && (AIBT > SIBT));
+  const crewChange = !!(document.getElementById('ArrPNT')?.value || document.getElementById('ArrPNC')?.value);
+  const addMin = (d, m)=> new Date(d.getTime() + m*60000);
+
+  let TOBT_raw;
+
+  if (cie === 'FR' || cie === 'RK') {
+    if (!isDelayed) TOBT_raw = new Date(SOBT);
+    else {
+      const turn = crewChange ? 35 : 25;
+      const candidate = addMin(AIBT, turn);
+      TOBT_raw = (candidate <= SOBT) ? new Date(SOBT) : candidate;
+    }
+  } else if (cie === 'W4' || cie === 'W6') {
+    if (!isDelayed) TOBT_raw = new Date(SOBT);
+    else {
+      const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
+      const turn = (type === 'A321') ? 35 : 30;
+      const candidate = addMin(AIBT, turn);
+      TOBT_raw = (candidate <= SOBT) ? new Date(SOBT) : candidate;
+    }
+  } else {
+    if (aibttxt && AIBT > SIBT) {
+      const diff = (SOBT - SIBT) / 60000;
+      TOBT_raw = new Date(AIBT.getTime() + diff * 60000);
+    } else TOBT_raw = new Date(SOBT);
+  }
+
+  if (TOBT_raw < SOBT) TOBT_raw = new Date(SOBT);
+  window._tobtRawMins = TOBT_raw.getHours() * 60 + TOBT_raw.getMinutes();
+
+  let TOBT_adj = new Date(TOBT_raw);
+  if (ctottxt) {
+    const [cH, cM] = ctottxt.split(':').map(Number);
+    const CTOT = new Date(); CTOT.setHours(cH, cM, 0, 0);
+    const tobtPlus15 = new Date(TOBT_adj.getTime() + 15*60000);
+    if (CTOT > tobtPlus15) TOBT_adj = new Date(CTOT.getTime() - 15*60000);
+    if (TOBT_adj < SOBT) TOBT_adj = new Date(SOBT);
+  }
+
+  window._tobtAdjMins = TOBT_adj.getHours() * 60 + TOBT_adj.getMinutes();
+
+  document.getElementById('timer-tobt').textContent =
+    `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
+}
+
+/* DL CODES */
+function updateDLCode() {
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const sibttxt = document.getElementById('SIBT')?.value || '';
+  const aibttxt = document.getElementById('AIBT')?.value || '';
+  if (!sibttxt || !aibttxt) return;
+
+  const [sH, sM] = sibttxt.split(':').map(Number);
+  const [aH, aM] = aibttxt.split(':').map(Number);
+  const SIBT = new Date(); SIBT.setHours(sH, sM);
+  const AIBT = new Date(); AIBT.setHours(aH, aM);
+
+  if (AIBT > SIBT) {
+    if (cie === 'FR' || cie === 'RK') document.getElementById('DLcode1').value = '93';
+    else if (cie === 'W4' || cie === 'W6') document.getElementById('DLcode1').value = '93A';
+    else document.getElementById('DLcode1').value = '';
+    document.getElementById('DLduree1').value = Math.round((AIBT - SIBT) / 60000) || '';
+  } else {
+    document.getElementById('DLcode1').value = '';
+    document.getElementById('DLduree1').value = '';
+  }
+}
+
+/* DL redistribution */
+function dldChanged(index){ lastDLChanged = index; redistributeDL(); }
+function totalDelayMinutes(){
+  const so = document.getElementById('SOBT')?.value || '';
+  const ao = document.getElementById('AOBT')?.value || '';
+  if(!so || !ao) return null;
+  const s = parseHHMM(so);
+  const a = parseHHMM(ao);
+  if (s==null || a==null) return null;
+  let total = a - s;
+  if (total < 0) total += 1440;
+  return total;
+}
+function redistributeDL(){
+  const total = totalDelayMinutes();
+  const f1 = document.getElementById('DLduree1');
+  const f2 = document.getElementById('DLduree2');
+  const f3 = document.getElementById('DLduree3');
+  if(!f1 || !f2 || !f3) return;
+
+  let d1 = parseInt(f1.value)||0;
+  let d2 = parseInt(f2.value)||0;
+  let d3 = parseInt(f3.value)||0;
+
+  if(total==null){ clearDLBorders(); return; }
+
+  d1 = Math.max(0, Math.min(d1, total));
+
+  if(lastDLChanged === 1){
+    let remain = total - d1;
+    d2 = Math.min(remain, Math.max(0, d2));
+    d2 = Math.min(remain, d2 + (remain - d2));
+    remain = total - d1 - d2;
+    d3 = Math.max(0, remain);
+  } else if (lastDLChanged === 2){
+    const maxD2 = Math.max(0, total - d1);
+    d2 = Math.max(0, Math.min(d2, maxD2));
+    d3 = Math.max(0, total - d1 - d2);
+  } else {
+    const maxD3 = Math.max(0, total - d1 - d2);
+    d3 = Math.max(0, Math.min(d3, maxD3));
+  }
+
+  f1.value = d1 || '';
+  f2.value = d2 || '';
+  f3.value = d3 || '';
+
+  const sum = d1 + d2 + d3;
+  if (sum > total) markLastFilledDLError();
+  else clearDLBorders();
+}
+function markLastFilledDLError(){
+  clearDLBorders();
+  const f1 = document.getElementById('DLduree1');
+  const f2 = document.getElementById('DLduree2');
+  const f3 = document.getElementById('DLduree3');
+  const d1 = parseInt(f1.value)||0;
+  const d2 = parseInt(f2.value)||0;
+  const d3 = parseInt(f3.value)||0;
+  if (d3 > 0) f3.classList.add('dl-error');
+  else if (d2 > 0) f2.classList.add('dl-error');
+  else if (d1 > 0) f1.classList.add('dl-error');
+}
+function clearDLBorders(){
+  ['DLduree1','DLduree2','DLduree3'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('dl-error');
+  });
+}
+
+/* Utils time */
+function setNow(fieldId) {
+  const now = new Date();
+  const hh = isUTC ? now.getUTCHours() : now.getHours();
+  const mm = isUTC ? now.getUTCMinutes() : now.getMinutes();
+  document.getElementById(fieldId).value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+}
+function adjustTime(fieldId, delta) {
+  const input = document.getElementById(fieldId);
+  if (!input || !input.value) return;
+  let [hh, mm] = input.value.split(':').map(Number);
+  let total = hh * 60 + mm + delta;
+  if (total < 0) total += 1440;
+  if (total >= 1440) total -= 1440;
+  hh = Math.floor(total / 60);
+  mm = total % 60;
+  input.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+}
+
+/* Switches */
+function setDarkMode(enable, fromInit=false){
+  const currentlyDark = document.body.classList.contains('dark');
+  if (enable && !currentlyDark) document.body.classList.add('dark');
+  if (!enable && currentlyDark) document.body.classList.remove('dark');
+
+  const dt = document.getElementById('darkToggle');
+  if(dt) dt.checked = enable;
+
+  const darkLabel = document.getElementById('darkLabel');
+  if(darkLabel) darkLabel.textContent = enable ? 'Sombre' : 'Clair';
+
+  localStorage.setItem('modeDark', enable ? '1' : '0');
+
+  updateHeaderOffset();
+  renderTimeline();
+}
+function setTimeModeUTC(enable, fromInit=false){
+  const offsetHours = -new Date().getTimezoneOffset() / 60;
+
+  if (!fromInit && enable !== isUTC) {
+    const inputs = document.querySelectorAll('input[type="time"]');
+    inputs.forEach(input => {
+      if (!input.value) return;
+      let [hh, mm] = input.value.split(':').map(Number);
+      let newH = enable ? hh - offsetHours : hh + offsetHours;
+      let totalMin = Math.round(newH * 60 + mm);
+      totalMin = ((totalMin % 1440) + 1440) % 1440;
+      const outH = Math.floor(totalMin / 60);
+      const outM = totalMin % 60;
+      input.value = `${String(outH).padStart(2, '0')}:${String(outM).padStart(2, '0')}`;
+    });
+  }
+
+  isUTC = enable;
+
+  const ut = document.getElementById('utcToggle');
+  if(ut) ut.checked = enable;
+
+  const tzLabel = document.getElementById('tzLabel');
+  if(tzLabel) tzLabel.textContent = enable ? 'UTC' : 'Locale';
+
+  localStorage.setItem('modeUTC', enable ? '1' : '0');
+  updateAllCalculations();
+}
+
+/* Popup */
+function showPopup(message, color = "#2563eb", duration = 2000) {
+  const popup = document.createElement('div');
+  popup.id = "popup";
+  popup.textContent = message;
+  popup.style.background = color;
+  document.body.appendChild(popup);
+  setTimeout(() => popup.remove(), duration);
+}
+
+/* Timeline helpers */
+let showTimeLabels = true;
+let timelineUserScrolled = false;
+
+function parseHHMM(str){
+  if(!str || !/^\d{2}:\d{2}$/.test(str)) return null;
+  const [h,m] = str.split(':').map(Number);
+  return h*60 + m;
+}
+function fmtHHMM(mins){
+  mins = ((mins % 1440) + 1440) % 1440;
+  const h = Math.floor(mins/60), m = mins%60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+function toExtended(t, min, max){
+  const wraps = (max > 1440);
+  if (!wraps) return t;
+  const startMod = ((min % 1440) + 1440) % 1440;
+  return (t < startMod) ? t + 1440 : t;
+}
+function computeTimelineWindow(allTimes){
+  const H40  = parseHHMM((document.getElementById('timer-h40')?.textContent || '').replace('--:--',''));
+  const SIBT = parseHHMM(document.getElementById('SIBT')?.value || '');
+  const AOBT = parseHHMM(document.getElementById('AOBT')?.value || '');
+  const TOBT = parseHHMM((document.getElementById('timer-tobt')?.textContent || '').replace('--:--',''));
+
+  const haveStart = (H40 != null) || (SIBT != null);
+  const haveEnd   = (AOBT != null) || (TOBT != null);
+
+  if (haveStart && haveEnd) {
+    let startRef = null;
+    if (H40 != null && SIBT != null) startRef = (H40 < SIBT) ? H40 : SIBT;
+    else startRef = (H40 != null) ? H40 : SIBT;
+    let min = startRef - 5;
+    let endRef = (AOBT != null ? AOBT : TOBT);
+    let max = endRef + 5;
+    if (max <= min) max += 1440;
+    if (max - min < 30) { min -= 10; max += 10; }
+    return {min, max};
+  }
+
+  const SOBT = parseHHMM(document.getElementById('SOBT')?.value || '');
+  if (SOBT != null) {
+    let startRef = (SIBT != null) ? SIBT : (SOBT - 40);
+    let min = startRef - 5;
+    let endRef = (AOBT ?? TOBT ?? SOBT);
+    let max = endRef + 5;
+    if (max <= min) max += 1440;
+    if (max - min < 30) { min -= 10; max += 10; }
+    return {min, max};
+  }
+
+  if (allTimes && allTimes.length){
+    let min = Math.min(...allTimes) - 10;
+    let max = Math.max(...allTimes) + 10;
+    if (max <= min) max += 1440;
+    if (max - min < 30) { min -= 10; max += 10; }
+    return {min, max};
+  }
+
+  return {min:0, max:60};
+}
+function getPairWindow(idA,idB){
+  const a = parseHHMM(document.getElementById(idA)?.value || '');
+  const b = parseHHMM(document.getElementById(idB)?.value || '');
+  if(a==null || b==null) return null;
+  return [Math.min(a,b), Math.max(a,b)];
+}
+function collectTimelineData(){
+  const fixedPoints = [];
+  const addPoint = (label, t, cls='tl--std')=>{ if(t==null) return; fixedPoints.push({label, t, cls}); };
+
+  const SIBT = parseHHMM(document.getElementById('SIBT')?.value || '');
+  const AIBT = parseHHMM(document.getElementById('AIBT')?.value || '');
+  const SOBT = parseHHMM(document.getElementById('SOBT')?.value || '');
+  const AOBT = parseHHMM(document.getElementById('AOBT')?.value || '');
+  const TOBT = parseHHMM((document.getElementById('timer-tobt')?.textContent || '').replace('--:--',''));
+  const CTOT = parseHHMM(document.getElementById('CTOT')?.value || '');
+  const H15  = parseHHMM((document.getElementById('timer-h15')?.textContent || '').replace('--:--',''));
+  const H40  = parseHHMM((document.getElementById('timer-h40')?.textContent || '').replace('--:--',''));
+
+  addPoint('SIBT', SIBT, 'tl--std'); addPoint('AIBT', AIBT, 'tl--std');
+  addPoint('SOBT', SOBT, 'tl--std'); addPoint('AOBT', AOBT, 'tl--std');
+  addPoint('TOBT', TOBT, 'tl--tobt'); addPoint('CTOT', CTOT, 'tl--ctot');
+  addPoint('HLE',  H40,  'tl--turn');
+  addPoint('H-15', H15,  'tl--turn');
+
+  const singles = [
+    ['ArrPNT','Arrivée PNT'],
+    ['ArrPNC','Arrivée PNC'],
+    ['FermeturePorteAvion','Fermeture porte avion'],
+  ];
+  singles.forEach(([id,label])=>{
+    const t = parseHHMM(document.getElementById(id)?.value || '');
+    if(t!=null) fixedPoints.push({label, t, cls:'tl--std'});
+  });
+
+  const rows = [
+    {label:'Débarquement', pair:getPairWindow('PremierDebarque','DernierDebarque'), cls:'tl--turn', color:null},
+    {label:'Embarquement', pair:getPairWindow('AvionPremierEmbarque','AvionDernierEmbarque'), cls:'tl--ops',  color:null},
+    {label:'Avitair',      pair:getPairWindow('ArriveeFuel','DepartFuel'), cls:'tl--std', color:'#f59e0b'},
+    {label:'Lift (Arr)',   pair:getPairWindow('ArriveeLiftArr','DepartLiftArr'), cls:'tl--std', color:'#a855f7'},
+    {label:'Lift (Dep)',   pair:getPairWindow('ArriveeLift','DepartLift'), cls:'tl--std', color:'#16a34a'},
+  ];
+
+  const durations = rows
+    .filter(r=>r.pair!=null)
+    .map(r=>({label:r.label, a:r.pair[0], b:r.pair[1], cls:r.cls, color:r.color}));
+
+  const allTimes = [ ...fixedPoints.map(p=>p.t), ...durations.flatMap(d=>[d.a,d.b]) ];
+  const windowInfo = computeTimelineWindow(allTimes);
+
+  return {fixedPoints, durations, windowInfo};
+}
+function renderTimeline(){
+  const scroller = document.getElementById('timelineScroll');
+  const canvas   = document.getElementById('timelineCanvas');
+  if(!scroller || !canvas) return;
+
+  canvas.innerHTML = '';
+
+  const {fixedPoints, durations, windowInfo} = collectTimelineData();
+  const {min, max} = windowInfo;
+  if(min === undefined) return;
+
+  window._timelineCurrentRange = {min, max};
+  const total = Math.max(1, max - min);
+
+  const viewport = scroller.clientWidth || 1200;
+  const canvasPx = Math.max(viewport, Math.round(viewport * timelineZoom));
+  canvas.style.width = canvasPx + 'px';
+
+  const MIN_HEIGHT = 180;
+  const PT_LANE_H  = 50;
+  const DUR_LANE_H = 50;
+  const TOP_PAD    = 40;
+  const AFTER_POINTS = 28;
+  const AFTER_TRACK  = 36;
+  const BOTTOM_PAD   = 40;
+
+  const lanesEndX = [];
+  const pointEls = [];
+
+  fixedPoints.sort((a,b)=>a.t-b.t).forEach(p=>{
+    const tExt = toExtended(p.t, min, max);
+    const leftPct = 6 + ((tExt-min)/total)*88;
+
+    const el = document.createElement('div');
+    el.className = `tl-event ${p.cls}`;
+    el.style.left = `${leftPct}%`;
+    el.style.top  = `0px`;
+    el.style.visibility = 'hidden';
+
+    const dot = document.createElement('div'); dot.className = 'tl-dot';
+    const label = document.createElement('div'); label.className='tl-label';
+    label.textContent = showTimeLabels ? `${p.label} : ${fmtHHMM(p.t)}` : p.label;
+    el.appendChild(dot); el.appendChild(label);
+    canvas.appendChild(el);
+
+    const w = Math.max(label.offsetWidth, 12);
+    const centerX = (leftPct/100) * canvasPx;
+    const startX = centerX - (w/2) - 16;
+    const endX   = centerX + (w/2) + 16;
+
+    let lane = 0;
+    while(lanesEndX[lane] !== undefined && startX <= lanesEndX[lane]) lane++;
+    lanesEndX[lane] = endX;
+
+    pointEls.push({el, lane});
+  });
+
+  const pointLaneCount = lanesEndX.length || 0;
+  const trackY = TOP_PAD + pointLaneCount*PT_LANE_H + AFTER_POINTS;
+
+  const durItems = durations.map(d=>{
+    const aExt = toExtended(d.a, min, max);
+    const bExt = toExtended(d.b, min, max);
+    return { ...d, start: Math.min(aExt,bExt), end: Math.max(aExt,bExt) };
+  }).sort((x,y)=> x.start - y.start);
+
+  function packLanes(items, pad = 2){
+    const lanes = [];
+    return items.map(it => {
+      let laneIdx = lanes.findIndex(nextFree => it.start >= nextFree);
+      if (laneIdx === -1) {
+        laneIdx = lanes.length;
+        lanes.push(it.end + pad);
+      } else {
+        lanes[laneIdx] = it.end + pad;
+      }
+      return { ...it, lane: laneIdx };
+    });
+  }
+
+  const durWithLane = packLanes(durItems);
+  const durLaneCount = Math.max(0, ...durWithLane.map(d => d.lane)) + 1;
+
+  const finalHeight = Math.max(
+    MIN_HEIGHT,
+    trackY + AFTER_TRACK + durLaneCount*DUR_LANE_H + BOTTOM_PAD
+  );
+  canvas.style.height = `${finalHeight}px`;
+
+  for(let t = Math.ceil(min); t <= Math.floor(max); t++){
+    const x = (t-min)/total;
+    const leftPct = 6 + x*88;
+
+    const vline = document.createElement('div');
+    vline.className = 'timeline-tick';
+    vline.style.left = `${leftPct}%`;
+    vline.style.top = `${8}px`;
+    vline.style.height = `${finalHeight - 36}px`;
+    canvas.appendChild(vline);
+
+    if(t % 5 === 0){
+      const lbl = document.createElement('div');
+      lbl.className = 'timeline-tick-label';
+      lbl.textContent = fmtHHMM(t);
+      lbl.style.left = `${leftPct}%`;
+      lbl.style.top = `${finalHeight - 18}px`;
+      canvas.appendChild(lbl);
+    }
+  }
+
+  const track = document.createElement('div');
+  track.className = 'timeline-track';
+  track.style.top = `${trackY}px`;
+  canvas.appendChild(track);
+
+  pointEls.forEach(({el,lane})=>{
+    el.style.top = `${TOP_PAD + lane*PT_LANE_H}px`;
+    el.style.visibility = 'visible';
+  });
+
+  const downStart = trackY + AFTER_TRACK;
+  durWithLane.forEach(d=>{
+    const leftStartPct = 6 + ((d.start-min)/total)*88;
+    const widthPct     = ((d.end-d.start)/total)*88;
+
+    const bar = document.createElement('div');
+    bar.className = `tl-range ${d.cls}`;
+    if(d.color){ bar.style.setProperty('--c', d.color); }
+    bar.style.left = `${leftStartPct}%`;
+    bar.style.width = `${widthPct}%`;
+    bar.style.top = `${downStart + d.lane*DUR_LANE_H}px`;
+    bar.style.transform = 'translateX(-50%)';
+    canvas.appendChild(bar);
+
+    const lab = document.createElement('div');
+    lab.className = 'tl-range-label';
+    const durMin = Math.max(0, d.b - d.a);
+    lab.textContent = showTimeLabels ? `${d.label} : ${durMin} min` : d.label;
+    bar.appendChild(lab);
+  });
+
+  if(!timelineUserScrolled){
+    const centerMin = (min + max) / 2;
+    const midX = (centerMin - min) / total;
+    const centerLeft = midX * scroller.scrollWidth - scroller.clientWidth / 2;
+    scroller.scrollLeft = Math.max(0, centerLeft);
+  }
+
+  const lbl = document.getElementById('timelineZoomLabel');
+  if(lbl) lbl.textContent = `${Math.round(timelineZoom*100)}%`;
+}
+
+/* validateForm */
+function validateForm() {
+  const val = id => (document.getElementById(id)?.value || "");
+  const dateRaw = val("Date");
+  const [yyyy, mm, dd] = dateRaw.split("-");
+  const dateTitre = `${dd}-${mm}-${yyyy}`;
+
+  const cie = val("Cie");
+  const vol = val("NVol");
+  const from = val("From");
+  const to = val("To");
+  const immat = val("Immat");
+  const typeAvion = val("TypeAvion");
+  const rza = val("RZA");
+
+  const titre = `[TIMING] ${dateTitre} / ${cie}${vol} ${from}-${to} / ${immat} / ${rza}`;
+
+  const liftArrivee = `${val("ArriveeLiftArr")} - ${val("DepartLiftArr")}`;
+  const liftDepart = `${val("ArriveeLift")} - ${val("DepartLift")}`;
+
+  const dlLines = [];
+  if (val("DLcode1")) dlLines.push(`DL (${val("DLcode1")}) : ${val("DLduree1")} min`);
+  if (val("DLcode2")) dlLines.push(`DL (${val("DLcode2")}) : ${val("DLduree2")} min`);
+  if (val("DLcode3")) dlLines.push(`DL (${val("DLcode3")}) : ${val("DLduree3")} min`);
+  const dlBlock = dlLines.length > 0 ? `\n== DL ==\n\n${dlLines.join("\n")}\n` : "";
+
+  const faitsBlock = val("FaitsSaillants").trim() !== "" ? `\n== FAITS SAILLANTS ==\n\n${val("FaitsSaillants")}\n` : "";
+
+  const prmArr = (() => {
+    try{
+      const a = JSON.parse(val("LoadPRMData") || "[]");
+      if(!a.length) return "PRM : ";
+      return a.map(x=>`- ${x.type || 'OTHER'} ${x.seat || ''}`.trim()).join("\n");
+    }catch(e){ return "PRM : "; }
+  })();
+
+  const prmExp = (() => {
+    try{
+      const a = JSON.parse(val("ExpPRMData") || "[]");
+      if(!a.length) return "PRM : ";
+      return a.map(x=>`- ${x.type || 'OTHER'} ${x.seat || ''}`.trim()).join("\n");
+    }catch(e){ return "PRM : "; }
+  })();
+
+  const body =
+`Vol : ${cie}${vol}
+Date : ${dateTitre}
+Rotation : ${from} - ${to}
+Immat : ${immat}
+Type avion : ${typeAvion}
+RZA : ${rza}
+
+== HORAIRES ==
+
+SIBT : ${val("SIBT")}
+AIBT : ${val("AIBT")}
+-
+SOBT : ${val("SOBT")}
+AOBT : ${val("AOBT")}
+CTOT : ${val("CTOT")}
+
+== TIMINGS ==
+
+Arrivée PNT : ${val("ArrPNT")}
+Arrivée PNC : ${val("ArrPNC")}
+
+Premier débarqué : ${val("PremierDebarque")}
+Dernier débarqué : ${val("DernierDebarque")}
+
+Premier embarqué : ${val("AvionPremierEmbarque")}
+Dernier embarqué : ${val("AvionDernierEmbarque")}
+
+Arrivée fuel : ${val("ArriveeFuel")}
+Départ fuel : ${val("DepartFuel")}
+
+Lift arrivée (arr) : ${liftArrivee}
+Lift départ (dep)  : ${liftDepart}
+
+Remise LID/LDS : ${val("RemiseLID")}
+Fermeture porte avion : ${val("FermeturePorteAvion")}
+
+== LOAD ARR ==
+PAX : ${val("LoadPAX")}
+BAGS : ${val("LoadBAGS")}
+CARGO : ${val("LoadCARGO")}
+${prmArr}
+
+== LOAD EXP ==
+PAX : ${val("ExpPAX")}
+BAGS : ${val("ExpBAGS")}
+CARGO : ${val("ExpCARGO")}
+${prmExp}
+
+== LOAD FINAL ==
+MALE : ${val("FinalMALE")}
+FEMALE : ${val("FinalFEMALE")}
+ADULT : ${val("FinalADULT")}
+CHILD : ${val("FinalCHILD")}
+INFANT : ${val("FinalINFANT")}
+TOB : ${val("FinalTOB")}
+OA : ${val("FinalOA")} / OB : ${val("FinalOB")} / OC : ${val("FinalOC")} / OD : ${val("FinalOD")}
+BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB")}
+
+${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
+
+  window.location.href =
+      `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
+}
+
+function manualSave() {
+  saveCurrentTabData();
+  showPopup("Enregistrement réussi", "#2563eb", 2000);
+}
+function clearAutoSave() {
+  if (confirm("Tout réinitialiser ?")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+</script>
+
+</body>
+</html>
