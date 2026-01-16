@@ -23,8 +23,7 @@
   --field-border: rgba(17,24,39,.18);
   --field-placeholder: rgba(107,114,128,.95);
 
-  /* hauteur DU SEUL bandeau figé (tabs + timers) */
-  --fixed-header-h: 92px;
+  --fixed-header-h: 140px;
 }
 
 body{ background: var(--bg); color: var(--text); margin: 0; }
@@ -42,16 +41,37 @@ body.dark{
   --field-placeholder: rgba(156,163,175,.95);
 }
 
-/* ===== TOP (NON-FIXED) ===== */
-.topbar{
-  position: relative;
-  z-index: 10;
-  background: transparent;
+/* ===== FIXED HEADER ===== */
+.fixed-header{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 3000;
+  background: rgba(246,247,251,.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,.08);
 }
-.topbar-inner{
+body.dark .fixed-header{
+  background: rgba(15,17,21,.82);
+  border-bottom-color: rgba(255,255,255,.08);
+}
+
+.fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 10px 14px 6px;
+  padding: 10px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-wrap{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
+}
+
+/* Topbar */
+.topbar-inner{
   display:flex;
   gap:12px;
   align-items:center;
@@ -68,34 +88,6 @@ body.dark{
 }
 .brand-title{ text-align:center; line-height: 1.05; }
 .brand-title strong{ display:block; font-size: 1.2rem; color: var(--text); }
-
-/* ===== FIXED BAR (tabs + timers only) ===== */
-.fixed-bar{
-  position: sticky;
-  top: 0;
-  z-index: 3000;
-  background: rgba(246,247,251,.82);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-body.dark .fixed-bar{
-  background: rgba(15,17,21,.82);
-  border-bottom-color: rgba(255,255,255,.08);
-}
-.fixed-bar-inner{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 8px 14px 10px;
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.app-wrap{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 14px 14px 14px; /* au lieu de calc(...) */
-}
 
 /* Tabs row */
 .tabs-row{ display:flex; justify-content:center; }
@@ -223,18 +215,12 @@ body.dark .card-header{
 
 /* Buttons */
 .btn-actions{
-  display: grid;
+  display:grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 8px;
 }
-
-.btn-actions .button{
-  border-radius: 10px;
-  font-weight: 900;
-  padding: 0.35rem 0.45rem;
-  min-width: 0;
-}
+.btn-actions .button{ border-radius: 12px; font-weight: 900; }
 
 /* Popup toast */
 #popup{
@@ -434,22 +420,6 @@ body.dark .timeline-scroll{
     width: 50% !important;
   }
 }
-
-/* =========================
-   CENTRAGE HEURES / DATES
-   ========================= */
-input[type="time"]{
-  text-align: center !important;
-}
-input[type="time"]::-webkit-datetime-edit{
-  text-align: center;
-}
-input[type="time"]::-webkit-datetime-edit-fields-wrapper{
-  justify-content: center;
-}
-input[type="date"]{
-  text-align: center !important;
-}
 </style>
 </head>
 
@@ -617,6 +587,7 @@ input[type="date"]{
     </div>
   </div>
 
+  <!-- NEW section -->
   <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
 
   <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
@@ -635,34 +606,31 @@ input[type="date"]{
   </div>
 </div>
 
-<!-- ===== TOPBAR (NOT FIXED) ===== -->
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brandline">
-      <div class="brand-title">
-        <strong>SUIVI PERFORMANCE</strong>
+<!-- ===== FIXED HEADER ===== -->
+<div class="fixed-header" id="fixedHeader">
+  <div class="fixed-header-inner">
+
+    <div class="topbar-inner">
+      <div class="brandline">
+        <div class="brand-title">
+          <strong>SUIVI PERFORMANCE</strong>
+        </div>
+      </div>
+
+      <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
+        <label class="toggle">
+          <span id="darkLabel">Clair</span>
+          <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
+          <span class="track"><span class="thumb"></span></span>
+        </label>
+
+        <label class="toggle">
+          <span id="tzLabel">Locale</span>
+          <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
+          <span class="track"><span class="thumb"></span></span>
+        </label>
       </div>
     </div>
-
-    <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
-      <label class="toggle">
-        <span id="darkLabel">Clair</span>
-        <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
-        <span class="track"><span class="thumb"></span></span>
-      </label>
-
-      <label class="toggle">
-        <span id="tzLabel">Locale</span>
-        <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
-        <span class="track"><span class="thumb"></span></span>
-      </label>
-    </div>
-  </div>
-</div>
-
-<!-- ===== FIXED BAR (tabs + timers only) ===== -->
-<div class="fixed-bar" id="fixedBar">
-  <div class="fixed-bar-inner">
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
@@ -771,6 +739,7 @@ input[type="date"]{
           </div>
         </div>
 
+        <!-- Row REG / A/C / PARK -->
         <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
           <div class="field">
             <label class="label">REGISTRATION</label>
@@ -816,6 +785,7 @@ input[type="date"]{
           </div>
         </div>
 
+        <!-- LOAD buttons row -->
         <div class="column is-12">
           <div class="load-row-below">
             <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
@@ -846,8 +816,43 @@ input[type="date"]{
       <span class="card-header-icon"><span class="icon">⌄</span></span>
     </header>
     <div class="card-content">
-      <!-- ✅ plus de <script> ici -->
-      <div id="horairesMount"></div>
+      <div class="columns is-multiline">
+
+        <script>
+          function timeField(id,label,onchange, colClass){
+            return `
+            <div class="column ${colClass}">
+              <div class="field">
+                <label class="label">${label}</label>
+                <div class="control">
+                  <input class="input" type="time" id="${id}" onchange="${onchange}">
+                </div>
+                <div class="btn-actions">
+                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+                  <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+                </div>
+              </div>
+            </div>`;
+          }
+        </script>
+
+        <div id="horairesMount" class="column is-12"></div>
+        <script>
+          document.addEventListener("DOMContentLoaded", ()=>{
+            const mount = document.getElementById('horairesMount');
+            if(!mount) return;
+            const half = "is-full-mobile is-half-tablet is-half-desktop";
+            mount.innerHTML = `<div class="columns is-multiline">
+              ${timeField('SIBT','SIBT',"updateAllCalculations()", half)}
+              ${timeField('AIBT','AIBT',"updateAllCalculations()", half)}
+              ${timeField('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
+              ${timeField('AOBT','AOBT',"updateAllCalculations()", half)}
+            </div>`;
+          });
+        </script>
+
+      </div>
     </div>
   </div>
 
@@ -952,9 +957,7 @@ input[type="date"]{
 </div>
 
 <script>
-/* =========================
-   UI / COLLAPSE
-========================= */
+/* Collapse */
 function toggleCardBody(headerEl){
   const card = headerEl.closest('.card');
   if(!card) return;
@@ -965,9 +968,9 @@ function toggleCardBody(headerEl){
   if(icon) icon.textContent = collapsed ? '›' : '⌄';
 }
 
-/* Header height (ONLY fixed bar) */
+/* Header height */
 function updateHeaderOffset(){
-  const header = document.getElementById('fixedBar');
+  const header = document.getElementById('fixedHeader');
   if(!header) return;
   const h = Math.ceil(header.getBoundingClientRect().height);
   document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
@@ -996,9 +999,7 @@ let lastDLChanged = 1;
 /* digits only */
 function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g,''); }
 
-/* =========================
-   COUNTDOWN (CD)
-========================= */
+/* ===== COUNTDOWN (CD) ===== */
 let countdownTimer = null;
 
 function getNowMinutes(){
@@ -1007,6 +1008,16 @@ function getNowMinutes(){
   const m = isUTC ? now.getUTCMinutes() : now.getMinutes();
   const s = isUTC ? now.getUTCSeconds() : now.getSeconds();
   return { mins: h*60 + m, secs: s };
+}
+
+function fmtMMSSSigned(totalSeconds){
+  const isOver = totalSeconds < 0;
+  const abs = Math.abs(totalSeconds);
+
+  const mm = Math.floor(abs / 60);
+  const ss = abs % 60;
+
+  return `${isOver ? '+' : ''}${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
 }
 
 function stopCountdown(resetDisplay=true){
@@ -1018,7 +1029,9 @@ function stopCountdown(resetDisplay=true){
     el.classList.remove('cd-over');
   }
 }
+
 function freezeCountdown(){
+  // on coupe juste l'interval, on ne touche pas au texte affiché
   if(countdownTimer){ clearInterval(countdownTimer); countdownTimer = null; }
 }
 
@@ -1046,6 +1059,7 @@ function updateCountdownOnce(){
     return;
   }
 
+  // cible = SOBT si retard AIBT<=SIBT, sinon TOBT adj
   let targetMin = null;
   if (AIBT <= SIBT) targetMin = SOBT;
   else {
@@ -1058,6 +1072,7 @@ function updateCountdownOnce(){
     targetMin = tobt;
   }
 
+  // ===== CAS AOBT : on fige MAIS on recalcule selon AOBT =====
   if(aobtTxt){
     const AOBT = parseHHMM(aobtTxt);
     if(AOBT == null){
@@ -1066,6 +1081,7 @@ function updateCountdownOnce(){
       return;
     }
 
+    // diff = AOBT - cible (signé, gère minuit)
     let diffMin = AOBT - targetMin;
     if(diffMin > 720) diffMin -= 1440;
     if(diffMin < -720) diffMin += 1440;
@@ -1077,10 +1093,13 @@ function updateCountdownOnce(){
     const ss = abs % 60;
 
     el.textContent = `${sign}${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+
+    // rouge si + (retard)
     el.classList.toggle('cd-over', totalSeconds > 0);
     return;
   }
 
+  // ===== CAS NORMAL : live avec NOW (décompte puis +) =====
   const now = getNowMinutes();
 
   let diffMin = targetMin - now.mins;
@@ -1089,13 +1108,13 @@ function updateCountdownOnce(){
 
   const remainingSeconds = diffMin * 60 - now.secs;
 
-  const sign = remainingSeconds <= 0 ? '+' : '';
+  const sign = remainingSeconds <= 0 ? '+' : ''; // quand on dépasse => +
   const abs = Math.abs(remainingSeconds);
   const mm = Math.floor(abs / 60);
   const ss = abs % 60;
 
   el.textContent = `${sign}${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  el.classList.toggle('cd-over', remainingSeconds < 0);
+  el.classList.toggle('cd-over', remainingSeconds < 0); // rouge quand on est passé à +
 }
 
 function ensureCountdownRunning(){
@@ -1106,17 +1125,20 @@ function ensureCountdownRunning(){
 
   const baseOK = !!(sibtTxt && aibtTxt && sobtTxt);
 
+  // Si AOBT est rempli : pas d'interval, mais on recalcule l'affichage (donc ça suit si tu modifies AOBT)
   if(baseOK && aobtTxt){
     freezeCountdown();
     updateCountdownOnce();
     return;
   }
 
+  // Si base incomplète : on stop + reset
   if(!baseOK){
     stopCountdown(true);
     return;
   }
 
+  // Live
   if(!countdownTimer){
     updateCountdownOnce();
     countdownTimer = setInterval(updateCountdownOnce, 1000);
@@ -1125,9 +1147,7 @@ function ensureCountdownRunning(){
   }
 }
 
-/* =========================
-   TIMELINE ZOOM
-========================= */
+/* Timeline zoom */
 function timelineZoomIn(){ timelineSetZoom(timelineZoom + TL_ZOOM_STEP); }
 function timelineZoomOut(){ timelineSetZoom(timelineZoom - TL_ZOOM_STEP); }
 function timelineZoomReset(){ timelineSetZoom(1); }
@@ -1143,9 +1163,7 @@ function timelineSetZoom(z){
   scroller.scrollLeft = prevCenterRatio * scroller.scrollWidth - scroller.clientWidth/2;
 }
 
-/* =========================
-   LOAD POPOVERS
-========================= */
+/* ===== LOAD POPovers ===== */
 function showBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = ''; }
 function hideBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = 'none'; }
 function hideAllLoadPopovers(){
@@ -1166,9 +1184,7 @@ function toggleLoadExp(){ showPopover('loadExpPopover'); renderPRMRows('exp'); }
 function toggleLoadFinal(){ showPopover('loadFinalPopover'); updateFinalTOB(); }
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hideAllLoadPopovers(); });
 
-/* =========================
-   PRM multi-lignes (ARR/EXP)
-========================= */
+/* ===== PRM multi-lignes (ARR/EXP) ===== */
 const PRM_TYPES = ['WCHR','WCHS','WCHC','BLND','DPNA','UMNR','OTHER'];
 
 function getPRMIds(mode){
@@ -1264,9 +1280,7 @@ function onPRMInput(inp){
   saveCurrentTabData();
 }
 
-/* =========================
-   FINAL : ADULT + TOB + OA/OB/OC/OD
-========================= */
+/* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
 function asInt(id){
   const v = (document.getElementById(id)?.value || '').trim();
   if(v === '') return null;
@@ -1301,7 +1315,7 @@ function updateFinalTOB(){
   const c = asInt('FinalCHILD')  ?? 0;
   const i = asInt('FinalINFANT') ?? 0;
 
-  let main = null;
+  let main = null; // TOB sans infant
   if(m != null && f != null) main = (m + f) + c;
   else if(a != null) main = a + c;
 
@@ -1325,54 +1339,16 @@ function updateFinalTOB(){
   setTOBValidity(sum === main);
 }
 
-/* =========================
-   HORAIRES (✅ centralisé)
-========================= */
-function timeFieldHTML(id,label,onchange, colClass){
-  return `
-    <div class="column ${colClass}">
-      <div class="field">
-        <label class="label">${label}</label>
-        <div class="control">
-          <input class="input" type="time" id="${id}" onchange="${onchange}">
-        </div>
-        <div class="btn-actions">
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
-        </div>
-      </div>
-    </div>`;
-}
-function renderHoraires(){
-  const mount = document.getElementById('horairesMount');
-  if(!mount) return;
-  const half = "is-full-mobile is-half-tablet is-half-desktop";
-  mount.innerHTML = `
-    <div class="columns is-multiline">
-      ${timeFieldHTML('SIBT','SIBT',"updateAllCalculations()", half)}
-      ${timeFieldHTML('AIBT','AIBT',"updateAllCalculations()", half)}
-      ${timeFieldHTML('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
-      ${timeFieldHTML('AOBT','AOBT',"updateAllCalculations()", half)}
-    </div>
-  `;
-}
-
-/* =========================
-   INIT
-========================= */
+/* INIT */
 function initForm(){
   renderTabs();
-
-  let lastTab = localStorage.getItem('lastTabId');
-  let tabs = JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  let lastTab=localStorage.getItem('lastTabId');
+  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
   if(tabs.length===0) createNewTab();
   else if(lastTab && tabs.includes(parseInt(lastTab))) switchTab(parseInt(lastTab));
   else switchTab(tabs[0]);
 
-  renderHoraires();
   generateTimingFields();
-
   attachAutoSave();
   window.addEventListener('beforeunload', saveCurrentTabData);
 
@@ -1467,9 +1443,7 @@ function attachAutoSave(){
   document.addEventListener('change', handler, true);
 }
 
-/* =========================
-   TABS
-========================= */
+/* Tabs */
 function renderTabs(){
   const tabBar=document.getElementById('tab-bar');
   if(!tabBar) return;
@@ -1575,6 +1549,7 @@ function saveCurrentTabData(){
   data.timer_tobt=document.getElementById('timer-tobt')?.textContent || '--:--';
   data.timer_cd=document.getElementById('timer-cd')?.textContent || '--:--';
 
+  data.timingPanel = localStorage.getItem('timingPanel') || 'dep';
   localStorage.setItem('tab-'+currentTabId,JSON.stringify(data));
   localStorage.setItem('lastTabId',currentTabId);
   renderTabs();
@@ -1613,12 +1588,10 @@ function loadTabData(id){
   if(darkLabel) darkLabel.textContent = document.body.classList.contains('dark') ? 'Sombre' : 'Clair';
 
   setDefaultDateToTodayIfEmpty();
-
-  // ✅ IMPORTANT : si horaires/timing pas encore mountés (cas rare), on les remonte
-  if(!document.getElementById('SIBT')) renderHoraires();
-  if(!document.getElementById('ArrPNT')) generateTimingFields();
-
   updateAllCalculations();
+
+  const savedPanel = data.timingPanel || localStorage.getItem('timingPanel') || 'dep';
+  switchTimingPanel(savedPanel);
 
   renderPRMRows('arr');
   renderPRMRows('exp');
@@ -1629,55 +1602,87 @@ function loadTabData(id){
 
 function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
-/* =========================
-   TIMING FIELDS – SINGLE PAGE
-========================= */
+/* TIMING FIELDS – ARR / DEP */
 function generateTimingFields(){
   const container=document.getElementById('timing-grid');
   if(!container) return;
 
-  const fieldHTML = (id,label)=>`
-  <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-    <div class="field">
-      <label class="label">${label}</label>
-      <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
-      <div class="btn-actions">
-        <button class="button is-small is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-        <button class="button is-small is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-        <button class="button is-small is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+  const fieldHTML = (id,label,full=false)=>`
+    <div class="column ${full ? 'is-12' : 'is-full-mobile is-one-third-tablet is-one-quarter-desktop'}">
+      <div class="field">
+        <label class="label">${label}</label>
+        <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
+        <div class="btn-actions">
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
+          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+        </div>
       </div>
-    </div>
-  </div>`;
+    </div>`;
 
-  container.innerHTML = `
-    <div class="columns is-multiline">
-      ${fieldHTML('ArrPNT','Arrivée PNT')}
-      ${fieldHTML('ArrPNC','Arrivée PNC')}
+  let arr = `
+    <div class="card mb-4">
+      <header class="card-header"><p class="card-header-title">Arrivée</p></header>
+      <div class="card-content"><div class="columns is-multiline">
+        ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
+        ${fieldHTML('PremierDebarque','Premier débarqué')}
+        ${fieldHTML('DernierDebarque','Dernier débarqué')}
+        ${fieldHTML('ArriveeLiftArr','Arrivée lift')}
+        ${fieldHTML('DepartLiftArr','Départ lift')}
+      </div></div>
+    </div>`;
 
-      ${fieldHTML('PremierDebarque','Premier débarqué')}
-      ${fieldHTML('DernierDebarque','Dernier débarqué')}
+  let dep = `
+    <div class="card">
+      <header class="card-header"><p class="card-header-title">Départ</p></header>
+      <div class="card-content"><div class="columns is-multiline">
+        ${fieldHTML('ArrPNT','Arrivée PNT')}
+        ${fieldHTML('ArrPNC','Arrivée PNC')}
+        ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+        ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+        ${fieldHTML('ArriveeLift','Arrivée lift')}
+        ${fieldHTML('DepartLift','Départ lift')}
+        ${fieldHTML('DepartFuel','Départ Avitair',true)}
+        ${fieldHTML('RemiseLID','Remise LID/LDS')}
+        ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+      </div></div>
+    </div>`;
 
-      ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
-      ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+  const toggle = `
+    <div class="tabs is-toggle is-toggle-rounded is-centered mb-4">
+      <ul>
+        <li id="seg-arr-li"><a onclick="switchTimingPanel('arr')"><span>Arrivée</span></a></li>
+        <li id="seg-dep-li"><a onclick="switchTimingPanel('dep')"><span>Départ</span></a></li>
+      </ul>
+    </div>`;
 
-      ${fieldHTML('ArriveeFuel','Arrivée Avitair')}
-      ${fieldHTML('DepartFuel','Départ Avitair')}
-
-      ${fieldHTML('ArriveeLiftArr','Arrivée lift (arr)')}
-      ${fieldHTML('DepartLiftArr','Départ lift (arr)')}
-
-      ${fieldHTML('ArriveeLift','Arrivée lift (dep)')}
-      ${fieldHTML('DepartLift','Départ lift (dep)')}
-
-      ${fieldHTML('RemiseLID','Remise LID/LDS')}
-      ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
-    </div>
+  container.innerHTML = toggle + `
+    <div id="panel-arr" style="display:none;">${arr}</div>
+    <div id="panel-dep" style="display:none;">${dep}</div>
   `;
+
+  const saved = localStorage.getItem('timingPanel') || 'dep';
+  switchTimingPanel(saved);
+}
+
+function switchTimingPanel(mode){
+  const arrPanel=document.getElementById('panel-arr');
+  const depPanel=document.getElementById('panel-dep');
+  const liArr=document.getElementById('seg-arr-li');
+  const liDep=document.getElementById('seg-dep-li');
+
+  if(arrPanel) arrPanel.style.display = (mode==='arr') ? '' : 'none';
+  if(depPanel) depPanel.style.display = (mode==='dep') ? '' : 'none';
+
+  if(liArr) liArr.classList.toggle('is-active', mode==='arr');
+  if(liDep) liDep.classList.toggle('is-active', mode!=='arr');
+
+  localStorage.setItem('timingPanel', mode);
 }
 
 /* LID visible FR/RK */
 function updateLIDVisibility(){
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const lid = document.getElementById('lidBlock');
   if(!lid) return;
   lid.style.display = (cie === 'FR' || cie === 'RK') ? '' : 'none';
@@ -1725,41 +1730,38 @@ function updateLID() {
   el.textContent = fmtHHMM(tobtRawMins - 8);
 }
 
-/* SOBT auto */
 function updateSOBTDefault() {
   const sobtEl = document.getElementById('SOBT');
   if(!sobtEl) return;
 
-  if (manualSOBT) return;
+  // Si SOBT a déjà une valeur, on ne touche plus (tu peux donc la modifier librement)
+  if ((sobtEl.value || '').trim() !== '') return;
 
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const sibt = document.getElementById('SIBT')?.value || '';
   const arrPNT = document.getElementById('ArrPNT')?.value || '';
   const arrPNC = document.getElementById('ArrPNC')?.value || '';
-  if (!sibt) { sobtEl.value = ''; return; }
+  if (!sibt) return;
   if (!(cie === "FR" || cie === "RK" || cie === "W4" || cie === "W6")) return;
 
-  const [sH, sM] = sibt.split(':').map(Number);
-  const base = new Date(); base.setHours(sH, sM, 0, 0);
-
+  let [sH, sM] = sibt.split(':').map(Number);
+  const base = new Date(); base.setHours(sH, sM);
   let add = 35;
   if (cie === "FR" || cie === "RK") add = (arrPNT || arrPNC) ? 35 : 25;
-
   const sobtCalc = new Date(base.getTime() + add * 60000);
   sobtEl.value = `${String(sobtCalc.getHours()).padStart(2, '0')}:${String(sobtCalc.getMinutes()).padStart(2, '0')}`;
 }
 
 /* TOBT + règle CTOT */
 function updateTOBT() {
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
   const sobttxt = document.getElementById('SOBT')?.value || '';
   const ctottxt = document.getElementById('CTOT')?.value || '';
 
   if (!cie || !sibttxt || !sobttxt) {
-    const t = document.getElementById('timer-tobt');
-    if(t) t.textContent = '--:--';
+    document.getElementById('timer-tobt').textContent = '--:--';
     window._tobtRawMins = null;
     window._tobtAdjMins = null;
     return;
@@ -1815,15 +1817,13 @@ function updateTOBT() {
 
   window._tobtAdjMins = TOBT_adj.getHours() * 60 + TOBT_adj.getMinutes();
 
-  const t = document.getElementById('timer-tobt');
-  if(t){
-    t.textContent = `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
-  }
+  document.getElementById('timer-tobt').textContent =
+    `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
 }
 
 /* DL CODES */
 function updateDLCode() {
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
   if (!sibttxt || !aibttxt) return;
@@ -1874,7 +1874,8 @@ function redistributeDL(){
 
   if(lastDLChanged === 1){
     let remain = total - d1;
-    d2 = Math.max(0, Math.min(d2, remain));
+    d2 = Math.min(remain, Math.max(0, d2));
+    d2 = Math.min(remain, d2 + (remain - d2));
     remain = total - d1 - d2;
     d3 = Math.max(0, remain);
   } else if (lastDLChanged === 2){
@@ -1918,26 +1919,18 @@ function setNow(fieldId) {
   const now = new Date();
   const hh = isUTC ? now.getUTCHours() : now.getHours();
   const mm = isUTC ? now.getUTCMinutes() : now.getMinutes();
-  const el = document.getElementById(fieldId);
-  if(!el) return;
-  el.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-  if (fieldId === 'SOBT') manualSOBT = true;
+  document.getElementById(fieldId).value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
 }
 function adjustTime(fieldId, delta) {
   const input = document.getElementById(fieldId);
   if (!input || !input.value) return;
-
   let [hh, mm] = input.value.split(':').map(Number);
   let total = hh * 60 + mm + delta;
-
   if (total < 0) total += 1440;
   if (total >= 1440) total -= 1440;
-
   hh = Math.floor(total / 60);
   mm = total % 60;
-
   input.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-  if (fieldId === 'SOBT') manualSOBT = true;
 }
 
 /* Switches */
@@ -2262,9 +2255,7 @@ function renderTimeline(){
   if(lbl) lbl.textContent = `${Math.round(timelineZoom*100)}%`;
 }
 
-/* =========================
-   validateForm / save / reset
-========================= */
+/* validateForm */
 function validateForm() {
   const val = id => (document.getElementById(id)?.value || "");
   const dateRaw = val("Date");
@@ -2339,8 +2330,8 @@ Dernier embarqué : ${val("AvionDernierEmbarque")}
 Arrivée fuel : ${val("ArriveeFuel")}
 Départ fuel : ${val("DepartFuel")}
 
-Lift arrivée (arr) : ${liftArrivee}
-Lift départ (dep)  : ${liftDepart}
+Lift arrivée : ${liftArrivee}
+Lift départ  : ${liftDepart}
 
 Remise LID/LDS : ${val("RemiseLID")}
 Fermeture porte avion : ${val("FermeturePorteAvion")}
@@ -2370,7 +2361,7 @@ BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB"
 ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
 
   window.location.href =
-    `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
+      `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
 }
 
 function manualSave() {
