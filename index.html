@@ -2563,16 +2563,53 @@ async function loadAKFlights(){
   }
 }
 
-function useAKRotation(idx){
-  const r = window._akRot?.[idx];
-  if(!r) return;
-  applyAKRotation(r);
-}
+function renderAKList(flights, flow){
+  const list = document.getElementById('akList');
+  if(!list) return;
 
-function useAKRotation(idx){
-  const r = window._akRot?.[idx];
-  if(!r) return;
-  applyAKRotation(r);
+  const row = (f)=>{
+    const ff = (f.fullFlightNumber || f.callsign || '').trim();
+    const reg = (f.reg || '').trim();
+    const adep = (f.adepIata || f.adepIcao || '').trim();
+    const ades = (f.adesIata || f.adesIcao || '').trim();
+    const stand = (f.pkg || '').toString().replace(/^P/i,'');
+    const t = pickBestTimeForList(f, flow);
+    const status = (f.status || f.milestone || '').toString();
+
+    return `
+      <div class="card mb-2" style="box-shadow:none; border:1px solid rgba(0,0,0,.08);">
+        <div class="card-content" style="padding:10px 12px;">
+          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <div style="min-width:220px;">
+              <div style="font-weight:900;">
+                ${escapeHtml(adep || '---')} → ${escapeHtml(ades || '---')}
+              </div>
+              <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
+                ${escapeHtml(ff || '(sans numéro)')}
+                · Stand ${escapeHtml(stand || '—')}
+                · ${escapeHtml(reg || '—')}
+              </div>
+              <div style="color:var(--muted); font-weight:800; font-size:.9rem;">
+                ${escapeHtml(t || '—')}
+                ${status ? '· ' + escapeHtml(status) : ''}
+              </div>
+            </div>
+            <button
+              class="button is-small is-link"
+              type="button"
+              onclick='applyAKFlight(${JSON.stringify(f).replace(/</g,"\\u003c")}, "${flow}")'
+            >
+              Utiliser
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  list.innerHTML = flights.length
+    ? flights.map(row).join('')
+    : `<p class="has-text-grey">Aucun vol.</p>`;
 }
 
 function applyAKRotation(r){
