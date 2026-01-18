@@ -2268,6 +2268,7 @@ function renderTimeline(){
 const AK_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJidmFfZXh0IiwidXNlcm5hbWUiOiJidmFfZXh0IiwiYWlycG9ydHMiOiJMRk9CIn0.PkSbBw_BF5dnX0bG3gbP7E7P7SHhW9egJ_in6OaWTnJm0OpirhJP4FZzbztH0r6lQxrA5JliEopo7__CyYvfIA";
 const AK_BASE    = "https://api.app.airport-keeper.com/flights/v1/airport";
 const AK_AIRPORT = "LFOB";
+const HOME_IATA  = "BVA";
 
 // Ouvrir/Fermer
 function openAKPicker(){
@@ -2284,17 +2285,6 @@ function closeAKPicker(){
   if(b) b.style.display = 'none';
 }
 
-// Fenêtre de temps = J-1 à J+1 (comme ton ODC)
-function akFromToISO(){
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
-  const end   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
-  return {
-    from: start.toISOString().replace(/\.\d{3}Z$/, "Z"),
-    to:   end.toISOString().replace(/\.\d{3}Z$/, "Z"),
-  };
-}
-
 async function fetchAK(flow, from, to){
   const url = `${AK_BASE}?airport=${encodeURIComponent(AK_AIRPORT)}&flow=${encodeURIComponent(flow)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
   const res = await fetch(url, { headers: { Authorization: AK_TOKEN }});
@@ -2303,202 +2293,83 @@ async function fetchAK(flow, from, to){
   return Array.isArray(data?.flights) ? data.flights : [];
 }
 
-// AOBT > 15min => virer du menu
-function depIsTooOld(dep){
+// ===== Temps + linking (immat) =====
+function arrTimeMs(f){
+  return Date.parse(f?.aibt || f?.sibt || f?.eibt || '') || null;
+}
+function depTimeMs(f){
+  // IMPORTANT: AOBT d'abord (sinon tu matches n'importe quoi)
+  return Date.parse(f?.aobt || f?.sobt || f?.eobt || '') || null;
+}
+function sameLocalDay(a, b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+
+// premier DEP après ARR (le plus proche)
+function findLinkedDepForArr(arr){
+  const reg = (arr?.reg || '').toUpperCase().trim();
+  if(!reg) return null;
+
+  const arrT = arrTimeMs(arr);
+  if(arrT == null) return null;
+
+  const deps = window._akCache?.dep || [];
+  let best = null;
+  let bestT = Infinity;
+
+  for(const d of deps){
+    const r = (d?.reg || '').toUpperCase().trim();
+    if(r !== reg) continue;
+
+    const t = depTimeMs(d);
+    if(t == null) continue;
+    if(t < arrT) continue;
+
+    if(t < bestT){
+      best = d;
+      bestT = t;
+    }
+  }
+  return best;
+}
+
+// dernière ARR avant DEP (la plus proche)
+function findLinkedArrForDep(dep){
+  const reg = (dep?.reg || '').toUpperCase().trim();
+  if(!reg) return null;
+
+  const depT = depTimeMs(dep);
+  if(depT == null) return null;
+
+  const arrs = window._akCache?.arr || [];
+  let best = null;
+  let bestT = -Infinity;
+
+  for(const a of arrs){
+    const r = (a?.reg || '').toUpperCase().trim();
+    if(r !== reg) continue;
+
+    const t = arrTimeMs(a);
+    if(t == null) continue;
+    if(t > depT) continue;
+
+    if(t > bestT){
+      best = a;
+      bestT = t;
+    }
+  }
+  return best;
+}
+
+function depAobtTooOld(dep, minutes = 15){
   const aobt = dep?.aobt;
   if(!aobt) return false;
   const t = Date.parse(aobt);
   if(!t) return false;
-  return (Date.now() - t) > 15*60*1000;
+  return (Date.now() - t) > minutes*60*1000;
 }
 
-function getArrTimeMs(f){
-  const s = f?.aibt || f?.sibt || f?.eibt;
-  const t = Date.parse(s || '');
-  return isNaN(t) ? null : t;
-}
-function getDepTimeMs(f){
-  const s = f?.sobt || f?.eobt || f?.aobt;
-  const t = Date.parse(s || '');
-  return isNaN(t) ? null : t;
-}
-
-// Fabrique des rotations : on matche ARR -> DEP avec même immat (reg), DEP après ARR, le plus proche
-function buildRotations(arrFlights, depFlights){
-  // filtre départs trop vieux
-  const deps = depFlights.filter(d => !depIsTooOld(d));
-
-  // index DEP par immat
-  const depByReg = new Map();
-  deps.forEach(d=>{
-    const reg = (d.reg || '').toUpperCase().trim();
-    if(!reg) return;
-    if(!depByReg.has(reg)) depByReg.set(reg, []);
-    depByReg.get(reg).push(d);
-  });
-
-  // trie DEP par heure
-  for(const [reg, list] of depByReg.entries()){
-    list.sort((a,b)=>(getDepTimeMs(a)||0)-(getDepTimeMs(b)||0));
-  }
-
-  const rotations = [];
-
-  arrFlights.forEach(arr=>{
-    const reg = (arr.reg || '').toUpperCase().trim();
-    if(!reg) return;
-
-    const arrT = getArrTimeMs(arr);
-    if(arrT == null) return;
-
-    const depsForReg = depByReg.get(reg);
-    if(!depsForReg || !depsForReg.length) return;
-
-    // prend le premier DEP après ARR (fenêtre max 6h pour éviter les matchs débiles)
-    const MAX_GAP = 6*60*60*1000;
-
-    let best = null;
-    for(const dep of depsForReg){
-      const depT = getDepTimeMs(dep);
-      if(depT == null) continue;
-      const gap = depT - arrT;
-      if(gap < 0) continue;
-      if(gap > MAX_GAP) break;
-      best = dep;
-      break;
-    }
-    if(!best) return;
-
-    rotations.push({
-      arr,
-      dep: best,
-      reg,
-      stand: (best.pkg || arr.pkg || '').toString().replace(/^P/i,'').trim(),
-      from: (arr.adepIata || arr.adepIcao || '').toUpperCase().trim(),
-      to:   (best.adesIata || best.adesIcao || '').toUpperCase().trim(),
-      // pour tri liste
-      sortT: getDepTimeMs(best) || getArrTimeMs(arr) || 0,
-    });
-  });
-
-  // dédoublonne si plusieurs ARR matchent le même DEP (on garde le plus proche)
-  // (simple : unique par dep.id si présent, sinon par fullFlightNumber+sobt)
-  const seen = new Set();
-  const out = [];
-  rotations
-    .sort((a,b)=>a.sortT-b.sortT)
-    .forEach(r=>{
-      const key = (r.dep?.id) ? `id:${r.dep.id}` : `k:${(r.dep.fullFlightNumber||'')}-${(r.dep.sobt||r.dep.eobt||'')}`;
-      if(seen.has(key)) return;
-      seen.add(key);
-      out.push(r);
-    });
-
-  return out;
-}
-
-async function fetchAK(flow, from, to){
-  const url = `${AK_BASE}?airport=${encodeURIComponent(AK_AIRPORT)}&flow=${encodeURIComponent(flow)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-  const res = await fetch(url, { headers: { Authorization: AK_TOKEN }});
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  return Array.isArray(data?.flights) ? data.flights : [];
-}
-
-// AOBT > 15min => virer du menu
-function depIsTooOld(dep){
-  const aobt = dep?.aobt;
-  if(!aobt) return false;
-  const t = Date.parse(aobt);
-  if(!t) return false;
-  return (Date.now() - t) > 15*60*1000;
-}
-
-function getArrTimeMs(f){
-  const s = f?.aibt || f?.sibt || f?.eibt;
-  const t = Date.parse(s || '');
-  return isNaN(t) ? null : t;
-}
-function getDepTimeMs(f){
-  const s = f?.sobt || f?.eobt || f?.aobt;
-  const t = Date.parse(s || '');
-  return isNaN(t) ? null : t;
-}
-
-// Fabrique des rotations : on matche ARR -> DEP avec même immat (reg), DEP après ARR, le plus proche
-function buildRotations(arrFlights, depFlights){
-  // filtre départs trop vieux
-  const deps = depFlights.filter(d => !depIsTooOld(d));
-
-  // index DEP par immat
-  const depByReg = new Map();
-  deps.forEach(d=>{
-    const reg = (d.reg || '').toUpperCase().trim();
-    if(!reg) return;
-    if(!depByReg.has(reg)) depByReg.set(reg, []);
-    depByReg.get(reg).push(d);
-  });
-
-  // trie DEP par heure
-  for(const [reg, list] of depByReg.entries()){
-    list.sort((a,b)=>(getDepTimeMs(a)||0)-(getDepTimeMs(b)||0));
-  }
-
-  const rotations = [];
-
-  arrFlights.forEach(arr=>{
-    const reg = (arr.reg || '').toUpperCase().trim();
-    if(!reg) return;
-
-    const arrT = getArrTimeMs(arr);
-    if(arrT == null) return;
-
-    const depsForReg = depByReg.get(reg);
-    if(!depsForReg || !depsForReg.length) return;
-
-    // prend le premier DEP après ARR (fenêtre max 6h pour éviter les matchs débiles)
-    const MAX_GAP = 6*60*60*1000;
-
-    let best = null;
-    for(const dep of depsForReg){
-      const depT = getDepTimeMs(dep);
-      if(depT == null) continue;
-      const gap = depT - arrT;
-      if(gap < 0) continue;
-      if(gap > MAX_GAP) break;
-      best = dep;
-      break;
-    }
-    if(!best) return;
-
-    rotations.push({
-      arr,
-      dep: best,
-      reg,
-      stand: (best.pkg || arr.pkg || '').toString().replace(/^P/i,'').trim(),
-      from: (arr.adepIata || arr.adepIcao || '').toUpperCase().trim(),
-      to:   (best.adesIata || best.adesIcao || '').toUpperCase().trim(),
-      // pour tri liste
-      sortT: getDepTimeMs(best) || getArrTimeMs(arr) || 0,
-    });
-  });
-
-  // dédoublonne si plusieurs ARR matchent le même DEP (on garde le plus proche)
-  // (simple : unique par dep.id si présent, sinon par fullFlightNumber+sobt)
-  const seen = new Set();
-  const out = [];
-  rotations
-    .sort((a,b)=>a.sortT-b.sortT)
-    .forEach(r=>{
-      const key = (r.dep?.id) ? `id:${r.dep.id}` : `k:${(r.dep.fullFlightNumber||'')}-${(r.dep.sobt||r.dep.eobt||'')}`;
-      if(seen.has(key)) return;
-      seen.add(key);
-      out.push(r);
-    });
-
-  return out;
-}
-
+// ===== Chargement liste (vols du jour) =====
 async function loadAKFlights(){
   const flow = document.getElementById('akFlow')?.value || 'DEP';
   const st   = document.getElementById('akStatus');
@@ -2507,12 +2378,11 @@ async function loadAKFlights(){
   if(st) st.textContent = 'Chargement…';
   if(list) list.innerHTML = '';
 
-  // Jour local (00:00 -> 23:59)
   const now = new Date();
   const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
   const endDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
 
-  // Fenêtre large pour pouvoir lier ARR <-> DEP
+  // fenêtre large pour le linking (hier soir -> demain matin)
   const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000);
   const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000);
 
@@ -2520,16 +2390,14 @@ async function loadAKFlights(){
   const linkTo   = linkToDate.toISOString().replace(/\.\d{3}Z$/, "Z");
 
   try{
-    // 1) Récupération large ARR + DEP
     const [arrAll, depAll] = await Promise.all([
       fetchAK('ARR', linkFrom, linkTo),
       fetchAK('DEP', linkFrom, linkTo),
     ]);
 
-    // cache global pour le linking
+    // cache pour applyAKFlight + linking
     window._akCache = { arr: arrAll, dep: depAll };
 
-    // 2) Filtre : uniquement les vols DU JOUR
     const inToday = (f, flow) => {
       const t = Date.parse(
         flow === 'DEP'
@@ -2541,31 +2409,17 @@ async function loadAKFlights(){
 
     let flights = (flow === 'DEP' ? depAll : arrAll).filter(f => inToday(f, flow));
 
-    // 3) DEP : supprimer si AOBT > 15 min
+    // DEP : virer si AOBT > 15 min
     if(flow === 'DEP'){
-      const limitMs = 15 * 60 * 1000;
-      flights = flights.filter(f=>{
-        if(!f?.aobt) return true;
-        const t = Date.parse(f.aobt);
-        return !t || (Date.now() - t) <= limitMs;
-      });
+      flights = flights.filter(d => !depAobtTooOld(d, 15));
     }
 
-    // 4) ARR : supprimer si le DEP lié est parti depuis > 15 min
+    // ARR : virer seulement si le DEP qui suit cette ARR est parti depuis > 15 min
     if(flow === 'ARR'){
-      const limitMs = 15 * 60 * 1000;
-      flights = flights.filter(arr=>{
-        const reg = (arr.reg || '').trim();
-        if(!reg) return true;
-
-        const linkedDep = depAll.find(d =>
-          (d.reg || '').trim() === reg
-        );
-
-        if(!linkedDep || !linkedDep.aobt) return true;
-
-        const t = Date.parse(linkedDep.aobt);
-        return !t || (Date.now() - t) <= limitMs;
+      flights = flights.filter(arr => {
+        const nextDep = findLinkedDepForArr(arr);
+        if(!nextDep) return true;                 // repart demain / pas de rota -> on garde
+        return !depAobtTooOld(nextDep, 15);       // on vire quand le DEP lié est trop vieux
       });
     }
 
@@ -2577,6 +2431,7 @@ async function loadAKFlights(){
   }
 }
 
+// ===== Rendu liste : ARR = provenance, DEP = destination =====
 function renderAKList(flights, flow){
   const list = document.getElementById('akList');
   if(!list) return;
@@ -2588,8 +2443,6 @@ function renderAKList(flights, flow){
     const t = pickBestTimeForList(f, flow);
     const status = (f.status || f.milestone || '').toString();
 
-    // ARR: afficher uniquement provenance (FROM)
-    // DEP: afficher uniquement destination (TO)
     const mainIata = (flow === 'ARR')
       ? (f.adepIata || f.adepIcao || '')
       : (f.adesIata || f.adesIcao || '');
@@ -2615,11 +2468,8 @@ function renderAKList(flights, flow){
               </div>
             </div>
 
-            <button
-              class="button is-small is-link"
-              type="button"
-              onclick='applyAKFlight(${JSON.stringify(f).replace(/</g,"\\u003c")}, "${flow}")'
-            >
+            <button class="button is-small is-link" type="button"
+              onclick='applyAKFlight(${JSON.stringify(f).replace(/</g,"\\u003c")}, "${flow}")'>
               Utiliser
             </button>
           </div>
@@ -2633,108 +2483,10 @@ function renderAKList(flights, flow){
     : `<p class="has-text-grey">Aucun vol.</p>`;
 }
 
-function applyAKRotation(r){
-  // Route rotation : OPO → OPO
-  setVal('From', (r.from || '').toUpperCase());
-  setVal('To',   (r.to   || '').toUpperCase());
-
-  // Immat / stand
-  setVal('Immat', (r.reg || '').toUpperCase());
-  if(r.stand) setVal('Parking', r.stand);
-
-  // Cie / N° de vol : on prend le DEP
-  const dep = r.dep || {};
-  const ff = (dep.fullFlightNumber || dep.callsign || '').toUpperCase().trim();
-  if(ff){
-    const m = ff.match(/^([A-Z0-9]{2,3})\s*0*([0-9]{1,6})/);
-    if(m){
-      const cie = m[1];
-      const nvol = m[2];
-      const cieSel = document.getElementById('Cie');
-      if(cieSel){
-        const ok = Array.from(cieSel.options).some(o => o.value === cie);
-        setVal('Cie', ok ? cie : 'Autre');
-      }
-      setVal('NVol', nvol);
-    }else{
-      setVal('NVol', ff);
-    }
-  }
-
-  // Type avion
-  const ac =
-    (dep.acTypeIata || dep.acTypeIcao ||
-     r.arr?.acTypeIata || r.arr?.acTypeIcao || '').toUpperCase().trim();
-  if(ac) setVal('TypeAvion', ac);
-
-  // Horaires ARR
-  const arr = r.arr || {};
-  setTimeFromISO('SIBT', arr.sibt || arr.eibt);
-  setTimeFromISO('AIBT', arr.aibt);
-
-  // Horaires DEP
-  setTimeFromISO('SOBT', dep.sobt || dep.eobt);
-  setTimeFromISO('AOBT', dep.aobt);
-
-  updateAllCalculations();
-  updateTabLabelInstant();
-  closeAKPicker();
-  showPopup("Rotation importée", "#16a34a", 1600);
-}
-
-
-function pickBestTimeForList(f, flow){
-  const iso = (v)=> v ? new Date(v) : null;
-  const toHHMM = (d)=> d ? `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : '';
-  if(flow === 'DEP'){
-    return toHHMM(iso(f.aobt) || iso(f.sobt) || iso(f.eobt) || iso(f.atot) || iso(f.etot));
-  }
-  return toHHMM(iso(f.aibt) || iso(f.sibt) || iso(f.eibt) || iso(f.aldt) || iso(f.eldt));
-}
-
-const HOME_IATA = "BVA";
-
-function sameLocalDay(a, b){
-  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
-}
-
-function arrTimeMs(f){
-  return Date.parse(f?.aibt || f?.sibt || f?.eibt || '') || null;
-}
-
-function depTimeMs(f){
-  return Date.parse(f?.aobt || f?.sobt || f?.eobt || '') || null;
-}
-
-function findNextDepForArr(arr, depAll){
-  const reg = (arr?.reg || '').trim();
-  if(!reg) return null;
-
-  const tArr = arrTimeMs(arr);
-  if(tArr == null) return null;
-
-  let best = null;
-  let bestT = Infinity;
-
-  for(const d of depAll){
-    if(((d?.reg || '').trim()) !== reg) continue;
-
-    const tDep = depTimeMs(d);
-    if(tDep == null) continue;
-    if(tDep < tArr) continue;   // seulement après l’arrivée
-
-    if(tDep < bestT){
-      best = d;
-      bestT = tDep;
-    }
-  }
-  return best;
-}
-
-
+// ===== Import : règles BVA =====
 function applyAKFlight(f, flow){
-  // Base (immat/parking/type)
-  setVal('Immat',(f.reg || '').toUpperCase());
+  // Base
+  setVal('Immat', (f.reg || '').toUpperCase());
 
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
   if(stand) setVal('Parking', stand);
@@ -2760,33 +2512,38 @@ function applyAKFlight(f, flow){
     }
   }
 
- // ===== LOGIQUE BVA =====
+  if(flow === 'ARR'){
+    // ARR : FROM = provenance
+    const from = (f.adepIata || f.adepIcao || '').toUpperCase().trim();
+    setVal('From', from || HOME_IATA);
 
-// helpers temps
-function depTimeMs(f){ ... }
-function arrTimeMs(f){ ... }
+    // TO : si départ lié demain / pas de départ => BVA, sinon destination du départ lié (même jour)
+    const nextDep = findLinkedDepForArr(f);
+    if(!nextDep){
+      setVal('To', HOME_IATA);
+    }else{
+      const arrT = arrTimeMs(f);
+      const depT = depTimeMs(nextDep);
+      const arrD = arrT ? new Date(arrT) : null;
+      const depD = depT ? new Date(depT) : null;
 
-// linking ARR <-> DEP
-function findLinkedDepForArr(arr){ ... }
-function findLinkedArrForDep(dep){ ... }
+      if(!arrD || !depD || !sameLocalDay(arrD, depD)){
+        setVal('To', HOME_IATA);
+      }else{
+        const to = (nextDep.adesIata || nextDep.adesIcao || '').toUpperCase().trim();
+        setVal('To', to || HOME_IATA);
+      }
+    }
 
-// filtres spécifiques ARR / DEP
-// (départ > 15 min, arrivée seule, demain, etc.)
-
-// ===== FIN LOGIQUE BVA =====
-
-    // Horaires ARR
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
 
-    // (optionnel) on peut aussi pré-remplir SOBT/AOBT si tu veux, mais je touche pas.
-
   } else {
-    // DEP
+    // DEP : TO = destination
     const to = (f.adesIata || f.adesIcao || '').toUpperCase().trim();
-    setVal('To', to);
+    setVal('To', to || HOME_IATA);
 
-    // FROM = provenance de l’ARR liée si même jour, sinon BVA
+    // FROM : si arrivée la veille / pas d'arrivée => BVA, sinon provenance de l'arrivée liée (même jour)
     const linkedArr = findLinkedArrForDep(f);
     if(!linkedArr){
       setVal('From', HOME_IATA);
@@ -2797,7 +2554,6 @@ function findLinkedArrForDep(dep){ ... }
       const arrD = arrT ? new Date(arrT) : null;
 
       if(!depD || !arrD || !sameLocalDay(depD, arrD)){
-        // “arrivée la veille” => FROM = BVA
         setVal('From', HOME_IATA);
       }else{
         const from = (linkedArr.adepIata || linkedArr.adepIcao || '').toUpperCase().trim();
@@ -2805,7 +2561,6 @@ function findLinkedArrForDep(dep){ ... }
       }
     }
 
-    // Horaires DEP
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
   }
@@ -2814,29 +2569,6 @@ function findLinkedArrForDep(dep){ ... }
   updateTabLabelInstant();
   closeAKPicker();
   showPopup("Vol importé", "#16a34a", 1600);
-}
-
-// helpers
-function setVal(id, v){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.value = v ?? '';
-}
-function setTimeFromISO(id, iso){
-  if(!iso) return;
-  const d = new Date(iso);
-  if(isNaN(d.getTime())) return;
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  setVal(id, `${hh}:${mm}`);
-}
-function escapeHtml(s){
-  return String(s ?? '')
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
 }
 
 /* validateForm */
