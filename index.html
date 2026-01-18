@@ -2558,7 +2558,7 @@ function renderAKList(flights, flow){
 
 // ===== Import : règles BVA =====
 function applyAKFlight(f, flow){
-  // Base
+  // ===== BASE =====
   setVal('Immat', (f.reg || '').toUpperCase());
 
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
@@ -2567,13 +2567,14 @@ function applyAKFlight(f, flow){
   const ac = (f.acTypeIata || f.acTypeIcao || '').toUpperCase().trim();
   if(ac) setVal('TypeAvion', ac);
 
-  // Cie / NVol
+  // ===== CIE / N° VOL (2 lettres + chiffres) =====
   const ff = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
   if(ff){
-    const m = ff.match(/^([A-Z0-9]{2,3})\s*0*([0-9]{1,6})/);
+    const m = ff.match(/^([A-Z0-9]{2})([0-9]{1,6})$/);
     if(m){
-      const cie = m[1];
+      const cie  = m[1];
       const nvol = m[2];
+
       const cieSel = document.getElementById('Cie');
       if(cieSel){
         const ok = Array.from(cieSel.options).some(o => o.value === cie);
@@ -2581,16 +2582,18 @@ function applyAKFlight(f, flow){
       }
       setVal('NVol', nvol);
     }else{
+      // fallback si format non standard
       setVal('NVol', ff);
     }
   }
 
+  // ===== ARRIVÉE =====
   if(flow === 'ARR'){
-    // ARR : FROM = provenance
+    // FROM = provenance
     const from = (f.adepIata || f.adepIcao || '').toUpperCase().trim();
     setVal('From', from || HOME_IATA);
 
-    // TO : si départ lié demain / pas de départ => BVA, sinon destination du départ lié (même jour)
+    // TO = destination du départ lié si même jour, sinon BVA
     const nextDep = findLinkedDepForArr(f);
     if(!nextDep){
       setVal('To', HOME_IATA);
@@ -2610,13 +2613,15 @@ function applyAKFlight(f, flow){
 
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
+  }
 
-  } else {
-    // DEP : TO = destination
+  // ===== DÉPART =====
+  else {
+    // TO = destination
     const to = (f.adesIata || f.adesIcao || '').toUpperCase().trim();
     setVal('To', to || HOME_IATA);
 
-    // FROM : si arrivée la veille / pas d'arrivée => BVA, sinon provenance de l'arrivée liée (même jour)
+    // FROM = provenance de l’arrivée liée si même jour, sinon BVA
     const linkedArr = findLinkedArrForDep(f);
     if(!linkedArr){
       setVal('From', HOME_IATA);
