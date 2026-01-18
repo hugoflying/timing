@@ -2698,62 +2698,39 @@ function sameLocalDay(a, b){
   return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
 }
 
-function depTimeMs(f){
-  return Date.parse(f?.sobt || f?.eobt || f?.aobt || '') || null;
-}
 function arrTimeMs(f){
-  return Date.parse(f?.sibt || f?.eibt || f?.aibt || '') || null;
+  return Date.parse(f?.aibt || f?.sibt || f?.eibt || '') || null;
 }
 
-function findLinkedDepForArr(arr){
-  const reg = (arr?.reg || '').toUpperCase().trim();
-  if(!reg) return null;
-  const arrT = arrTimeMs(arr);
-  if(arrT == null) return null;
+function depTimeMs(f){
+  return Date.parse(f?.aobt || f?.sobt || f?.eobt || '') || null;
+}
 
-  const deps = window._akCache?.dep || [];
-  // premier DEP après ARR (le plus proche)
+function findNextDepForArr(arr, depAll){
+  const reg = (arr?.reg || '').trim();
+  if(!reg) return null;
+
+  const tArr = arrTimeMs(arr);
+  if(tArr == null) return null;
+
   let best = null;
   let bestT = Infinity;
 
-  for(const d of deps){
-    const r = (d?.reg || '').toUpperCase().trim();
-    if(r !== reg) continue;
-    const t = depTimeMs(d);
-    if(t == null) continue;
-    if(t < arrT) continue;
-    if(t < bestT){
+  for(const d of depAll){
+    if(((d?.reg || '').trim()) !== reg) continue;
+
+    const tDep = depTimeMs(d);
+    if(tDep == null) continue;
+    if(tDep < tArr) continue;   // seulement après l’arrivée
+
+    if(tDep < bestT){
       best = d;
-      bestT = t;
+      bestT = tDep;
     }
   }
   return best;
 }
 
-function findLinkedArrForDep(dep){
-  const reg = (dep?.reg || '').toUpperCase().trim();
-  if(!reg) return null;
-  const depT = depTimeMs(dep);
-  if(depT == null) return null;
-
-  const arrs = window._akCache?.arr || [];
-  // dernière ARR avant DEP (la plus proche)
-  let best = null;
-  let bestT = -Infinity;
-
-  for(const a of arrs){
-    const r = (a?.reg || '').toUpperCase().trim();
-    if(r !== reg) continue;
-    const t = arrTimeMs(a);
-    if(t == null) continue;
-    if(t > depT) continue;
-    if(t > bestT){
-      best = a;
-      bestT = t;
-    }
-  }
-  return best;
-}
 
 function applyAKFlight(f, flow){
   // Base (immat/parking/type)
@@ -2783,30 +2760,20 @@ function applyAKFlight(f, flow){
     }
   }
 
-  // ===== LOGIQUE BVA =====
-  if(flow === 'ARR'){
-    // FROM = provenance réelle
-    const from = (f.adepIata || f.adepIcao || '').toUpperCase().trim();
-    setVal('From', from);
+ // ===== LOGIQUE BVA =====
 
-    // TO = destination du DEP lié si même jour, sinon BVA
-    const linkedDep = findLinkedDepForArr(f);
-    if(!linkedDep){
-      setVal('To', HOME_IATA);
-    }else{
-      const arrT = arrTimeMs(f);
-      const depT = depTimeMs(linkedDep);
-      const arrD = arrT ? new Date(arrT) : null;
-      const depD = depT ? new Date(depT) : null;
+// helpers temps
+function depTimeMs(f){ ... }
+function arrTimeMs(f){ ... }
 
-      if(!arrD || !depD || !sameLocalDay(arrD, depD)){
-        // “départ prévu le lendemain” => TO = BVA
-        setVal('To', HOME_IATA);
-      }else{
-        const to = (linkedDep.adesIata || linkedDep.adesIcao || '').toUpperCase().trim();
-        setVal('To', to || HOME_IATA);
-      }
-    }
+// linking ARR <-> DEP
+function findLinkedDepForArr(arr){ ... }
+function findLinkedArrForDep(dep){ ... }
+
+// filtres spécifiques ARR / DEP
+// (départ > 15 min, arrivée seule, demain, etc.)
+
+// ===== FIN LOGIQUE BVA =====
 
     // Horaires ARR
     setTimeFromISO('SIBT', f.sibt || f.eibt);
