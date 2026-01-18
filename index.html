@@ -2500,66 +2500,67 @@ function buildRotations(arrFlights, depFlights){
 }
 
 async function loadAKFlights(){
+  const flow = document.getElementById('akFlow')?.value || 'DEP';
   const st = document.getElementById('akStatus');
   const list = document.getElementById('akList');
   if(st) st.textContent = 'Chargement…';
   if(list) list.innerHTML = '';
 
-  const {from, to} = akFromToISO();
+  // Jour local (00:00 -> 23:59)
+  const now = new Date();
+  const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
+  const endDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
+
+  // Fenêtre "linking" : on prend un peu avant/après pour trouver la rotation
+  const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000); // -12h
+  const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000); // +12h
+
+  const dayFrom = startDay.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const dayTo   = endDay.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const linkFrom = linkFromDate.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const linkTo   = linkToDate.toISOString().replace(/\.\d{3}Z$/, "Z");
 
   try{
-    // on récupère ARR + DEP du jour
-    const [arrFlights, depFlights] = await Promise.all([
-      fetchAK('ARR', from, to),
-      fetchAK('DEP', from, to),
+    // 1) On fetch en large pour pouvoir lier
+    const [arrAll, depAll] = await Promise.all([
+      fetchAK('ARR', linkFrom, linkTo),
+      fetchAK('DEP', linkFrom, linkTo),
     ]);
 
-    const rotations = buildRotations(arrFlights, depFlights);
+    // cache global pour applyAKFlight()
+    window._akCache = { arr: arrAll, dep: depAll };
 
-    if(st) st.textContent = `${rotations.length} rotation(s)`;
-    renderAKRotations(rotations);
+    // 2) On fetch (ou on filtre) pour afficher uniquement le jour
+    // Ici on filtre à partir des listes "All"
+    const inToday = (f, flow) => {
+      const t = Date.parse(
+        flow === 'DEP'
+          ? (f.sobt || f.eobt || f.aobt || '')
+          : (f.sibt || f.eibt || f.aibt || '')
+      );
+      if(!t) return false;
+      return t >= startDay.getTime() && t <= endDay.getTime();
+    };
+
+    let flights = (flow === 'DEP' ? depAll : arrAll).filter(f => inToday(f, flow));
+
+    // filtre : en DEP, supprimer si AOBT > 15 min
+    if(flow === 'DEP'){
+      const limitMs = 15 * 60 * 1000;
+      flights = flights.filter(f=>{
+        if(!f?.aobt) return true;
+        const t = Date.parse(f.aobt);
+        if(!t) return true;
+        return (Date.now() - t) <= limitMs;
+      });
+    }
+
+    if(st) st.textContent = `${flights.length} vol(s)`;
+    renderAKList(flights, flow);
+
   }catch(e){
     if(st) st.textContent = `Erreur (${String(e.message||e)})`;
   }
-}
-
-function renderAKRotations(rotations){
-  const list = document.getElementById('akList');
-  if(!list) return;
-
-  window._akRot = rotations;
-
-  const row = (r, idx)=>{
-    const ffDep = (r.dep?.fullFlightNumber || r.dep?.callsign || '').trim();
-    const ffArr = (r.arr?.fullFlightNumber || r.arr?.callsign || '').trim();
-
-    const time = pickBestTimeForList(r.dep || {}, 'DEP'); // heure côté départ
-    const stand = r.stand || '—';
-
-    // IMPORTANT : affichage "OPO → OPO"
-    const route = `${escapeHtml(r.from || '---')} → ${escapeHtml(r.to || '---')}`;
-
-    return `
-      <div class="card mb-2" style="box-shadow:none; border:1px solid rgba(0,0,0,.08);">
-        <div class="card-content" style="padding:10px 12px;">
-          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
-            <div style="min-width:220px;">
-              <div style="font-weight:900;">${route}</div>
-              <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
-                ARR ${escapeHtml(ffArr || '—')} · DEP ${escapeHtml(ffDep || '—')} · Stand ${escapeHtml(stand)} · ${escapeHtml(r.reg || '—')}
-              </div>
-              <div style="color:var(--muted); font-weight:800; font-size:.9rem;">
-                ${escapeHtml(time || '—')}
-              </div>
-            </div>
-            <button class="button is-small is-link" type="button" onclick="useAKRotation(${idx})">Utiliser</button>
-          </div>
-        </div>
-      </div>
-    `;
-  };
-
-  list.innerHTML = rotations.length ? rotations.map(row).join('') : `<p class="has-text-grey">Aucune rotation aujourd’hui.</p>`;
 }
 
 function useAKRotation(idx){
@@ -2633,14 +2634,80 @@ function pickBestTimeForList(f, flow){
   return toHHMM(iso(f.aibt) || iso(f.sibt) || iso(f.eibt) || iso(f.aldt) || iso(f.eldt));
 }
 
+const HOME_IATA = "BVA";
+
+function sameLocalDay(a, b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+
+function depTimeMs(f){
+  return Date.parse(f?.sobt || f?.eobt || f?.aobt || '') || null;
+}
+function arrTimeMs(f){
+  return Date.parse(f?.sibt || f?.eibt || f?.aibt || '') || null;
+}
+
+function findLinkedDepForArr(arr){
+  const reg = (arr?.reg || '').toUpperCase().trim();
+  if(!reg) return null;
+  const arrT = arrTimeMs(arr);
+  if(arrT == null) return null;
+
+  const deps = window._akCache?.dep || [];
+  // premier DEP après ARR (le plus proche)
+  let best = null;
+  let bestT = Infinity;
+
+  for(const d of deps){
+    const r = (d?.reg || '').toUpperCase().trim();
+    if(r !== reg) continue;
+    const t = depTimeMs(d);
+    if(t == null) continue;
+    if(t < arrT) continue;
+    if(t < bestT){
+      best = d;
+      bestT = t;
+    }
+  }
+  return best;
+}
+
+function findLinkedArrForDep(dep){
+  const reg = (dep?.reg || '').toUpperCase().trim();
+  if(!reg) return null;
+  const depT = depTimeMs(dep);
+  if(depT == null) return null;
+
+  const arrs = window._akCache?.arr || [];
+  // dernière ARR avant DEP (la plus proche)
+  let best = null;
+  let bestT = -Infinity;
+
+  for(const a of arrs){
+    const r = (a?.reg || '').toUpperCase().trim();
+    if(r !== reg) continue;
+    const t = arrTimeMs(a);
+    if(t == null) continue;
+    if(t > depT) continue;
+    if(t > bestT){
+      best = a;
+      bestT = t;
+    }
+  }
+  return best;
+}
+
 function applyAKFlight(f, flow){
-  setVal('From', (f.adepIata || '').toUpperCase());
-  setVal('To',   (f.adesIata || '').toUpperCase());
+  // Base (immat/parking/type)
   setVal('Immat',(f.reg || '').toUpperCase());
 
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
   if(stand) setVal('Parking', stand);
 
+  const ac = (f.acTypeIata || f.acTypeIcao || '').toUpperCase().trim();
+  if(ac) setVal('TypeAvion', ac);
+
+  // Cie / NVol
   const ff = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
   if(ff){
     const m = ff.match(/^([A-Z0-9]{2,3})\s*0*([0-9]{1,6})/);
@@ -2658,15 +2725,64 @@ function applyAKFlight(f, flow){
     }
   }
 
-  const ac = (f.acTypeIata || f.acTypeIcao || '').toUpperCase().trim();
-  if(ac) setVal('TypeAvion', ac);
+  // ===== LOGIQUE BVA =====
+  if(flow === 'ARR'){
+    // FROM = provenance réelle
+    const from = (f.adepIata || f.adepIcao || '').toUpperCase().trim();
+    setVal('From', from);
 
-  if(flow === 'DEP'){
-    setTimeFromISO('SOBT', f.sobt || f.eobt);
-    setTimeFromISO('AOBT', f.aobt);
-  }else{
+    // TO = destination du DEP lié si même jour, sinon BVA
+    const linkedDep = findLinkedDepForArr(f);
+    if(!linkedDep){
+      setVal('To', HOME_IATA);
+    }else{
+      const arrT = arrTimeMs(f);
+      const depT = depTimeMs(linkedDep);
+      const arrD = arrT ? new Date(arrT) : null;
+      const depD = depT ? new Date(depT) : null;
+
+      if(!arrD || !depD || !sameLocalDay(arrD, depD)){
+        // “départ prévu le lendemain” => TO = BVA
+        setVal('To', HOME_IATA);
+      }else{
+        const to = (linkedDep.adesIata || linkedDep.adesIcao || '').toUpperCase().trim();
+        setVal('To', to || HOME_IATA);
+      }
+    }
+
+    // Horaires ARR
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
+
+    // (optionnel) on peut aussi pré-remplir SOBT/AOBT si tu veux, mais je touche pas.
+
+  } else {
+    // DEP
+    const to = (f.adesIata || f.adesIcao || '').toUpperCase().trim();
+    setVal('To', to);
+
+    // FROM = provenance de l’ARR liée si même jour, sinon BVA
+    const linkedArr = findLinkedArrForDep(f);
+    if(!linkedArr){
+      setVal('From', HOME_IATA);
+    }else{
+      const depT = depTimeMs(f);
+      const arrT = arrTimeMs(linkedArr);
+      const depD = depT ? new Date(depT) : null;
+      const arrD = arrT ? new Date(arrT) : null;
+
+      if(!depD || !arrD || !sameLocalDay(depD, arrD)){
+        // “arrivée la veille” => FROM = BVA
+        setVal('From', HOME_IATA);
+      }else{
+        const from = (linkedArr.adepIata || linkedArr.adepIcao || '').toUpperCase().trim();
+        setVal('From', from || HOME_IATA);
+      }
+    }
+
+    // Horaires DEP
+    setTimeFromISO('SOBT', f.sobt || f.eobt);
+    setTimeFromISO('AOBT', f.aobt);
   }
 
   updateAllCalculations();
