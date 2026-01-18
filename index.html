@@ -2488,7 +2488,19 @@ function renderAKList(flights, flow){
     const reg = (f.reg || '').trim();
     const stand = (f.pkg || '').toString().replace(/^P/i,'');
     const t = pickBestTimeForList(f, flow);
-    const status = (f.status || f.milestone || '').toString();
+
+    let statusRaw = (f.status || f.milestone || '').toString().toUpperCase();
+    let status = statusRaw;
+
+    // ARR : renommage TERMINATED -> ARRIVÉ
+    if(flow === 'ARR' && statusRaw === 'TERMINATED'){
+      status = 'ARRIVÉ';
+    }
+
+    // ARR : si statut ARR ou TERMINATED => carte en gris clair
+    const isArrived =
+      flow === 'ARR' &&
+      (statusRaw === 'ARR' || statusRaw === 'TERMINATED');
 
     const mainIata = (flow === 'ARR')
       ? (f.adepIata || f.adepIcao || '')
@@ -2497,18 +2509,25 @@ function renderAKList(flights, flow){
     const main = (mainIata || '---').trim();
 
     return `
-      <div class="card mb-2" style="box-shadow:none; border:1px solid rgba(0,0,0,.08);">
+      <div class="card mb-2"
+        style="
+          box-shadow:none;
+          border:1px solid rgba(0,0,0,.08);
+          background:${isArrived ? 'rgba(0,0,0,.04)' : 'var(--card)'};
+        ">
         <div class="card-content" style="padding:10px 12px;">
           <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
             <div style="min-width:220px;">
               <div style="font-weight:900; font-size:1.05rem;">
                 ${escapeHtml(main.toUpperCase())}
               </div>
+
               <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
                 ${escapeHtml(ff || '(sans numéro)')}
                 · Stand ${escapeHtml(stand || '—')}
                 · ${escapeHtml(reg || '—')}
               </div>
+
               <div style="color:var(--muted); font-weight:800; font-size:.9rem;">
                 ${escapeHtml(t || '—')}
                 ${status ? '· ' + escapeHtml(status) : ''}
