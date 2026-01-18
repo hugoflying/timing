@@ -2397,56 +2397,127 @@ function buildRotations(arrFlights, depFlights){
   return out;
 }
 
+async function fetchAK(flow, from, to){
+  const url = `${AK_BASE}?airport=${encodeURIComponent(AK_AIRPORT)}&flow=${encodeURIComponent(flow)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+  const res = await fetch(url, { headers: { Authorization: AK_TOKEN }});
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  return Array.isArray(data?.flights) ? data.flights : [];
+}
+
+// AOBT > 15min => virer du menu
+function depIsTooOld(dep){
+  const aobt = dep?.aobt;
+  if(!aobt) return false;
+  const t = Date.parse(aobt);
+  if(!t) return false;
+  return (Date.now() - t) > 15*60*1000;
+}
+
+function getArrTimeMs(f){
+  const s = f?.aibt || f?.sibt || f?.eibt;
+  const t = Date.parse(s || '');
+  return isNaN(t) ? null : t;
+}
+function getDepTimeMs(f){
+  const s = f?.sobt || f?.eobt || f?.aobt;
+  const t = Date.parse(s || '');
+  return isNaN(t) ? null : t;
+}
+
+// Fabrique des rotations : on matche ARR -> DEP avec même immat (reg), DEP après ARR, le plus proche
+function buildRotations(arrFlights, depFlights){
+  // filtre départs trop vieux
+  const deps = depFlights.filter(d => !depIsTooOld(d));
+
+  // index DEP par immat
+  const depByReg = new Map();
+  deps.forEach(d=>{
+    const reg = (d.reg || '').toUpperCase().trim();
+    if(!reg) return;
+    if(!depByReg.has(reg)) depByReg.set(reg, []);
+    depByReg.get(reg).push(d);
+  });
+
+  // trie DEP par heure
+  for(const [reg, list] of depByReg.entries()){
+    list.sort((a,b)=>(getDepTimeMs(a)||0)-(getDepTimeMs(b)||0));
+  }
+
+  const rotations = [];
+
+  arrFlights.forEach(arr=>{
+    const reg = (arr.reg || '').toUpperCase().trim();
+    if(!reg) return;
+
+    const arrT = getArrTimeMs(arr);
+    if(arrT == null) return;
+
+    const depsForReg = depByReg.get(reg);
+    if(!depsForReg || !depsForReg.length) return;
+
+    // prend le premier DEP après ARR (fenêtre max 6h pour éviter les matchs débiles)
+    const MAX_GAP = 6*60*60*1000;
+
+    let best = null;
+    for(const dep of depsForReg){
+      const depT = getDepTimeMs(dep);
+      if(depT == null) continue;
+      const gap = depT - arrT;
+      if(gap < 0) continue;
+      if(gap > MAX_GAP) break;
+      best = dep;
+      break;
+    }
+    if(!best) return;
+
+    rotations.push({
+      arr,
+      dep: best,
+      reg,
+      stand: (best.pkg || arr.pkg || '').toString().replace(/^P/i,'').trim(),
+      from: (arr.adepIata || arr.adepIcao || '').toUpperCase().trim(),
+      to:   (best.adesIata || best.adesIcao || '').toUpperCase().trim(),
+      // pour tri liste
+      sortT: getDepTimeMs(best) || getArrTimeMs(arr) || 0,
+    });
+  });
+
+  // dédoublonne si plusieurs ARR matchent le même DEP (on garde le plus proche)
+  // (simple : unique par dep.id si présent, sinon par fullFlightNumber+sobt)
+  const seen = new Set();
+  const out = [];
+  rotations
+    .sort((a,b)=>a.sortT-b.sortT)
+    .forEach(r=>{
+      const key = (r.dep?.id) ? `id:${r.dep.id}` : `k:${(r.dep.fullFlightNumber||'')}-${(r.dep.sobt||r.dep.eobt||'')}`;
+      if(seen.has(key)) return;
+      seen.add(key);
+      out.push(r);
+    });
+
+  return out;
+}
+
 async function loadAKFlights(){
   const st = document.getElementById('akStatus');
   const list = document.getElementById('akList');
   if(st) st.textContent = 'Chargement…';
   if(list) list.innerHTML = '';
 
-  const { from, to } = akFromToISO();
+  const {from, to} = akFromToISO();
 
   try{
-    // Récupération ARR + DEP en parallèle
+    // on récupère ARR + DEP du jour
     const [arrFlights, depFlights] = await Promise.all([
       fetchAK('ARR', from, to),
-      fetchAK('DEP', from, to)
+      fetchAK('DEP', from, to),
     ]);
 
-    // Construire les rotations
-    let rotations = buildRotations(arrFlights, depFlights);
-
-    // ===== FILTRES =====
-
-    const now = new Date();
-
-    rotations = rotations.filter(r => {
-      // uniquement vols du jour (date ARR ou DEP = aujourd’hui)
-      const d = r.date;
-      if(!d) return false;
-      if(
-        d.getFullYear() !== now.getFullYear() ||
-        d.getMonth()    !== now.getMonth() ||
-        d.getDate()     !== now.getDate()
-      ) return false;
-
-      // supprimer si AOBT > 15 min
-      if(r.dep?.aobt){
-        const aobt = new Date(r.dep.aobt);
-        if(now - aobt > 15 * 60 * 1000) return false;
-      }
-      return true;
-    });
-
-    // tri chronologique (ARR puis DEP)
-    rotations.sort((a,b)=>{
-      const ta = a.arrTime || a.depTime || 0;
-      const tb = b.arrTime || b.depTime || 0;
-      return ta - tb;
-    });
+    const rotations = buildRotations(arrFlights, depFlights);
 
     if(st) st.textContent = `${rotations.length} rotation(s)`;
     renderAKRotations(rotations);
-
   }catch(e){
     if(st) st.textContent = `Erreur (${String(e.message||e)})`;
   }
@@ -2489,6 +2560,12 @@ function renderAKRotations(rotations){
   };
 
   list.innerHTML = rotations.length ? rotations.map(row).join('') : `<p class="has-text-grey">Aucune rotation aujourd’hui.</p>`;
+}
+
+function useAKRotation(idx){
+  const r = window._akRot?.[idx];
+  if(!r) return;
+  applyAKRotation(r);
 }
 
 function useAKRotation(idx){
@@ -2754,7 +2831,14 @@ function clearAutoSave() {
     <button class="button is-small is-light" type="button" onclick="closeAKPicker()">Fermer</button>
   </div>
 
-  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+ <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+  <div class="select">
+    <select id="akFlow" onchange="loadAKFlights()">
+      <option value="DEP" selected>DEP</option>
+      <option value="ARR">ARR</option>
+    </select>
+  </div>
+
   <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
   <span class="tag is-light" id="akStatus">—</span>
 </div>
