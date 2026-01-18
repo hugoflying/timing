@@ -2501,8 +2501,9 @@ function buildRotations(arrFlights, depFlights){
 
 async function loadAKFlights(){
   const flow = document.getElementById('akFlow')?.value || 'DEP';
-  const st = document.getElementById('akStatus');
+  const st   = document.getElementById('akStatus');
   const list = document.getElementById('akList');
+
   if(st) st.textContent = 'Chargement…';
   if(list) list.innerHTML = '';
 
@@ -2511,47 +2512,60 @@ async function loadAKFlights(){
   const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
   const endDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
 
-  // Fenêtre "linking" : on prend un peu avant/après pour trouver la rotation
-  const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000); // -12h
-  const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000); // +12h
+  // Fenêtre large pour pouvoir lier ARR <-> DEP
+  const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000);
+  const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000);
 
-  const dayFrom = startDay.toISOString().replace(/\.\d{3}Z$/, "Z");
-  const dayTo   = endDay.toISOString().replace(/\.\d{3}Z$/, "Z");
   const linkFrom = linkFromDate.toISOString().replace(/\.\d{3}Z$/, "Z");
   const linkTo   = linkToDate.toISOString().replace(/\.\d{3}Z$/, "Z");
 
   try{
-    // 1) On fetch en large pour pouvoir lier
+    // 1) Récupération large ARR + DEP
     const [arrAll, depAll] = await Promise.all([
       fetchAK('ARR', linkFrom, linkTo),
       fetchAK('DEP', linkFrom, linkTo),
     ]);
 
-    // cache global pour applyAKFlight()
+    // cache global pour le linking
     window._akCache = { arr: arrAll, dep: depAll };
 
-    // 2) On fetch (ou on filtre) pour afficher uniquement le jour
-    // Ici on filtre à partir des listes "All"
+    // 2) Filtre : uniquement les vols DU JOUR
     const inToday = (f, flow) => {
       const t = Date.parse(
         flow === 'DEP'
           ? (f.sobt || f.eobt || f.aobt || '')
           : (f.sibt || f.eibt || f.aibt || '')
       );
-      if(!t) return false;
-      return t >= startDay.getTime() && t <= endDay.getTime();
+      return t && t >= startDay.getTime() && t <= endDay.getTime();
     };
 
     let flights = (flow === 'DEP' ? depAll : arrAll).filter(f => inToday(f, flow));
 
-    // filtre : en DEP, supprimer si AOBT > 15 min
+    // 3) DEP : supprimer si AOBT > 15 min
     if(flow === 'DEP'){
       const limitMs = 15 * 60 * 1000;
       flights = flights.filter(f=>{
         if(!f?.aobt) return true;
         const t = Date.parse(f.aobt);
-        if(!t) return true;
-        return (Date.now() - t) <= limitMs;
+        return !t || (Date.now() - t) <= limitMs;
+      });
+    }
+
+    // 4) ARR : supprimer si le DEP lié est parti depuis > 15 min
+    if(flow === 'ARR'){
+      const limitMs = 15 * 60 * 1000;
+      flights = flights.filter(arr=>{
+        const reg = (arr.reg || '').trim();
+        if(!reg) return true;
+
+        const linkedDep = depAll.find(d =>
+          (d.reg || '').trim() === reg
+        );
+
+        if(!linkedDep || !linkedDep.aobt) return true;
+
+        const t = Date.parse(linkedDep.aobt);
+        return !t || (Date.now() - t) <= limitMs;
       });
     }
 
@@ -2559,7 +2573,7 @@ async function loadAKFlights(){
     renderAKList(flights, flow);
 
   }catch(e){
-    if(st) st.textContent = `Erreur (${String(e.message||e)})`;
+    if(st) st.textContent = `Erreur (${String(e.message || e)})`;
   }
 }
 
@@ -2570,19 +2584,25 @@ function renderAKList(flights, flow){
   const row = (f)=>{
     const ff = (f.fullFlightNumber || f.callsign || '').trim();
     const reg = (f.reg || '').trim();
-    const adep = (f.adepIata || f.adepIcao || '').trim();
-    const ades = (f.adesIata || f.adesIcao || '').trim();
     const stand = (f.pkg || '').toString().replace(/^P/i,'');
     const t = pickBestTimeForList(f, flow);
     const status = (f.status || f.milestone || '').toString();
+
+    // ARR: afficher uniquement provenance (FROM)
+    // DEP: afficher uniquement destination (TO)
+    const mainIata = (flow === 'ARR')
+      ? (f.adepIata || f.adepIcao || '')
+      : (f.adesIata || f.adesIcao || '');
+
+    const main = (mainIata || '---').trim();
 
     return `
       <div class="card mb-2" style="box-shadow:none; border:1px solid rgba(0,0,0,.08);">
         <div class="card-content" style="padding:10px 12px;">
           <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
             <div style="min-width:220px;">
-              <div style="font-weight:900;">
-                ${escapeHtml(adep || '---')} → ${escapeHtml(ades || '---')}
+              <div style="font-weight:900; font-size:1.05rem;">
+                ${escapeHtml(main.toUpperCase())}
               </div>
               <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
                 ${escapeHtml(ff || '(sans numéro)')}
@@ -2594,6 +2614,7 @@ function renderAKList(flights, flow){
                 ${status ? '· ' + escapeHtml(status) : ''}
               </div>
             </div>
+
             <button
               class="button is-small is-link"
               type="button"
