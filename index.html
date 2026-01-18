@@ -1744,22 +1744,30 @@ function updateSOBTDefault() {
   const sobtEl = document.getElementById('SOBT');
   if(!sobtEl) return;
 
-  // Si SOBT a déjà une valeur, on ne touche plus (tu peux donc la modifier librement)
+  // Si SOBT déjà remplie (ex : import Keeper), on ne touche pas
   if ((sobtEl.value || '').trim() !== '') return;
 
   const cie = (document.getElementById('Cie').value||'').toUpperCase();
+
+  // FR / RK : SOBT vient de Keeper
+  if(cie === "FR" || cie === "RK"){
+    return;
+  }
+
   const sibt = document.getElementById('SIBT')?.value || '';
   const arrPNT = document.getElementById('ArrPNT')?.value || '';
   const arrPNC = document.getElementById('ArrPNC')?.value || '';
   if (!sibt) return;
-  if (!(cie === "FR" || cie === "RK" || cie === "W4" || cie === "W6")) return;
+  if (!(cie === "W4" || cie === "W6")) return;
 
   let [sH, sM] = sibt.split(':').map(Number);
   const base = new Date(); base.setHours(sH, sM);
-  let add = 35;
-  if (cie === "FR" || cie === "RK") add = (arrPNT || arrPNC) ? 35 : 25;
+
+  const add = (document.getElementById('TypeAvion')?.value === 'A321') ? 35 : 30;
   const sobtCalc = new Date(base.getTime() + add * 60000);
-  sobtEl.value = `${String(sobtCalc.getHours()).padStart(2, '0')}:${String(sobtCalc.getMinutes()).padStart(2, '0')}`;
+
+  sobtEl.value =
+    `${String(sobtCalc.getHours()).padStart(2,'0')}:${String(sobtCalc.getMinutes()).padStart(2,'0')}`;
 }
 
 /* TOBT + règle CTOT */
