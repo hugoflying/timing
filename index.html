@@ -2403,19 +2403,50 @@ async function loadAKFlights(){
   if(st) st.textContent = 'Chargement…';
   if(list) list.innerHTML = '';
 
-  const {from, to} = akFromToISO();
+  const { from, to } = akFromToISO();
 
   try{
-    // on récupère ARR + DEP du jour
+    // Récupération ARR + DEP en parallèle
     const [arrFlights, depFlights] = await Promise.all([
       fetchAK('ARR', from, to),
-      fetchAK('DEP', from, to),
+      fetchAK('DEP', from, to)
     ]);
 
-    const rotations = buildRotations(arrFlights, depFlights);
+    // Construire les rotations
+    let rotations = buildRotations(arrFlights, depFlights);
+
+    // ===== FILTRES =====
+
+    const now = new Date();
+
+    rotations = rotations.filter(r => {
+      // uniquement vols du jour (date ARR ou DEP = aujourd’hui)
+      const d = r.date;
+      if(!d) return false;
+      if(
+        d.getFullYear() !== now.getFullYear() ||
+        d.getMonth()    !== now.getMonth() ||
+        d.getDate()     !== now.getDate()
+      ) return false;
+
+      // supprimer si AOBT > 15 min
+      if(r.dep?.aobt){
+        const aobt = new Date(r.dep.aobt);
+        if(now - aobt > 15 * 60 * 1000) return false;
+      }
+      return true;
+    });
+
+    // tri chronologique (ARR puis DEP)
+    rotations.sort((a,b)=>{
+      const ta = a.arrTime || a.depTime || 0;
+      const tb = b.arrTime || b.depTime || 0;
+      return ta - tb;
+    });
 
     if(st) st.textContent = `${rotations.length} rotation(s)`;
     renderAKRotations(rotations);
+
   }catch(e){
     if(st) st.textContent = `Erreur (${String(e.message||e)})`;
   }
@@ -2724,16 +2755,9 @@ function clearAutoSave() {
   </div>
 
   <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
-    <div class="select">
-      <select id="akFlow" onchange="loadAKFlights()">
-        <option value="DEP" selected>DEP</option>
-        <option value="ARR">ARR</option>
-      </select>
-    </div>
-
-    <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
-    <span class="tag is-light" id="akStatus">—</span>
-  </div>
+  <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
+  <span class="tag is-light" id="akStatus">—</span>
+</div>
 
   <div id="akList" style="max-height:60vh; overflow:auto;"></div>
 </div>
