@@ -2549,13 +2549,14 @@ BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB"
 ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
 
   window.location.href =
-      `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
+    `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
 }
 
 function manualSave() {
   saveCurrentTabData();
   showPopup("Enregistrement réussi", "#2563eb", 2000);
 }
+
 function clearAutoSave() {
   if (confirm("Tout réinitialiser ?")) {
     localStorage.clear();
