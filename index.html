@@ -1445,29 +1445,39 @@ function attachAutoSave(){
 
 /* Tabs */
 function renderTabs(){
-  const tabBar=document.getElementById('tab-bar');
+  const tabBar = document.getElementById('tab-bar');
   if(!tabBar) return;
 
   tabBar.innerHTML = `
-    <button class="button is-success is-light" type="button" onclick="createNewTab()">+ Ajouter vol</button>
+    <button class="button is-success is-light" type="button" onclick="createNewTab()">
+      + Ajouter vol
+    </button>
+    <button class="button is-link is-light" type="button" onclick="openAKPicker()">
+      IMPORT AK
+    </button>
   `;
 
-  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+
   tabs.forEach((id)=>{
-    const data=JSON.parse(localStorage.getItem('tab-'+id)||'{}');
+    const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
 
-    const cie = (data.Cie||'').toUpperCase();
-    const nvol = (data.NVol||'').toUpperCase();
-    const to = (data.To||'').toUpperCase();
+    const cie  = (data.Cie  || '').toUpperCase();
+    const nvol = (data.NVol || '').toUpperCase();
+    const to   = (data.To   || '').toUpperCase();
 
-    let left = `${cie}${nvol||''}`.trim();
-    let label = left || to ? (to ? `${left} | ${to}`.trim() : left) : 'VOL';
+    let left = `${cie}${nvol}`.trim();
+    let label =
+      left || to
+        ? (to ? `${left} | ${to}`.trim() : left)
+        : 'VOL';
 
-    const btn=document.createElement('button');
-    btn.className = `button ${id===currentTabId ? 'is-link' : 'is-light'}`;
+    const btn = document.createElement('button');
+    btn.className = `button ${id === currentTabId ? 'is-link' : 'is-light'}`;
     btn.textContent = label || 'VOL';
-    btn.onclick=()=>switchTab(id);
-    btn.ondblclick=()=>deleteTab(id);
+    btn.onclick = ()=> switchTab(id);
+    btn.ondblclick = ()=> deleteTab(id);
+
     tabBar.appendChild(btn);
   });
 
@@ -2254,6 +2264,184 @@ function renderTimeline(){
   const lbl = document.getElementById('timelineZoomLabel');
   if(lbl) lbl.textContent = `${Math.round(timelineZoom*100)}%`;
 }
+// ===== Airport Keeper (AK) =====
+const AK_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJidmFfZXh0IiwidXNlcm5hbWUiOiJidmFfZXh0IiwiYWlycG9ydHMiOiJMRk9CIn0.PkSbBw_BF5dnX0bG3gbP7E7P7SHhW9egJ_in6OaWTnJm0OpirhJP4FZzbztH0r6lQxrA5JliEopo7__CyYvfIA";
+const AK_BASE    = "https://api.app.airport-keeper.com/flights/v1/airport";
+const AK_AIRPORT = "LFOB";
+
+// Ouvrir/Fermer
+function openAKPicker(){
+  const b = document.getElementById('akBackdrop');
+  const p = document.getElementById('akPopover');
+  if(b) b.style.display = '';
+  if(p) p.style.display = 'block';
+  loadAKFlights();
+}
+function closeAKPicker(){
+  const b = document.getElementById('akBackdrop');
+  const p = document.getElementById('akPopover');
+  if(p) p.style.display = 'none';
+  if(b) b.style.display = 'none';
+}
+
+// Fenêtre de temps = J-1 à J+1 (comme ton ODC)
+function akFromToISO(){
+  const now = new Date();
+  const from = new Date(now.getTime() - 1*24*60*60*1000);
+  const to   = new Date(now.getTime() + 1*24*60*60*1000);
+  return {
+    from: from.toISOString().replace(/\.\d{3}Z$/, "Z"),
+    to:   to.toISOString().replace(/\.\d{3}Z$/, "Z")
+  };
+}
+
+async function loadAKFlights(){
+  const flow = document.getElementById('akFlow')?.value || 'DEP';
+  const st = document.getElementById('akStatus');
+  const list = document.getElementById('akList');
+  if(st) st.textContent = 'Chargement…';
+  if(list) list.innerHTML = '';
+
+  const {from, to} = akFromToISO();
+  const url = `${AK_BASE}?airport=${encodeURIComponent(AK_AIRPORT)}&flow=${encodeURIComponent(flow)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+
+  try{
+    const res = await fetch(url, { headers: { Authorization: AK_TOKEN }});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const flights = Array.isArray(data?.flights) ? data.flights : [];
+    if(st) st.textContent = `${flights.length} vol(s)`;
+    renderAKList(flights, flow);
+  }catch(e){
+    if(st) st.textContent = `Erreur (${String(e.message||e)})`;
+  }
+}
+
+function renderAKList(flights, flow){
+  const list = document.getElementById('akList');
+  if(!list) return;
+
+  flights.sort((a,b)=>{
+    const ta = Date.parse(a?.sobt || a?.sibt || a?.eobt || a?.eibt || 0) || 0;
+    const tb = Date.parse(b?.sobt || b?.sibt || b?.eobt || b?.eibt || 0) || 0;
+    return ta - tb;
+  });
+
+  window._akFlights = flights;
+  window._akFlow = flow;
+
+  const row = (f, idx)=>{
+    const ff = (f.fullFlightNumber || f.callsign || '').trim();
+    const reg = (f.reg || '').trim();
+    const adep = (f.adepIata || f.adepIcao || '').trim();
+    const ades = (f.adesIata || f.adesIcao || '').trim();
+    const stand = (f.pkg || '').toString().replace(/^P/i,'');
+    const t = pickBestTimeForList(f, flow);
+    const status = (f.status || f.milestone || '').toString();
+
+    return `
+      <div class="card mb-2" style="box-shadow:none; border:1px solid rgba(0,0,0,.08);">
+        <div class="card-content" style="padding:10px 12px;">
+          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <div style="min-width:220px;">
+              <div style="font-weight:900;">${escapeHtml(ff || '(sans numéro)')}</div>
+              <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
+                ${escapeHtml(adep)} → ${escapeHtml(ades)} · Stand ${escapeHtml(stand||'—')} · ${escapeHtml(reg||'—')}
+              </div>
+              <div style="color:var(--muted); font-weight:800; font-size:.9rem;">
+                ${escapeHtml(t || '—')} ${status ? '· ' + escapeHtml(status) : ''}
+              </div>
+            </div>
+            <button class="button is-small is-link" type="button" onclick="useAKIndex(${idx})">Utiliser</button>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  list.innerHTML = flights.length ? flights.map(row).join('') : `<p class="has-text-grey">Aucun vol.</p>`;
+}
+
+function useAKIndex(idx){
+  const f = window._akFlights?.[idx];
+  const flow = window._akFlow || 'DEP';
+  if(!f) return;
+  applyAKFlight(f, flow);
+}
+
+function pickBestTimeForList(f, flow){
+  const iso = (v)=> v ? new Date(v) : null;
+  const toHHMM = (d)=> d ? `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : '';
+  if(flow === 'DEP'){
+    return toHHMM(iso(f.aobt) || iso(f.sobt) || iso(f.eobt) || iso(f.atot) || iso(f.etot));
+  }
+  return toHHMM(iso(f.aibt) || iso(f.sibt) || iso(f.eibt) || iso(f.aldt) || iso(f.eldt));
+}
+
+function applyAKFlight(f, flow){
+  setVal('From', (f.adepIata || '').toUpperCase());
+  setVal('To',   (f.adesIata || '').toUpperCase());
+  setVal('Immat',(f.reg || '').toUpperCase());
+
+  const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
+  if(stand) setVal('Parking', stand);
+
+  const ff = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
+  if(ff){
+    const m = ff.match(/^([A-Z0-9]{2,3})\s*0*([0-9]{1,6})/);
+    if(m){
+      const cie = m[1];
+      const nvol = m[2];
+      const cieSel = document.getElementById('Cie');
+      if(cieSel){
+        const ok = Array.from(cieSel.options).some(o => o.value === cie);
+        setVal('Cie', ok ? cie : 'Autre');
+      }
+      setVal('NVol', nvol);
+    }else{
+      setVal('NVol', ff);
+    }
+  }
+
+  const ac = (f.acTypeIata || f.acTypeIcao || '').toUpperCase().trim();
+  if(ac) setVal('TypeAvion', ac);
+
+  if(flow === 'DEP'){
+    setTimeFromISO('SOBT', f.sobt || f.eobt);
+    setTimeFromISO('AOBT', f.aobt);
+  }else{
+    setTimeFromISO('SIBT', f.sibt || f.eibt);
+    setTimeFromISO('AIBT', f.aibt);
+  }
+
+  updateAllCalculations();
+  updateTabLabelInstant();
+  closeAKPicker();
+  showPopup("Vol importé", "#16a34a", 1600);
+}
+
+// helpers
+function setVal(id, v){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.value = v ?? '';
+}
+function setTimeFromISO(id, iso){
+  if(!iso) return;
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return;
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  setVal(id, `${hh}:${mm}`);
+}
+function escapeHtml(s){
+  return String(s ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
 
 /* validateForm */
 function validateForm() {
@@ -2375,6 +2563,32 @@ function clearAutoSave() {
   }
 }
 </script>
+
+<!-- ===== Airport Keeper Picker ===== -->
+<div id="akBackdrop" onclick="closeAKPicker()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.25); z-index:4600;"></div>
+
+<div id="akPopover" style="display:none; position:fixed; top:calc(var(--fixed-header-h) + 16px); left:50%; transform:translateX(-50%);
+  width:min(720px, calc(100vw - 28px)); background:var(--card); box-shadow:var(--shadow); border-radius:16px; z-index:4700; padding:12px;
+  border:1px solid rgba(0,0,0,.08);">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
+    <strong style="font-weight:900;">Airport Keeper — vols du jour</strong>
+    <button class="button is-small is-light" type="button" onclick="closeAKPicker()">Fermer</button>
+  </div>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+    <div class="select">
+      <select id="akFlow" onchange="loadAKFlights()">
+        <option value="DEP" selected>DEP</option>
+        <option value="ARR">ARR</option>
+      </select>
+    </div>
+
+    <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
+    <span class="tag is-light" id="akStatus">—</span>
+  </div>
+
+  <div id="akList" style="max-height:60vh; overflow:auto;"></div>
+</div>
 
 </body>
 </html>
