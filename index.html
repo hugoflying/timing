@@ -2401,7 +2401,7 @@ function depAobtTooOld(dep, minutes = 15){
   return (Date.now() - t) > minutes*60*1000;
 }
 
-// ===== Chargement liste (vols du jour) =====
+// ===== Chargement liste (vols du jour) + TRI =====
 async function loadAKFlights(){
   const flow = document.getElementById('akFlow')?.value || 'DEP';
   const st   = document.getElementById('akStatus');
@@ -2414,7 +2414,7 @@ async function loadAKFlights(){
   const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
   const endDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
 
-  // fenêtre large pour le linking (hier soir -> demain matin)
+  // fenêtre large pour le linking
   const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000);
   const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000);
 
@@ -2427,7 +2427,6 @@ async function loadAKFlights(){
       fetchAK('DEP', linkFrom, linkTo),
     ]);
 
-    // cache pour applyAKFlight + linking
     window._akCache = { arr: arrAll, dep: depAll };
 
     const inToday = (f, flow) => {
@@ -2439,21 +2438,37 @@ async function loadAKFlights(){
       return t && t >= startDay.getTime() && t <= endDay.getTime();
     };
 
-    let flights = (flow === 'DEP' ? depAll : arrAll).filter(f => inToday(f, flow));
+    let flights = (flow === 'DEP' ? depAll : arrAll)
+      .filter(f => inToday(f, flow));
 
-    // DEP : virer si AOBT > 15 min
+    // DEP : supprimer si AOBT > 15 min
     if(flow === 'DEP'){
       flights = flights.filter(d => !depAobtTooOld(d, 15));
     }
 
-    // ARR : virer seulement si le DEP qui suit cette ARR est parti depuis > 15 min
+    // ARR : supprimer seulement si le DEP lié est parti > 15 min
     if(flow === 'ARR'){
       flights = flights.filter(arr => {
         const nextDep = findLinkedDepForArr(arr);
-        if(!nextDep) return true;                 // repart demain / pas de rota -> on garde
-        return !depAobtTooOld(nextDep, 15);       // on vire quand le DEP lié est trop vieux
+        if(!nextDep) return true;
+        return !depAobtTooOld(nextDep, 15);
       });
     }
+
+    // ===== TRI CHRONO =====
+    flights.sort((a,b)=>{
+      const ta = flow === 'DEP'
+        ? depTimeMs(a)
+        : arrTimeMs(a);
+      const tb = flow === 'DEP'
+        ? depTimeMs(b)
+        : arrTimeMs(b);
+
+      if(ta == null && tb == null) return 0;
+      if(ta == null) return 1;
+      if(tb == null) return -1;
+      return ta - tb;
+    });
 
     if(st) st.textContent = `${flights.length} vol(s)`;
     renderAKList(flights, flow);
