@@ -2401,6 +2401,17 @@ function depAobtTooOld(dep, minutes = 15){
   return (Date.now() - t) > minutes*60*1000;
 }
 
+function depAtotTooOld(dep, minutes = 15){
+  // ATOT = info Keeper uniquement (non affichée)
+  const iso = dep?.atot || dep?.aobt; // fallback sécurité
+  if(!iso) return false;
+
+  const t = Date.parse(iso);
+  if(!t) return false;
+
+  return (Date.now() - t) > minutes * 60 * 1000;
+}
+
 // ===== Chargement liste (vols du jour) + TRI + SUPPRESSION ATOT+15 =====
 async function loadAKFlights(){
   const flow = document.getElementById('akFlow')?.value || 'DEP';
@@ -2644,7 +2655,7 @@ function applyAKFlight(f, flow){
   closeAKPicker();
   showPopup("Vol importé", "#16a34a", 1600);
 }
-
+  
 /* validateForm */
 function validateForm() {
   const val = id => (document.getElementById(id)?.value || "");
