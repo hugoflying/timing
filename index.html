@@ -2508,9 +2508,7 @@ function renderAKList(flights, flow){
     let status = statusRaw;
 
     // ===== RENOMMAGE STATUTS =====
-    if(statusRaw === 'SCHEDULED'){
-      status = 'PRÉVU';
-    }
+    if(statusRaw === 'SCHEDULED') status = 'PRÉVU';
 
     if(flow === 'ARR'){
       if(statusRaw === 'TERMINATED') status = 'ARRIVÉ';
@@ -2521,10 +2519,23 @@ function renderAKList(flights, flow){
       if(statusRaw === 'IN_FLIGHT') status = 'DÉCOLLÉ';
     }
 
-    // ===== GRISAGE LIGNE =====
-    const isGrey =
-      (flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')) ||
-      (flow === 'DEP' && statusRaw === 'IN_FLIGHT');
+    // ===== COULEURS LIGNE =====
+    let bg = 'var(--card)';
+
+    // ARR : en vol → BLEU
+    if(flow === 'ARR' && statusRaw === 'IN_FLIGHT'){
+      bg = 'rgba(37, 99, 235, 0.12)'; // bleu
+    }
+
+    // ARR : arrivé → gris
+    if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
+      bg = 'rgba(0,0,0,.04)';
+    }
+
+    // DEP : décollé → gris
+    if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
+      bg = 'rgba(0,0,0,.04)';
+    }
 
     // ===== IATA PRINCIPAL =====
     const mainIata = (flow === 'ARR')
@@ -2538,7 +2549,7 @@ function renderAKList(flights, flow){
         style="
           box-shadow:none;
           border:1px solid rgba(0,0,0,.08);
-          background:${isGrey ? 'rgba(0,0,0,.04)' : 'var(--card)'};
+          background:${bg};
         ">
         <div class="card-content" style="padding:10px 12px;">
           <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
