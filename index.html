@@ -1644,60 +1644,65 @@ function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
 /* TIMING FIELDS – ARR / DEP */
 function generateTimingFields(){
-  const container=document.getElementById('timing-grid');
+  const container = document.getElementById('timing-grid');
   if(!container) return;
 
   const fieldHTML = (id,label,full=false)=>`
     <div class="column ${full ? 'is-12' : 'is-full-mobile is-one-third-tablet is-one-quarter-desktop'}">
       <div class="field">
         <label class="label">${label}</label>
-        <div class="control"><input class="input" type="time" id="${id}" onchange="updateAllCalculations()"></div>
+        <div class="control">
+          <input class="input" type="time" id="${id}" onchange="updateAllCalculations()">
+        </div>
         <div class="btn-actions">
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-          <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-          <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
+          <button class="button is-dark is-light" type="button"
+            onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
+          <button class="button is-link" type="button"
+            onclick="setNow('${id}');updateAllCalculations()">Now</button>
+          <button class="button is-dark is-light" type="button"
+            onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
         </div>
       </div>
     </div>`;
 
-  let arr = `
+  const arr = `
     <div class="card mb-4">
-      <header class="card-header"><p class="card-header-title">Arrivée</p></header>
-      <div class="card-content"><div class="columns is-multiline">
-        ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
-        ${fieldHTML('PremierDebarque','Premier débarqué')}
-        ${fieldHTML('DernierDebarque','Dernier débarqué')}
-        ${fieldHTML('ArriveeLiftArr','Arrivée lift')}
-        ${fieldHTML('DepartLiftArr','Départ lift')}
-      </div></div>
+      <header class="card-header">
+        <p class="card-header-title">Arrivée</p>
+      </header>
+      <div class="card-content">
+        <div class="columns is-multiline">
+          ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
+          ${fieldHTML('PremierDebarque','Premier débarqué')}
+          ${fieldHTML('DernierDebarque','Dernier débarqué')}
+          ${fieldHTML('ArriveeLiftArr','Arrivée lift')}
+          ${fieldHTML('DepartLiftArr','Départ lift')}
+        </div>
+      </div>
     </div>`;
 
-  let dep = `
+  const dep = `
     <div class="card">
-      <header class="card-header"><p class="card-header-title">Départ</p></header>
-      <div class="card-content"><div class="columns is-multiline">
-        ${fieldHTML('ArrPNT','Arrivée PNT')}
-        ${fieldHTML('ArrPNC','Arrivée PNC')}
-        ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
-        ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
-        ${fieldHTML('ArriveeLift','Arrivée lift')}
-        ${fieldHTML('DepartLift','Départ lift')}
-        ${fieldHTML('DepartFuel','Départ Avitair',true)}
-        ${fieldHTML('RemiseLID','Remise LID/LDS')}
-        ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
-      </div></div>
+      <header class="card-header">
+        <p class="card-header-title">Départ</p>
+      </header>
+      <div class="card-content">
+        <div class="columns is-multiline">
+          ${fieldHTML('ArrPNT','Arrivée PNT')}
+          ${fieldHTML('ArrPNC','Arrivée PNC')}
+          ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+          ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+          ${fieldHTML('ArriveeLift','Arrivée lift')}
+          ${fieldHTML('DepartLift','Départ lift')}
+          ${fieldHTML('DepartFuel','Départ Avitair',true)}
+          ${fieldHTML('RemiseLID','Remise LID/LDS')}
+          ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+        </div>
+      </div>
     </div>`;
 
-  const toggle = `
-    <div class="tabs is-toggle is-toggle-rounded is-centered mb-4">
-      <ul>
-        <li id="seg-arr-li"><a onclick="switchTimingPanel('arr')"><span>Arrivée</span></a></li>
-        <li id="seg-dep-li"><a onclick="switchTimingPanel('dep')"><span>Départ</span></a></li>
-      </ul>
-    </div>`;
-
-  container.innerHTML = toggle + `
-    <div id="panel-arr" style="display:none;">${arr}</div>
+  container.innerHTML = `
+    <div id="panel-arr">${arr}</div>
     <div id="panel-dep" style="display:none;">${dep}</div>
   `;
 
