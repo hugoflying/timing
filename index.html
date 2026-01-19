@@ -307,6 +307,31 @@ body.dark #akPopover{
   display: none;
 }
 
+/* ===== AK picker : header figé ===== */
+#akPopover{
+  display: none;
+  flex-direction: column;
+}
+
+#akPopover .ak-header{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  background: var(--card);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+body.dark #akPopover .ak-header{
+  border-bottom-color: rgba(255,255,255,.10);
+}
+
+#akList{
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
 /* ===== LOAD popovers (FULLSCREEN POPUP) ===== */
 #loadArrPopover,
 #loadExpPopover,
@@ -2474,7 +2499,7 @@ function openAKPicker(){
   const b = document.getElementById('akBackdrop');
   const p = document.getElementById('akPopover');
   if(b) b.style.display = '';
-  if(p) p.style.display = 'block';
+  if(p) p.style.display = 'flex'; // important pour header sticky + liste scrollable
   loadAKFlights();
 }
 function closeAKPicker(){
