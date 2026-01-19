@@ -2312,16 +2312,17 @@ const HOME_IATA  = "BVA";
 
 // Ouvrir/Fermer
 function openAKPicker(){
-  const m = document.getElementById('akModal');
-  if(m) m.classList.add('is-active');
-  document.documentElement.classList.add('is-clipped');
+  const b = document.getElementById('akBackdrop');
+  const p = document.getElementById('akPopover');
+  if(b) b.style.display = '';
+  if(p) p.style.display = 'block';
   loadAKFlights();
 }
-
 function closeAKPicker(){
-  const m = document.getElementById('akModal');
-  if(m) m.classList.remove('is-active');
-  document.documentElement.classList.remove('is-clipped');
+  const b = document.getElementById('akBackdrop');
+  const p = document.getElementById('akPopover');
+  if(p) p.style.display = 'none';
+  if(b) b.style.display = 'none';
 }
 
 async function fetchAK(flow, from, to){
@@ -2785,43 +2786,30 @@ function clearAutoSave() {
 }
 </script>
 
-<!-- ===== Airport Keeper Picker (Bulma Modal) ===== -->
-<div id="akModal" class="modal">
-  <div class="modal-background" onclick="closeAKPicker()"></div>
+<!-- ===== Airport Keeper Picker ===== -->
+<div id="akBackdrop" onclick="closeAKPicker()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.25); z-index:4600;"></div>
 
-  <div class="modal-card" style="width:min(820px, calc(100vw - 28px));">
-    <header class="modal-card-head">
-      <p class="modal-card-title" style="font-weight:900;">Airport Keeper — vols du jour</p>
-      <button class="delete" aria-label="close" type="button" onclick="closeAKPicker()"></button>
-    </header>
-
-    <section class="modal-card-body">
-      <div class="field is-grouped is-grouped-multiline" style="margin-bottom:12px;">
-        <div class="control">
-          <div class="select is-small">
-            <select id="akFlow" onchange="loadAKFlights()">
-              <option value="DEP" selected>DEP</option>
-              <option value="ARR">ARR</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="control">
-          <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
-        </div>
-
-        <div class="control">
-          <span class="tag is-light" id="akStatus">—</span>
-        </div>
-      </div>
-
-      <div id="akList" style="max-height:60vh; overflow:auto;"></div>
-    </section>
-
-    <footer class="modal-card-foot" style="justify-content:flex-end;">
-      <button class="button is-light" type="button" onclick="closeAKPicker()">Fermer</button>
-    </footer>
+<div id="akPopover" style="display:none; position:fixed; top:calc(var(--fixed-header-h) + 16px); left:50%; transform:translateX(-50%);
+  width:min(720px, calc(100vw - 28px)); background:var(--card); box-shadow:var(--shadow); border-radius:16px; z-index:4700; padding:12px;
+  border:1px solid rgba(0,0,0,.08);">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
+    <strong style="font-weight:900;">Airport Keeper — vols du jour</strong>
+    <button class="button is-small is-light" type="button" onclick="closeAKPicker()">Fermer</button>
   </div>
+
+ <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+  <div class="select">
+    <select id="akFlow" onchange="loadAKFlights()">
+      <option value="DEP" selected>DEP</option>
+      <option value="ARR">ARR</option>
+    </select>
+  </div>
+
+  <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
+  <span class="tag is-light" id="akStatus">—</span>
+</div>
+
+  <div id="akList" style="max-height:60vh; overflow:auto;"></div>
 </div>
 
 </body>
