@@ -2314,12 +2314,14 @@ const HOME_IATA  = "BVA";
 function openAKPicker(){
   const m = document.getElementById('akModal');
   if(m) m.classList.add('is-active');
+  document.documentElement.classList.add('is-clipped');
   loadAKFlights();
 }
 
 function closeAKPicker(){
   const m = document.getElementById('akModal');
   if(m) m.classList.remove('is-active');
+  document.documentElement.classList.remove('is-clipped');
 }
 
 async function fetchAK(flow, from, to){
