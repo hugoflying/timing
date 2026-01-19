@@ -277,6 +277,33 @@ textarea.si-uppercase{
 .chip-btn{ border: none; cursor: pointer; }
 .chip-btn:active{ transform: translateY(1px); }
 
+/* ===== AK picker (FULLSCREEN POPUP) ===== */
+#akPopover{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
+  width: auto;
+  transform: none;
+
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+
+  z-index: 4700;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+
+  display: none;
+  overflow: auto;
+}
+
+body.dark #akPopover{
+  border-color: rgba(255,255,255,.10);
+}
+
+#akBackdrop{
+  background: rgba(0,0,0,.35) !important;
+}
+
 /* ===== LOAD popovers (FULLSCREEN POPUP) ===== */
 #loadArrPopover,
 #loadExpPopover,
@@ -2982,13 +3009,7 @@ function clearAutoSave() {
 <!-- ===== Airport Keeper Picker ===== -->
 <div id="akBackdrop" onclick="closeAKPicker()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.25); z-index:4600;"></div>
 
-<div id="akPopover" style="display:none; position:fixed; top:calc(var(--fixed-header-h) + 16px); left:50%; transform:translateX(-50%);
-  width:min(720px, calc(100vw - 28px)); background:var(--card); box-shadow:var(--shadow); border-radius:16px; z-index:4700; padding:12px;
-  border:1px solid rgba(0,0,0,.08);">
-  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
-    <strong style="font-weight:900;">Airport Keeper — vols du jour</strong>
-    <button class="button is-small is-light" type="button" onclick="closeAKPicker()">Fermer</button>
-  </div>
+<div id="akPopover">
 
  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
   <div class="select">
