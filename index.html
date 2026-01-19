@@ -550,82 +550,62 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <!-- PAX (MALE/FEMALE/ADULT/CHILD/INFANT/TOB) -->
+  <!-- PASSAGERS -->
   <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
     <div class="field">
       <label class="label">MALE</label>
-      <div class="control"><input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      <input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
     </div>
     <div class="field">
       <label class="label">FEMALE</label>
-      <div class="control"><input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      <input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
     </div>
     <div class="field">
       <label class="label">ADULT</label>
-      <div class="control"><input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      <input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
     </div>
 
     <div class="field">
       <label class="label">CHILD</label>
-      <div class="control"><input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      <input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
     </div>
     <div class="field">
       <label class="label">INFANT</label>
-      <div class="control"><input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      <input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
     </div>
     <div class="field">
       <label class="label">TOB</label>
-      <div class="control"><input class="input" id="FinalTOB" type="text" readonly></div>
+      <input class="input has-text-weight-bold" id="FinalTOB" type="text" readonly>
     </div>
   </div>
 
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
+  <hr>
 
-  <!-- ZONES OA/OB/OC/OD -->
-  <div class="grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
-    <div class="field">
-      <label class="label">OA</label>
-      <div class="control"><input class="input" id="FinalOA" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
-    </div>
-    <div class="field">
-      <label class="label">OB</label>
-      <div class="control"><input class="input" id="FinalOB" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
-    </div>
-    <div class="field">
-      <label class="label">OC</label>
-      <div class="control"><input class="input" id="FinalOC" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
-    </div>
-    <div class="field">
-      <label class="label">OD</label>
-      <div class="control"><input class="input" id="FinalOD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
-    </div>
+  <!-- ZONES -->
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="field"><label class="label">OA</label><input class="input" id="FinalOA" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">OB</label><input class="input" id="FinalOB" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">OC</label><input class="input" id="FinalOC" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">OD</label><input class="input" id="FinalOD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
   </div>
 
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
+  <hr>
 
   <!-- BAGS / POIDS / GB -->
   <div class="grid">
     <div class="field">
       <label class="label">BAGS</label>
-      <div class="control">
-        <input class="input" id="FinalBAGS" inputmode="numeric"
-               oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()">
-      </div>
+      <input class="input" id="FinalBAGS" inputmode="numeric"
+        oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()">
     </div>
-
     <div class="field">
       <label class="label">POIDS</label>
-      <div class="control">
-        <input class="input" id="FinalPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
-      </div>
+      <input class="input" id="FinalPOIDS" inputmode="numeric" readonly>
     </div>
-
     <div class="field">
       <label class="label">GB</label>
-      <div class="control">
-        <input class="input" id="FinalGB" inputmode="numeric"
-               oninput="digitsOnly(this); updateFinalWeightIfNeeded()">
-      </div>
+      <input class="input" id="FinalGB" inputmode="numeric"
+        oninput="digitsOnly(this); updateFinalWeightIfNeeded()">
     </div>
   </div>
 
@@ -637,14 +617,12 @@ body.dark .timeline-scroll{
     <div class="field"><label class="label">H4</label><input class="input" id="FinalH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
   </div>
 
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
+  <hr>
 
   <!-- SI -->
   <div class="field">
     <label class="label">SI</label>
-    <div class="control">
-      <textarea class="textarea" id="FinalSI" placeholder="Special Information…"></textarea>
-    </div>
+    <textarea class="textarea" id="FinalSI" placeholder="Special Information…"></textarea>
   </div>
 </div>
 
@@ -1066,6 +1044,7 @@ function updateHBagsValidity(mode){
 }
 
 /* ===== POIDS auto FR / RK : (BAGS + GB) * 13 ===== */
+/* ===== POIDS auto FR / RK : FINAL ===== */
 function updateFinalWeightIfNeeded(){
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   if(cie !== 'FR' && cie !== 'RK') return;
@@ -1074,17 +1053,40 @@ function updateFinalWeightIfNeeded(){
   const gb   = parseInt(document.getElementById('FinalGB')?.value   || '0', 10);
 
   const poids = (bags + gb) * 13;
-
   const poidsEl = document.getElementById('FinalPOIDS');
   if(!poidsEl) return;
 
-  // Si tout est vide -> vide
-  if((document.getElementById('FinalBAGS')?.value || '') === '' && (document.getElementById('FinalGB')?.value || '') === ''){
+  if(
+    (document.getElementById('FinalBAGS')?.value || '') === '' &&
+    (document.getElementById('FinalGB')?.value || '') === ''
+  ){
     poidsEl.value = '';
     return;
   }
 
   poidsEl.value = String(poids);
+}
+
+/* ===== POIDS auto FR / RK : ARR + EXP ===== */
+function updateArrExpWeightIfNeeded(){
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  if(cie !== 'FR' && cie !== 'RK') return;
+
+  // ARR
+  const bArr = document.getElementById('LoadBAGS');
+  const pArr = document.getElementById('LoadPOIDS');
+  if(bArr && pArr){
+    const bags = parseInt(bArr.value || '0', 10);
+    pArr.value = (bArr.value || '') === '' ? '' : String(bags * 13);
+  }
+
+  // EXP
+  const bExp = document.getElementById('ExpBAGS');
+  const pExp = document.getElementById('ExpPOIDS');
+  if(bExp && pExp){
+    const bags = parseInt(bExp.value || '0', 10);
+    pExp.value = (bExp.value || '') === '' ? '' : String(bags * 13);
+  }
 }
 
 /* ===== COUNTDOWN (CD) ===== */
@@ -1733,10 +1735,11 @@ function updateAllCalculations() {
   updateLID();
   updateLIDVisibility();
 
-  // ✅ AJOUTS LOAD
   updateHBagsValidity('arr');
   updateHBagsValidity('exp');
   updateHBagsValidity('final');
+
+  updateArrExpWeightIfNeeded();
   updateFinalWeightIfNeeded();
 
   ensureCountdownRunning();
