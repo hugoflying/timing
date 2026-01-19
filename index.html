@@ -435,6 +435,7 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
+  <!-- PAX / BAGS / CARGO -->
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
@@ -446,27 +447,36 @@ body.dark .timeline-scroll{
     <div class="field">
       <label class="label">BAGS</label>
       <div class="control">
-        <input class="input" id="LoadBAGS" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+        <input class="input" id="LoadBAGS" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); updateHBagsValidity('arr')">
       </div>
     </div>
 
     <div class="field">
       <label class="label">CARGO</label>
       <div class="control">
-        <input class="input" id="LoadCARGO" type="text" placeholder="">
+        <input class="input" id="LoadCARGO" type="text">
       </div>
     </div>
   </div>
 
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
-
-  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
-    <strong style="font-weight:900;">PRM</strong>
-    <button class="button is-small is-link" type="button" onclick="addPRMRow('arr')">+ Ajouter</button>
+  <!-- H1 à H4 -->
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
+    <div class="field"><label class="label">H1</label><input class="input" id="LoadH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H2</label><input class="input" id="LoadH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H3</label><input class="input" id="LoadH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H4</label><input class="input" id="LoadH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
   </div>
 
-  <input type="hidden" id="LoadPRMData" value="[]">
-  <div id="LoadPRMRows"></div>
+  <hr>
+
+  <!-- SI -->
+  <div class="field">
+    <label class="label">SI</label>
+    <div class="control">
+      <textarea class="textarea" id="LoadSI" placeholder="Special Information…"></textarea>
+    </div>
+  </div>
 </div>
 
 <!-- ===== LOAD EXP popover ===== -->
@@ -476,6 +486,7 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
+  <!-- PAX / BAGS / CARGO -->
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
@@ -487,27 +498,36 @@ body.dark .timeline-scroll{
     <div class="field">
       <label class="label">BAGS</label>
       <div class="control">
-        <input class="input" id="ExpBAGS" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+        <input class="input" id="ExpBAGS" type="text" inputmode="numeric" placeholder="0"
+               oninput="digitsOnly(this); updateHBagsValidity('exp')">
       </div>
     </div>
 
     <div class="field">
       <label class="label">CARGO</label>
       <div class="control">
-        <input class="input" id="ExpCARGO" type="text" placeholder="">
+        <input class="input" id="ExpCARGO" type="text">
       </div>
     </div>
   </div>
 
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
-
-  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
-    <strong style="font-weight:900;">PRM</strong>
-    <button class="button is-small is-link" type="button" onclick="addPRMRow('exp')">+ Ajouter</button>
+  <!-- H1 à H4 -->
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
+    <div class="field"><label class="label">H1</label><input class="input" id="ExpH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+    <div class="field"><label class="label">H2</label><input class="input" id="ExpH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+    <div class="field"><label class="label">H3</label><input class="input" id="ExpH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+    <div class="field"><label class="label">H4</label><input class="input" id="ExpH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
   </div>
 
-  <input type="hidden" id="ExpPRMData" value="[]">
-  <div id="ExpPRMRows"></div>
+  <hr>
+
+  <!-- SI -->
+  <div class="field">
+    <label class="label">SI</label>
+    <div class="control">
+      <textarea class="textarea" id="ExpSI" placeholder="Special Information…"></textarea>
+    </div>
+  </div>
 </div>
 
 <!-- ===== LOAD FINAL popover ===== -->
@@ -517,91 +537,47 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-    <div class="field">
-      <label class="label">MALE</label>
-      <div class="control">
-        <input class="input" id="FinalMALE" type="text" inputmode="numeric" placeholder="0"
-               oninput="digitsOnly(this); syncAdultIfNeeded(); updateFinalTOB();">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">FEMALE</label>
-      <div class="control">
-        <input class="input" id="FinalFEMALE" type="text" inputmode="numeric" placeholder="0"
-               oninput="digitsOnly(this); syncAdultIfNeeded(); updateFinalTOB();">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">ADULT</label>
-      <div class="control">
-        <input class="input" id="FinalADULT" type="text" inputmode="numeric" placeholder="0"
-               oninput="digitsOnly(this); updateFinalTOB();">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">CHILD</label>
-      <div class="control">
-        <input class="input" id="FinalCHILD" type="text" inputmode="numeric" placeholder="0"
-               oninput="digitsOnly(this); updateFinalTOB();">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">INFANT</label>
-      <div class="control">
-        <input class="input" id="FinalINFANT" type="text" inputmode="numeric" placeholder="0"
-               oninput="digitsOnly(this); updateFinalTOB();">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">TOB</label>
-      <div class="control">
-        <input class="input is-valid" id="FinalTOB" type="text" readonly style="font-weight:900; text-align:center;">
-      </div>
-    </div>
-  </div>
-
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
-
-  <div class="grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
-    <div class="field">
-      <label class="label">OA</label>
-      <div class="control"><input class="input" id="FinalOA" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
-    </div>
-    <div class="field">
-      <label class="label">OB</label>
-      <div class="control"><input class="input" id="FinalOB" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
-    </div>
-    <div class="field">
-      <label class="label">OC</label>
-      <div class="control"><input class="input" id="FinalOC" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
-    </div>
-    <div class="field">
-      <label class="label">OD</label>
-      <div class="control"><input class="input" id="FinalOD" type="text" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB();"></div>
-    </div>
-  </div>
-
-  <!-- NEW section -->
-  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.85;">
-
-  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+  <!-- BAGS / POIDS / GB -->
+  <div class="grid">
     <div class="field">
       <label class="label">BAGS</label>
-      <div class="control"><input class="input" id="FinalBAGS" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+      <div class="control">
+        <input class="input" id="FinalBAGS" inputmode="numeric"
+               oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()">
+      </div>
     </div>
+
     <div class="field">
       <label class="label">POIDS</label>
-      <div class="control"><input class="input" id="FinalPOIDS" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+      <div class="control">
+        <input class="input" id="FinalPOIDS" inputmode="numeric">
+      </div>
     </div>
+
     <div class="field">
       <label class="label">GB</label>
-      <div class="control"><input class="input" id="FinalGB" type="text" inputmode="numeric" oninput="digitsOnly(this);"></div>
+      <div class="control">
+        <input class="input" id="FinalGB" inputmode="numeric"
+               oninput="digitsOnly(this); updateFinalWeightIfNeeded()">
+      </div>
+    </div>
+  </div>
+
+  <!-- H1 à H4 -->
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
+    <div class="field"><label class="label">H1</label><input class="input" id="FinalH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+    <div class="field"><label class="label">H2</label><input class="input" id="FinalH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+    <div class="field"><label class="label">H3</label><input class="input" id="FinalH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+    <div class="field"><label class="label">H4</label><input class="input" id="FinalH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+  </div>
+
+  <hr>
+
+  <!-- SI -->
+  <div class="field">
+    <label class="label">SI</label>
+    <div class="control">
+      <textarea class="textarea" id="FinalSI" placeholder="Special Information…"></textarea>
     </div>
   </div>
 </div>
@@ -999,6 +975,52 @@ let lastDLChanged = 1;
 /* digits only */
 function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g,''); }
 
+/* ===== H1–H4 vs BAGS (ARR / EXP / FINAL) ===== */
+function updateHBagsValidity(mode){
+  const map = {
+    arr:   { bags:'LoadBAGS',  h:['LoadH1','LoadH2','LoadH3','LoadH4'] },
+    exp:   { bags:'ExpBAGS',   h:['ExpH1','ExpH2','ExpH3','ExpH4'] },
+    final: { bags:'FinalBAGS', h:['FinalH1','FinalH2','FinalH3','FinalH4'] },
+  };
+  const cfg = map[mode];
+  if(!cfg) return;
+
+  const bagsEl = document.getElementById(cfg.bags);
+  if(!bagsEl) return;
+
+  const bags = parseInt(bagsEl.value || '0', 10);
+  let sum = 0;
+
+  cfg.h.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) sum += parseInt(el.value || '0', 10);
+  });
+
+  bagsEl.classList.toggle('is-invalid', bags > 0 && sum !== bags);
+}
+
+/* ===== POIDS auto FR / RK : (BAGS + GB) * 13 ===== */
+function updateFinalWeightIfNeeded(){
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  if(cie !== 'FR' && cie !== 'RK') return;
+
+  const bags = parseInt(document.getElementById('FinalBAGS')?.value || '0', 10);
+  const gb   = parseInt(document.getElementById('FinalGB')?.value   || '0', 10);
+
+  const poids = (bags + gb) * 13;
+
+  const poidsEl = document.getElementById('FinalPOIDS');
+  if(!poidsEl) return;
+
+  // Si tout est vide -> vide
+  if((document.getElementById('FinalBAGS')?.value || '') === '' && (document.getElementById('FinalGB')?.value || '') === ''){
+    poidsEl.value = '';
+    return;
+  }
+
+  poidsEl.value = String(poids);
+}
+
 /* ===== COUNTDOWN (CD) ===== */
 let countdownTimer = null;
 
@@ -1179,106 +1201,10 @@ function showPopover(id){
   const p = document.getElementById(id);
   if(p) p.style.display = 'block';
 }
-function toggleLoadArr(){ showPopover('loadArrPopover'); renderPRMRows('arr'); }
-function toggleLoadExp(){ showPopover('loadExpPopover'); renderPRMRows('exp'); }
+function toggleLoadArr(){ showPopover('loadArrPopover'); }
+function toggleLoadExp(){ showPopover('loadExpPopover'); }
 function toggleLoadFinal(){ showPopover('loadFinalPopover'); updateFinalTOB(); }
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hideAllLoadPopovers(); });
-
-/* ===== PRM multi-lignes (ARR/EXP) ===== */
-const PRM_TYPES = ['WCHR','WCHS','WCHC','BLND','DPNA','UMNR','OTHER'];
-
-function getPRMIds(mode){
-  if(mode === 'exp') return { dataId:'ExpPRMData', rowsId:'ExpPRMRows' };
-  return { dataId:'LoadPRMData', rowsId:'LoadPRMRows' };
-}
-function readPRMData(mode){
-  const {dataId} = getPRMIds(mode);
-  const raw = document.getElementById(dataId)?.value || '[]';
-  try{
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  }catch(e){ return []; }
-}
-function writePRMData(mode, arr){
-  const {dataId} = getPRMIds(mode);
-  const el = document.getElementById(dataId);
-  if(el) el.value = JSON.stringify(arr || []);
-}
-function addPRMRow(mode){
-  const arr = readPRMData(mode);
-  arr.push({ type:'WCHR', seat:'' });
-  writePRMData(mode, arr);
-  renderPRMRows(mode);
-  saveCurrentTabData();
-}
-function removePRMRow(mode, idx){
-  const arr = readPRMData(mode);
-  arr.splice(idx,1);
-  writePRMData(mode, arr);
-  renderPRMRows(mode);
-  saveCurrentTabData();
-}
-function renderPRMRows(mode){
-  const {rowsId} = getPRMIds(mode);
-  const wrap = document.getElementById(rowsId);
-  if(!wrap) return;
-
-  const data = readPRMData(mode);
-  if(!data.length){
-    wrap.innerHTML = `<p class="has-text-grey" style="margin:6px 0 0;">Aucune assistance.</p>`;
-    return;
-  }
-
-  wrap.innerHTML = data.map((row, idx)=>{
-    const opts = PRM_TYPES.map(t=>`<option value="${t}" ${row.type===t?'selected':''}>${t}</option>`).join('');
-    return `
-      <div class="prm-row">
-        <div class="field">
-          <label class="label">TYPE</label>
-          <div class="control select is-fullwidth">
-            <select data-mode="${mode}" data-idx="${idx}" data-k="type" onchange="onPRMChange(this)">${opts}</select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">SIÈGE</label>
-          <div class="control">
-            <input class="input uppercase" type="text" maxlength="4"
-              value="${(row.seat||'')}"
-              data-mode="${mode}" data-idx="${idx}" data-k="seat"
-              oninput="onPRMInput(this)">
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">&nbsp;</label>
-          <button class="button is-light" type="button" onclick="removePRMRow('${mode}',${idx})">Suppr.</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-function onPRMChange(sel){
-  const mode = sel.getAttribute('data-mode');
-  const idx = parseInt(sel.getAttribute('data-idx'),10);
-  const k = sel.getAttribute('data-k');
-  const data = readPRMData(mode);
-  if(!data[idx]) return;
-  data[idx][k] = sel.value;
-  writePRMData(mode, data);
-  saveCurrentTabData();
-}
-function onPRMInput(inp){
-  inp.value = (inp.value||'').toUpperCase();
-  const mode = inp.getAttribute('data-mode');
-  const idx = parseInt(inp.getAttribute('data-idx'),10);
-  const k = inp.getAttribute('data-k');
-  const data = readPRMData(mode);
-  if(!data[idx]) return;
-  data[idx][k] = inp.value;
-  writePRMData(mode, data);
-  saveCurrentTabData();
-}
 
 /* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
 function asInt(id){
@@ -1342,9 +1268,11 @@ function updateFinalTOB(){
 /* INIT */
 function initForm(){
   renderTabs();
-  let lastTab=localStorage.getItem('lastTabId');
-  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
-  if(tabs.length===0) createNewTab();
+
+  let lastTab = localStorage.getItem('lastTabId');
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+
+  if(tabs.length === 0) createNewTab();
   else if(lastTab && tabs.includes(parseInt(lastTab))) switchTab(parseInt(lastTab));
   else switchTab(tabs[0]);
 
@@ -1362,26 +1290,45 @@ function initForm(){
 
   setupUppercaseInputs(['NVol','From','To','Immat','RZA']);
 
-  const storedDark = (localStorage.getItem('modeDark')||'0')==='1';
-  const storedUTC  = (localStorage.getItem('modeUTC')||'0')==='1';
+  const storedDark = (localStorage.getItem('modeDark')||'0') === '1';
+  const storedUTC  = (localStorage.getItem('modeUTC')||'0') === '1';
   setDarkMode(storedDark, true);
   setTimeModeUTC(storedUTC, true);
 
   [
     'AIBT','SOBT','SIBT','AOBT','CTOT','ArrPNT','ArrPNC','TypeAvion',
-    'LoadPAX','LoadBAGS','LoadCARGO','ExpPAX','ExpBAGS','ExpCARGO',
-    'FinalMALE','FinalFEMALE','FinalADULT','FinalCHILD','FinalINFANT','FinalOA','FinalOB','FinalOC','FinalOD',
+    'LoadPAX','LoadBAGS','LoadCARGO',
+    'ExpPAX','ExpBAGS','ExpCARGO',
+    'FinalMALE','FinalFEMALE','FinalADULT','FinalCHILD','FinalINFANT',
+    'FinalOA','FinalOB','FinalOC','FinalOD',
     'FinalBAGS','FinalPOIDS','FinalGB'
   ].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
-    el.addEventListener('input', ()=>{ updateAllCalculations(); updateFinalTOB(); });
+    el.addEventListener('input', ()=>{
+      updateAllCalculations();
+      updateFinalTOB();
+    });
+  });
+
+  // ✅ LOAD ARR / EXP / FINAL : H1–H4 / BAGS / POIDS auto
+  [
+    'LoadBAGS','LoadH1','LoadH2','LoadH3','LoadH4',
+    'ExpBAGS','ExpH1','ExpH2','ExpH3','ExpH4',
+    'FinalBAGS','FinalH1','FinalH2','FinalH3','FinalH4',
+    'FinalGB'
+  ].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', updateAllCalculations);
   });
 
   const scroller = document.getElementById('timelineScroll');
   if(scroller){
     let isDown=false, startX=0, startLeft=0;
-    scroller.addEventListener('mousedown', e=>{ isDown=true; startX=e.clientX; startLeft=scroller.scrollLeft; });
+    scroller.addEventListener('mousedown', e=>{
+      isDown=true; startX=e.clientX; startLeft=scroller.scrollLeft;
+    });
     scroller.addEventListener('mouseleave', ()=>{ isDown=false; });
     scroller.addEventListener('mouseup', ()=>{ isDown=false; });
     scroller.addEventListener('mousemove', e=>{
@@ -1395,7 +1342,7 @@ function initForm(){
     });
   }
 
-  if (currentTabId) loadTabData(currentTabId);
+  if(currentTabId) loadTabData(currentTabId);
   setDefaultDateToTodayIfEmpty();
 
   updateHeaderOffset();
@@ -1407,8 +1354,6 @@ function initForm(){
   renderTimeline();
   ensureCountdownRunning();
 
-  renderPRMRows('arr');
-  renderPRMRows('exp');
   updateFinalTOB();
 }
 
@@ -1538,8 +1483,6 @@ function clearFormFields(){
 
   updateAllCalculations();
   updateFinalTOB();
-  renderPRMRows('arr');
-  renderPRMRows('exp');
 }
 
 function saveCurrentTabData(){
@@ -1708,6 +1651,13 @@ function updateAllCalculations() {
   redistributeDL();
   updateLID();
   updateLIDVisibility();
+
+  // ✅ AJOUTS LOAD
+  updateHBagsValidity('arr');
+  updateHBagsValidity('exp');
+  updateHBagsValidity('final');
+  updateFinalWeightIfNeeded();
+
   ensureCountdownRunning();
   renderTimeline();
   updateHeaderOffset();
@@ -2713,9 +2663,10 @@ function applyAKFlight(f, flow){
 /* validateForm */
 function validateForm() {
   const val = id => (document.getElementById(id)?.value || "");
+
   const dateRaw = val("Date");
-  const [yyyy, mm, dd] = dateRaw.split("-");
-  const dateTitre = `${dd}-${mm}-${yyyy}`;
+  const [yyyy, mm, dd] = (dateRaw || "").split("-");
+  const dateTitre = (yyyy && mm && dd) ? `${dd}-${mm}-${yyyy}` : "";
 
   const cie = val("Cie");
   const vol = val("NVol");
@@ -2728,31 +2679,48 @@ function validateForm() {
   const titre = `[TIMING] ${dateTitre} / ${cie}${vol} ${from}-${to} / ${immat} / ${rza}`;
 
   const liftArrivee = `${val("ArriveeLiftArr")} - ${val("DepartLiftArr")}`;
-  const liftDepart = `${val("ArriveeLift")} - ${val("DepartLift")}`;
+  const liftDepart  = `${val("ArriveeLift")} - ${val("DepartLift")}`;
 
+  // DL block
   const dlLines = [];
   if (val("DLcode1")) dlLines.push(`DL (${val("DLcode1")}) : ${val("DLduree1")} min`);
   if (val("DLcode2")) dlLines.push(`DL (${val("DLcode2")}) : ${val("DLduree2")} min`);
   if (val("DLcode3")) dlLines.push(`DL (${val("DLcode3")}) : ${val("DLduree3")} min`);
-  const dlBlock = dlLines.length > 0 ? `\n== DL ==\n\n${dlLines.join("\n")}\n` : "";
+  const dlBlock = dlLines.length ? `\n== DL ==\n\n${dlLines.join("\n")}\n` : "";
 
-  const faitsBlock = val("FaitsSaillants").trim() !== "" ? `\n== FAITS SAILLANTS ==\n\n${val("FaitsSaillants")}\n` : "";
+  // Faits saillants
+  const faitsTxt = (val("FaitsSaillants") || "").trim();
+  const faitsBlock = faitsTxt ? `\n== FAITS SAILLANTS ==\n\n${faitsTxt}\n` : "";
 
-  const prmArr = (() => {
-    try{
-      const a = JSON.parse(val("LoadPRMData") || "[]");
-      if(!a.length) return "PRM : ";
-      return a.map(x=>`- ${x.type || 'OTHER'} ${x.seat || ''}`.trim()).join("\n");
-    }catch(e){ return "PRM : "; }
-  })();
+  // LOAD blocks (avec H1..H4 + SI)
+  const loadArrBlock =
+`== LOAD ARR ==
+PAX : ${val("LoadPAX")}
+BAGS : ${val("LoadBAGS")}
+CARGO : ${val("LoadCARGO")}
+H1 : ${val("LoadH1")} / H2 : ${val("LoadH2")} / H3 : ${val("LoadH3")} / H4 : ${val("LoadH4")}
+SI : ${val("LoadSI")}`;
 
-  const prmExp = (() => {
-    try{
-      const a = JSON.parse(val("ExpPRMData") || "[]");
-      if(!a.length) return "PRM : ";
-      return a.map(x=>`- ${x.type || 'OTHER'} ${x.seat || ''}`.trim()).join("\n");
-    }catch(e){ return "PRM : "; }
-  })();
+  const loadExpBlock =
+`== LOAD EXP ==
+PAX : ${val("ExpPAX")}
+BAGS : ${val("ExpBAGS")}
+CARGO : ${val("ExpCARGO")}
+H1 : ${val("ExpH1")} / H2 : ${val("ExpH2")} / H3 : ${val("ExpH3")} / H4 : ${val("ExpH4")}
+SI : ${val("ExpSI")}`;
+
+  const loadFinalBlock =
+`== LOAD FINAL ==
+MALE : ${val("FinalMALE")}
+FEMALE : ${val("FinalFEMALE")}
+ADULT : ${val("FinalADULT")}
+CHILD : ${val("FinalCHILD")}
+INFANT : ${val("FinalINFANT")}
+TOB : ${val("FinalTOB")}
+OA : ${val("FinalOA")} / OB : ${val("FinalOB")} / OC : ${val("FinalOC")} / OD : ${val("FinalOD")}
+BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB")}
+H1 : ${val("FinalH1")} / H2 : ${val("FinalH2")} / H3 : ${val("FinalH3")} / H4 : ${val("FinalH4")}
+SI : ${val("FinalSI")}`;
 
   const body =
 `Vol : ${cie}${vol}
@@ -2791,27 +2759,11 @@ Lift départ  : ${liftDepart}
 Remise LID/LDS : ${val("RemiseLID")}
 Fermeture porte avion : ${val("FermeturePorteAvion")}
 
-== LOAD ARR ==
-PAX : ${val("LoadPAX")}
-BAGS : ${val("LoadBAGS")}
-CARGO : ${val("LoadCARGO")}
-${prmArr}
+${loadArrBlock}
 
-== LOAD EXP ==
-PAX : ${val("ExpPAX")}
-BAGS : ${val("ExpBAGS")}
-CARGO : ${val("ExpCARGO")}
-${prmExp}
+${loadExpBlock}
 
-== LOAD FINAL ==
-MALE : ${val("FinalMALE")}
-FEMALE : ${val("FinalFEMALE")}
-ADULT : ${val("FinalADULT")}
-CHILD : ${val("FinalCHILD")}
-INFANT : ${val("FinalINFANT")}
-TOB : ${val("FinalTOB")}
-OA : ${val("FinalOA")} / OB : ${val("FinalOB")} / OC : ${val("FinalOC")} / OD : ${val("FinalOD")}
-BAGS : ${val("FinalBAGS")} / POIDS : ${val("FinalPOIDS")} / GB : ${val("FinalGB")}
+${loadFinalBlock}
 
 ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
 
