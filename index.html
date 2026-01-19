@@ -172,7 +172,6 @@ body.dark .fixed-header{
 #timer-tobt{ background:#16a34a !important; }
 #timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
 #timer-cd{ background:#93c5fd !important; color:#111 !important; }
-}
 
 /* CD en dépassement (après 0) */
 #timer-cd.cd-over{
@@ -301,7 +300,11 @@ body.dark #akPopover{
 }
 
 #akBackdrop{
-  background: rgba(0,0,0,.35) !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 4600;
+  display: none;
 }
 
 /* ===== LOAD popovers (FULLSCREEN POPUP) ===== */
@@ -3007,23 +3010,31 @@ function clearAutoSave() {
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
-<div id="akBackdrop" onclick="closeAKPicker()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.25); z-index:4600;"></div>
+<div id="akBackdrop" onclick="closeAKPicker()"></div>
 
 <div id="akPopover">
+  <div class="ak-header" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+    <div class="select">
+      <select id="akFlow" onchange="loadAKFlights()">
+        <option value="DEP" selected>DEP</option>
+        <option value="ARR">ARR</option>
+      </select>
+    </div>
 
- <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
-  <div class="select">
-    <select id="akFlow" onchange="loadAKFlights()">
-      <option value="DEP" selected>DEP</option>
-      <option value="ARR">ARR</option>
-    </select>
+    <button class="button is-small is-link" type="button" onclick="loadAKFlights()">
+      Rafraîchir
+    </button>
+
+    <span class="tag is-light" id="akStatus">—</span>
+
+    <button class="button is-small is-light" type="button"
+            style="margin-left:auto"
+            onclick="closeAKPicker()">
+      Fermer
+    </button>
   </div>
 
-  <button class="button is-small is-link" type="button" onclick="loadAKFlights()">Rafraîchir</button>
-  <span class="tag is-light" id="akStatus">—</span>
-</div>
-
-  <div id="akList" style="max-height:60vh; overflow:auto;"></div>
+  <div id="akList"></div>
 </div>
 
 </body>
