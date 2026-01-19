@@ -1701,10 +1701,51 @@ function generateTimingFields(){
       </div>
     </div>`;
 
-  container.innerHTML = `
-    <div id="panel-arr">${arr}</div>
-    <div id="panel-dep" style="display:none;">${dep}</div>
-  `;
+  // ✅ on garde le toggle switch Bulma
+  // ✅ et on supprime juste le "sous menu" interne (les headers Arrivée/Départ bleus)
+  // -> donc: plus de card-header "Arrivée" / "Départ", mais les champs restent
+  const arrNoHeader = `
+    <div class="card mb-4">
+      <div class="card-content">
+        <div class="columns is-multiline">
+          ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
+          ${fieldHTML('PremierDebarque','Premier débarqué')}
+          ${fieldHTML('DernierDebarque','Dernier débarqué')}
+          ${fieldHTML('ArriveeLiftArr','Arrivée lift')}
+          ${fieldHTML('DepartLiftArr','Départ lift')}
+        </div>
+      </div>
+    </div>`;
+
+  const depNoHeader = `
+    <div class="card">
+      <div class="card-content">
+        <div class="columns is-multiline">
+          ${fieldHTML('ArrPNT','Arrivée PNT')}
+          ${fieldHTML('ArrPNC','Arrivée PNC')}
+          ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
+          ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
+          ${fieldHTML('ArriveeLift','Arrivée lift')}
+          ${fieldHTML('DepartLift','Départ lift')}
+          ${fieldHTML('DepartFuel','Départ Avitair',true)}
+          ${fieldHTML('RemiseLID','Remise LID/LDS')}
+          ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
+        </div>
+      </div>
+    </div>`;
+
+  const toggle = `
+    <div class="tabs is-toggle is-toggle-rounded is-centered mb-4">
+      <ul>
+        <li id="seg-arr-li"><a onclick="switchTimingPanel('arr')"><span>Arrivée</span></a></li>
+        <li id="seg-dep-li"><a onclick="switchTimingPanel('dep')"><span>Départ</span></a></li>
+      </ul>
+    </div>`;
+
+  container.innerHTML =
+    toggle +
+    `<div id="panel-arr" style="display:none;">${arrNoHeader}</div>` +
+    `<div id="panel-dep" style="display:none;">${depNoHeader}</div>`;
 
   const saved = localStorage.getItem('timingPanel') || 'dep';
   switchTimingPanel(saved);
