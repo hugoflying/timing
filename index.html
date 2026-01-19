@@ -147,7 +147,7 @@ body.dark .fixed-header{
   justify-content:center;
 }
 
-/* CTOT éditable (sans icône + sans espace à droite Android) */
+/* CTOT éditable (look original + Android OK) */
 .ctot-pill{
   width: auto;
   min-width: 70px;
@@ -162,8 +162,6 @@ body.dark .fixed-header{
 
   border-radius: 999px !important;
   padding: 6px 10px !important;
-  padding-right: 10px !important;        /* on force */
-  padding-inline-end: 10px !important;   /* Android fix */
 
   text-align:center;
   height: auto;
@@ -176,21 +174,30 @@ body.dark .fixed-header{
   font-variant-numeric: tabular-nums;
 }
 
-/* garde l’édition, mais retire le picker sans réserver de place */
-.ctot-pill::-webkit-calendar-picker-indicator{
-  opacity: 0;
-  width: 0;
-  margin: 0;
-  padding: 0;
-}
-
-/* évite les réserves internes */
+/* texte interne (évite réserve Android) */
 .ctot-pill::-webkit-datetime-edit{
   color:#fff;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
+/* centre la valeur sur Android */
+.ctot-pill::-webkit-date-and-time-value{
+  text-align: center;
+}
+
+/* cache le picker SANS espace réservé (Android + iOS) */
+.ctot-pill::-webkit-calendar-picker-indicator{
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* supprime boutons internes */
 .ctot-pill::-webkit-clear-button,
 .ctot-pill::-webkit-inner-spin-button{
   display:none;
