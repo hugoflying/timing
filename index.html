@@ -2308,7 +2308,12 @@ function renderTimeline(){
 function setVal(id, v){
   const el = document.getElementById(id);
   if(!el) return;
+
   el.value = typeof v === 'string' ? v.toUpperCase() : (v ?? '');
+
+  // déclenche les listeners
+  el.dispatchEvent(new Event('input', { bubbles:true }));
+  el.dispatchEvent(new Event('change', { bubbles:true }));
 }
   el.value = (v ?? '');
   // déclenche les listeners si tu en as
