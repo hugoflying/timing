@@ -2748,15 +2748,17 @@ function renderAKList(flights, flow){
 }
 
  // ===== Import : règles BVA =====
-function akBuildSI(f){
+function akBuildSI(f, allowDL = true){
   const parts = [];
 
   const rmk = (f?.remarks || '').trim();
   if(rmk) parts.push(rmk);
 
-  const tb = f?.dlCodes?.typeb;
-  if(Array.isArray(tb) && tb.length){
-    parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
+  if(allowDL){
+    const tb = f?.dlCodes?.typeb;
+    if(Array.isArray(tb) && tb.length){
+      parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
+    }
   }
 
   return parts.join('\n').trim();
@@ -2796,18 +2798,19 @@ function applyAKFlight(f, flow){
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
 
-    // ✅ CTOT automatique
+    // CTOT auto
     setTimeFromISOIfEmpty('CTOT', f.ctot);
 
-    // Embarquement si dispo
+    // Embarquement
     setTimeFromISOIfEmpty('AvionPremierEmbarque', f?.boardingDetails?.startTime);
     setTimeFromISOIfEmpty('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
-    const si = akBuildSI(f);
-    setVal('ExpSI', si);
-    setVal('FinalSI', si);
+    // SI EXP + FINAL (DL autorisés)
+    const siDep = akBuildSI(f, true);
+    setVal('ExpSI', siDep);
+    setVal('FinalSI', siDep);
 
-    // ARR liée (rotation précédente)
+    // ARR liée
     const prevArr = findLinkedArrForDep(f);
     if(prevArr){
       setVal('From', ((prevArr.adepIata || '').toUpperCase() || HOME_IATA));
@@ -2817,7 +2820,9 @@ function applyAKFlight(f, flow){
 
       if(prevArr?.bags != null) setIfEmpty('LoadBAGS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmpty('LoadPAX', String(prevArr.paxNb));
-      setIfEmpty('LoadSI', akBuildSI(prevArr));
+
+      // 🚫 DL supprimés en LOAD ARR
+      setIfEmpty('LoadSI', akBuildSI(prevArr, false));
     }else{
       setVal('From', HOME_IATA);
     }
@@ -2831,9 +2836,11 @@ function applyAKFlight(f, flow){
 
     if(f?.bags != null) setIfEmpty('LoadBAGS', String(f.bags));
     if(f?.paxNb != null) setIfEmpty('LoadPAX', String(f.paxNb));
-    setIfEmpty('LoadSI', akBuildSI(f));
 
-    // DEP liée (rotation suivante)
+    // 🚫 DL supprimés en LOAD ARR
+    setIfEmpty('LoadSI', akBuildSI(f, false));
+
+    // DEP liée
     const nextDep = findLinkedDepForArr(f);
     if(nextDep){
       setVal('To', ((nextDep.adesIata || '').toUpperCase() || HOME_IATA));
@@ -2841,12 +2848,13 @@ function applyAKFlight(f, flow){
       setTimeFromISOIfEmpty('SOBT', nextDep.sobt || nextDep.eobt);
       setTimeFromISOIfEmpty('AOBT', nextDep.aobt);
 
-      // ✅ CTOT automatique depuis le DEP lié
+      // CTOT auto depuis DEP lié
       setTimeFromISOIfEmpty('CTOT', nextDep.ctot);
 
-      const siDep = akBuildSI(nextDep);
-      setIfEmpty('ExpSI', siDep);
-      setIfEmpty('FinalSI', siDep);
+      // SI EXP + FINAL (DL autorisés)
+      const siNext = akBuildSI(nextDep, true);
+      setIfEmpty('ExpSI', siNext);
+      setIfEmpty('FinalSI', siNext);
     }else{
       setVal('To', HOME_IATA);
     }
