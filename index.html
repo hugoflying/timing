@@ -435,37 +435,53 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <!-- PAX / BAGS / CARGO -->
+  <!-- PAX / BAGS / POIDS -->
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
       <div class="control">
-        <input class="input" id="LoadPAX" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+        <input class="input" id="LoadPAX" inputmode="numeric" oninput="digitsOnly(this)">
       </div>
     </div>
 
     <div class="field">
       <label class="label">BAGS</label>
       <div class="control">
-        <input class="input" id="LoadBAGS" type="text" inputmode="numeric" placeholder="0"
+        <input class="input" id="LoadBAGS" inputmode="numeric"
                oninput="digitsOnly(this); updateHBagsValidity('arr')">
       </div>
     </div>
 
     <div class="field">
-      <label class="label">CARGO</label>
+      <label class="label">POIDS</label>
       <div class="control">
-        <input class="input" id="LoadCARGO" type="text">
+        <input class="input" id="LoadPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
       </div>
     </div>
   </div>
 
   <!-- H1 à H4 -->
   <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
-    <div class="field"><label class="label">H1</label><input class="input" id="LoadH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H2</label><input class="input" id="LoadH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H3</label><input class="input" id="LoadH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H4</label><input class="input" id="LoadH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field">
+      <label class="label">H1</label>
+      <input class="input" id="LoadH1" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('arr')">
+    </div>
+    <div class="field">
+      <label class="label">H2</label>
+      <input class="input" id="LoadH2" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('arr')">
+    </div>
+    <div class="field">
+      <label class="label">H3</label>
+      <input class="input" id="LoadH3" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('arr')">
+    </div>
+    <div class="field">
+      <label class="label">H4</label>
+      <input class="input" id="LoadH4" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('arr')">
+    </div>
   </div>
 
   <hr>
@@ -486,32 +502,30 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <!-- PAX / BAGS / CARGO -->
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
       <div class="control">
-        <input class="input" id="ExpPAX" type="text" inputmode="numeric" placeholder="0" oninput="digitsOnly(this)">
+        <input class="input" id="ExpPAX" inputmode="numeric" oninput="digitsOnly(this)">
       </div>
     </div>
 
     <div class="field">
       <label class="label">BAGS</label>
       <div class="control">
-        <input class="input" id="ExpBAGS" type="text" inputmode="numeric" placeholder="0"
+        <input class="input" id="ExpBAGS" inputmode="numeric"
                oninput="digitsOnly(this); updateHBagsValidity('exp')">
       </div>
     </div>
 
     <div class="field">
-      <label class="label">CARGO</label>
+      <label class="label">POIDS</label>
       <div class="control">
-        <input class="input" id="ExpCARGO" type="text">
+        <input class="input" id="ExpPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
       </div>
     </div>
   </div>
 
-  <!-- H1 à H4 -->
   <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
     <div class="field"><label class="label">H1</label><input class="input" id="ExpH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
     <div class="field"><label class="label">H2</label><input class="input" id="ExpH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
@@ -521,7 +535,6 @@ body.dark .timeline-scroll{
 
   <hr>
 
-  <!-- SI -->
   <div class="field">
     <label class="label">SI</label>
     <div class="control">
@@ -1563,25 +1576,36 @@ function saveCurrentTabData(){
 
 function loadTabData(id){
   stopCountdown();
+
   const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
 
+  // restore inputs/selects/textareas
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id || data[el.id] === undefined) return;
     if(el.type === 'checkbox') el.checked = (data[el.id] === '1');
     else el.value = data[el.id];
   });
 
+  // mode dark / utc
   if(data.modeDark === '1') document.body.classList.add('dark');
   else document.body.classList.remove('dark');
 
   isUTC = (data.modeUTC === '1');
 
-  document.getElementById('timer-h40').textContent  = data.timer_h40  || '--:--';
-  document.getElementById('timer-h15').textContent  = data.timer_h15  || '--:--';
-  document.getElementById('timer-h8').textContent   = data.timer_h8   || '--:--';
-  document.getElementById('timer-tobt').textContent = data.timer_tobt || '--:--';
-  document.getElementById('timer-cd').textContent   = data.timer_cd   || '--:--';
+  // restore timers display (chips)
+  const h40 = document.getElementById('timer-h40');
+  const h15 = document.getElementById('timer-h15');
+  const h8  = document.getElementById('timer-h8');
+  const tobt= document.getElementById('timer-tobt');
+  const cd  = document.getElementById('timer-cd');
 
+  if(h40) h40.textContent = data.timer_h40  || '--:--';
+  if(h15) h15.textContent = data.timer_h15  || '--:--';
+  if(h8)  h8.textContent  = data.timer_h8   || '--:--';
+  if(tobt)tobt.textContent= data.timer_tobt || '--:--';
+  if(cd)  cd.textContent  = data.timer_cd   || '--:--';
+
+  // sync toggles UI
   const dt = document.getElementById('darkToggle');
   const ut = document.getElementById('utcToggle');
   if(dt) dt.checked = document.body.classList.contains('dark');
@@ -1594,15 +1618,19 @@ function loadTabData(id){
   if(darkLabel) darkLabel.textContent = document.body.classList.contains('dark') ? 'Sombre' : 'Clair';
 
   setDefaultDateToTodayIfEmpty();
+
+  // recalc
   updateAllCalculations();
 
+  // restore timing panel
   const savedPanel = data.timingPanel || localStorage.getItem('timingPanel') || 'dep';
   switchTimingPanel(savedPanel);
 
-  renderPRMRows('arr');
-  renderPRMRows('exp');
-  updateFinalTOB();
+  // ✅ plus de PRM (tu les as supprimés)
+  // renderPRMRows('arr');
+  // renderPRMRows('exp');
 
+  updateFinalTOB();
   updateHeaderOffset();
 }
 
@@ -2745,12 +2773,12 @@ function validateForm() {
   const faitsTxt = (val("FaitsSaillants") || "").trim();
   const faitsBlock = faitsTxt ? `\n== FAITS SAILLANTS ==\n\n${faitsTxt}\n` : "";
 
-  // LOAD blocks (avec H1..H4 + SI)
+  // LOAD blocks (POIDS + H1..H4 + SI)
   const loadArrBlock =
 `== LOAD ARR ==
 PAX : ${val("LoadPAX")}
 BAGS : ${val("LoadBAGS")}
-CARGO : ${val("LoadCARGO")}
+POIDS : ${val("LoadPOIDS")}
 H1 : ${val("LoadH1")} / H2 : ${val("LoadH2")} / H3 : ${val("LoadH3")} / H4 : ${val("LoadH4")}
 SI : ${val("LoadSI")}`;
 
@@ -2758,11 +2786,11 @@ SI : ${val("LoadSI")}`;
 `== LOAD EXP ==
 PAX : ${val("ExpPAX")}
 BAGS : ${val("ExpBAGS")}
-CARGO : ${val("ExpCARGO")}
+POIDS : ${val("ExpPOIDS")}
 H1 : ${val("ExpH1")} / H2 : ${val("ExpH2")} / H3 : ${val("ExpH3")} / H4 : ${val("ExpH4")}
 SI : ${val("ExpSI")}`;
 
-  // ✅ FINAL : on garde passagers + zones OA/OB/OC/OD + on ajoute H1..H4 + SI
+  // FINAL : passagers + zones + bagages/poids + H1..H4 + SI
   const loadFinalBlock =
 `== LOAD FINAL ==
 MALE : ${val("FinalMALE")}
