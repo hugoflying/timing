@@ -518,63 +518,42 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <!-- PAX / BAGS / POIDS -->
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
-      <div class="control">
-        <input class="input" id="LoadPAX" inputmode="numeric" oninput="digitsOnly(this)">
-      </div>
+      <input class="input" id="LoadPAX" inputmode="numeric" oninput="digitsOnly(this)">
     </div>
 
     <div class="field">
       <label class="label">BAGS</label>
-      <div class="control">
-        <input class="input" id="LoadBAGS" inputmode="numeric"
-               oninput="digitsOnly(this); updateHBagsValidity('arr')">
-      </div>
+      <input class="input" id="LoadBAGS" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('arr')">
     </div>
 
     <div class="field">
       <label class="label">POIDS</label>
-      <div class="control">
-        <input class="input" id="LoadPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
-      </div>
+      <input class="input" id="LoadPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
     </div>
   </div>
 
-  <!-- H1 à H4 -->
   <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
-    <div class="field">
-      <label class="label">H1</label>
-      <input class="input" id="LoadH1" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('arr')">
-    </div>
-    <div class="field">
-      <label class="label">H2</label>
-      <input class="input" id="LoadH2" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('arr')">
-    </div>
-    <div class="field">
-      <label class="label">H3</label>
-      <input class="input" id="LoadH3" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('arr')">
-    </div>
-    <div class="field">
-      <label class="label">H4</label>
-      <input class="input" id="LoadH4" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('arr')">
-    </div>
+    <div class="field"><label class="label">H1</label><input class="input" id="LoadH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H2</label><input class="input" id="LoadH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H3</label><input class="input" id="LoadH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+    <div class="field"><label class="label">H4</label><input class="input" id="LoadH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
   </div>
 
   <hr>
 
-  <!-- SI -->
   <div class="field">
     <label class="label">SI</label>
-    <div class="control">
-      <textarea class="textarea si-uppercase" id="LoadSI"></textarea>
-    </div>
+    <textarea
+      class="textarea si-uppercase"
+      id="LoadSI"
+      autocorrect="off"
+      spellcheck="false"
+      autocapitalize="characters"
+      inputmode="text"></textarea>
   </div>
 </div>
 
@@ -588,24 +567,18 @@ body.dark .timeline-scroll{
   <div class="grid">
     <div class="field">
       <label class="label">PAX</label>
-      <div class="control">
-        <input class="input" id="ExpPAX" inputmode="numeric" oninput="digitsOnly(this)">
-      </div>
+      <input class="input" id="ExpPAX" inputmode="numeric" oninput="digitsOnly(this)">
     </div>
 
     <div class="field">
       <label class="label">BAGS</label>
-      <div class="control">
-        <input class="input" id="ExpBAGS" inputmode="numeric"
-               oninput="digitsOnly(this); updateHBagsValidity('exp')">
-      </div>
+      <input class="input" id="ExpBAGS" inputmode="numeric"
+             oninput="digitsOnly(this); updateHBagsValidity('exp')">
     </div>
 
     <div class="field">
       <label class="label">POIDS</label>
-      <div class="control">
-        <input class="input" id="ExpPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
-      </div>
+      <input class="input" id="ExpPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
     </div>
   </div>
 
@@ -620,9 +593,13 @@ body.dark .timeline-scroll{
 
   <div class="field">
     <label class="label">SI</label>
-    <div class="control">
-      <textarea class="textarea si-uppercase" id="ExpSI"></textarea>
-    </div>
+    <textarea
+      class="textarea si-uppercase"
+      id="ExpSI"
+      autocorrect="off"
+      spellcheck="false"
+      autocapitalize="characters"
+      inputmode="text"></textarea>
   </div>
 </div>
 
@@ -633,38 +610,18 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
-  <!-- PASSAGERS -->
   <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-    <div class="field">
-      <label class="label">MALE</label>
-      <input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
-    </div>
-    <div class="field">
-      <label class="label">FEMALE</label>
-      <input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
-    </div>
-    <div class="field">
-      <label class="label">ADULT</label>
-      <input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
-    </div>
+    <div class="field"><label class="label">MALE</label><input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">FEMALE</label><input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">ADULT</label><input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
 
-    <div class="field">
-      <label class="label">CHILD</label>
-      <input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
-    </div>
-    <div class="field">
-      <label class="label">INFANT</label>
-      <input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()">
-    </div>
-    <div class="field">
-      <label class="label">TOB</label>
-      <input class="input has-text-weight-bold" id="FinalTOB" type="text" readonly>
-    </div>
+    <div class="field"><label class="label">CHILD</label><input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">INFANT</label><input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    <div class="field"><label class="label">TOB</label><input class="input has-text-weight-bold" id="FinalTOB" type="text" readonly></div>
   </div>
 
   <hr>
 
-  <!-- ZONES -->
   <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
     <div class="field"><label class="label">OA</label><input class="input" id="FinalOA" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
     <div class="field"><label class="label">OB</label><input class="input" id="FinalOB" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
@@ -674,25 +631,12 @@ body.dark .timeline-scroll{
 
   <hr>
 
-  <!-- BAGS / POIDS / GB -->
   <div class="grid">
-    <div class="field">
-      <label class="label">BAGS</label>
-      <input class="input" id="FinalBAGS" inputmode="numeric"
-        oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()">
-    </div>
-    <div class="field">
-      <label class="label">POIDS</label>
-      <input class="input" id="FinalPOIDS" inputmode="numeric" readonly>
-    </div>
-    <div class="field">
-      <label class="label">GB</label>
-      <input class="input" id="FinalGB" inputmode="numeric"
-        oninput="digitsOnly(this); updateFinalWeightIfNeeded()">
-    </div>
+    <div class="field"><label class="label">BAGS</label><input class="input" id="FinalBAGS" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
+    <div class="field"><label class="label">POIDS</label><input class="input" id="FinalPOIDS" inputmode="numeric" readonly></div>
+    <div class="field"><label class="label">GB</label><input class="input" id="FinalGB" inputmode="numeric" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
   </div>
 
-  <!-- H1 à H4 -->
   <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
     <div class="field"><label class="label">H1</label><input class="input" id="FinalH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
     <div class="field"><label class="label">H2</label><input class="input" id="FinalH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
@@ -702,10 +646,15 @@ body.dark .timeline-scroll{
 
   <hr>
 
-  <!-- SI -->
   <div class="field">
     <label class="label">SI</label>
-    <textarea class="textarea si-uppercase" id="FinalSI"></textarea>
+    <textarea
+      class="textarea si-uppercase"
+      id="FinalSI"
+      autocorrect="off"
+      spellcheck="false"
+      autocapitalize="characters"
+      inputmode="text"></textarea>
   </div>
 </div>
 
