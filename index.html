@@ -138,6 +138,34 @@ body.dark .fixed-header{
   justify-content:center;
 }
 
+/* Toggles discrets dans le header */
+.tabs-tools{
+  display:flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.mini-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  cursor:pointer;
+  user-select:none;
+  font-weight: 900;
+  color: var(--text);
+  font-size: .85rem;
+}
+
+.mini-toggle input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
 /* CTOT éditable */
 .ctot-pill{
   width: auto;
