@@ -2372,8 +2372,10 @@ function setTimeFromISO(id, iso){
   if(!iso) return;
   const d = new Date(iso);
   if(isNaN(d.getTime())) return;
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
+
+  const hh = String(isUTC ? d.getUTCHours() : d.getHours()).padStart(2,'0');
+  const mm = String(isUTC ? d.getUTCMinutes() : d.getMinutes()).padStart(2,'0');
+
   setVal(id, `${hh}:${mm}`);
 }
 
@@ -2734,7 +2736,7 @@ function akBuildSI(f){
 }
 
 function applyAKFlight(f, flow){
-  // champs communs
+  // ===== champs communs =====
   setVal('Immat', (f.reg || '').toUpperCase());
 
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
@@ -2760,48 +2762,25 @@ function applyAKFlight(f, flow){
     }
   }
 
-  if(flow === 'ARR'){
-    // --- ARR principale
-    setVal('From', (f.adepIata || '').toUpperCase() || HOME_IATA);
-
-    setTimeFromISO('SIBT', f.sibt || f.eibt);
-    setTimeFromISO('AIBT', f.aibt);
-
-    // ⚠️ chez toi tu avais un mapping bizarre (LoadPOIDS = bags)
-    // je propose : LoadBAGS <- bags, LoadPOIDS <- poids si tu l’as
-    if(f?.bags != null) setIfEmpty('LoadBAGS', String(f.bags));
-    if(f?.paxNb != null) setIfEmpty('LoadPAX', String(f.paxNb));
-    // si tu n’as pas le poids, ton auto (bags*13) fera le reste
-    setIfEmpty('LoadSI', akBuildSI(f));
-
-    // --- DEP liée (rotation suivante)
-    const nextDep = findLinkedDepForArr(f);
-    if(nextDep){
-      setVal('To', ((nextDep.adesIata || '').toUpperCase() || HOME_IATA));
-
-      setTimeFromISOIfEmpty('SOBT', nextDep.sobt || nextDep.eobt);
-      setTimeFromISOIfEmpty('AOBT', nextDep.aobt);
-
-      const siDep = akBuildSI(nextDep);
-      setIfEmpty('ExpSI', siDep);
-      setIfEmpty('FinalSI', siDep);
-    } else {
-      // si pas de DEP trouvé, garde le comportement actuel
-      setVal('To', HOME_IATA);
-    }
-
-  } else {
-    // --- DEP principale
+  // ===== DEP =====
+  if(flow === 'DEP'){
     setVal('To', (f.adesIata || '').toUpperCase() || HOME_IATA);
 
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
 
+    // ✅ CTOT automatique
+    setTimeFromISOIfEmpty('CTOT', f.ctot);
+
+    // Embarquement si dispo
+    setTimeFromISOIfEmpty('AvionPremierEmbarque', f?.boardingDetails?.startTime);
+    setTimeFromISOIfEmpty('AvionDernierEmbarque', f?.boardingDetails?.endTime);
+
     const si = akBuildSI(f);
     setVal('ExpSI', si);
     setVal('FinalSI', si);
 
-    // --- ARR liée (rotation précédente)
+    // ARR liée (rotation précédente)
     const prevArr = findLinkedArrForDep(f);
     if(prevArr){
       setVal('From', ((prevArr.adepIata || '').toUpperCase() || HOME_IATA));
@@ -2812,8 +2791,37 @@ function applyAKFlight(f, flow){
       if(prevArr?.bags != null) setIfEmpty('LoadBAGS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmpty('LoadPAX', String(prevArr.paxNb));
       setIfEmpty('LoadSI', akBuildSI(prevArr));
-    } else {
+    }else{
       setVal('From', HOME_IATA);
+    }
+
+  // ===== ARR =====
+  }else{
+    setVal('From', (f.adepIata || '').toUpperCase() || HOME_IATA);
+
+    setTimeFromISO('SIBT', f.sibt || f.eibt);
+    setTimeFromISO('AIBT', f.aibt);
+
+    if(f?.bags != null) setIfEmpty('LoadBAGS', String(f.bags));
+    if(f?.paxNb != null) setIfEmpty('LoadPAX', String(f.paxNb));
+    setIfEmpty('LoadSI', akBuildSI(f));
+
+    // DEP liée (rotation suivante)
+    const nextDep = findLinkedDepForArr(f);
+    if(nextDep){
+      setVal('To', ((nextDep.adesIata || '').toUpperCase() || HOME_IATA));
+
+      setTimeFromISOIfEmpty('SOBT', nextDep.sobt || nextDep.eobt);
+      setTimeFromISOIfEmpty('AOBT', nextDep.aobt);
+
+      // ✅ CTOT automatique depuis le DEP lié
+      setTimeFromISOIfEmpty('CTOT', nextDep.ctot);
+
+      const siDep = akBuildSI(nextDep);
+      setIfEmpty('ExpSI', siDep);
+      setIfEmpty('FinalSI', siDep);
+    }else{
+      setVal('To', HOME_IATA);
     }
   }
 
