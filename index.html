@@ -2666,22 +2666,22 @@ function akBuildSI(f){
   if(rmk) parts.push(rmk);
 
   const reg = f?.regulation;
-  if(reg){
-    if(reg.regul) parts.push(`REG: ${reg.regul}`);
-    if(reg.cause) parts.push(`CAUSE: ${reg.cause}`);
-    if(reg.reason) parts.push(`REASON: ${reg.reason}`);
-    if(reg.description) parts.push(String(reg.description).trim());
-    if(reg.remark) parts.push(`RMK: ${reg.remark}`);
+  if(reg?.regul || reg?.cause || reg?.reason || reg?.description || reg?.remark){
+    const regLines = [];
+    if(reg.regul) regLines.push(`REG: ${reg.regul}`);
+    if(reg.cause) regLines.push(`CAUSE: ${reg.cause}`);
+    if(reg.reason) regLines.push(`REASON: ${reg.reason}`);
+    if(reg.description) regLines.push(String(reg.description).trim());
+    if(reg.remark) regLines.push(`RMK: ${reg.remark}`);
+    parts.push(regLines.join(' · '));
   }
 
   const tb = f?.dlCodes?.typeb;
   if(Array.isArray(tb) && tb.length){
-    parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
+    parts.push(`DL: ${tb.map(x => `${x.code} +${x.delay}`).join(' / ')}`);
   }
 
-  const out = parts.filter(Boolean).join('\n');
-  console.log('[akBuildSI] out=', out);
-  return out;
+  return parts.join('\n');
 }
 
 function applyAKFlight(f, flow){
