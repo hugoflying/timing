@@ -1074,19 +1074,17 @@ function updateArrExpWeightIfNeeded(){
   if(cie !== 'FR' && cie !== 'RK') return;
 
   // ARR
-  const bArr = document.getElementById('LoadBAGS');
-  const pArr = document.getElementById('LoadPOIDS');
-  if(bArr && pArr){
-    const bags = parseInt(bArr.value || '0', 10);
-    pArr.value = (bArr.value || '') === '' ? '' : String(bags * 13);
+  const bagsArr = asInt('LoadBAGS');
+  const poidsArrEl = document.getElementById('LoadPOIDS');
+  if(bagsArr != null && poidsArrEl && poidsArrEl.value === ''){
+    poidsArrEl.value = String(bagsArr * 13);
   }
 
   // EXP
-  const bExp = document.getElementById('ExpBAGS');
-  const pExp = document.getElementById('ExpPOIDS');
-  if(bExp && pExp){
-    const bags = parseInt(bExp.value || '0', 10);
-    pExp.value = (bExp.value || '') === '' ? '' : String(bags * 13);
+  const bagsExp = asInt('ExpBAGS');
+  const poidsExpEl = document.getElementById('ExpPOIDS');
+  if(bagsExp != null && poidsExpEl && poidsExpEl.value === ''){
+    poidsExpEl.value = String(bagsExp * 13);
   }
 }
 
@@ -2309,10 +2307,9 @@ function renderTimeline(){
 }
 function setVal(id, v){
   const el = document.getElementById(id);
-  if(!el){
-    console.warn('[setVal] element introuvable:', id);
-    return;
-  }
+  if(!el) return;
+  el.value = typeof v === 'string' ? v.toUpperCase() : (v ?? '');
+}
   el.value = (v ?? '');
   // déclenche les listeners si tu en as
   el.dispatchEvent(new Event('input', { bubbles:true }));
