@@ -2511,11 +2511,14 @@ function renderAKList(flights, flow){
     if(statusRaw === 'SCHEDULED'){
       status = 'PRÉVU';
     }
-    if(flow === 'ARR' && statusRaw === 'TERMINATED'){
-      status = 'ARRIVÉ';
+
+    if(flow === 'ARR'){
+      if(statusRaw === 'TERMINATED') status = 'ARRIVÉ';
+      if(statusRaw === 'IN_FLIGHT')  status = 'EN VOL';
     }
-    if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
-      status = 'DÉCOLLÉ';
+
+    if(flow === 'DEP'){
+      if(statusRaw === 'IN_FLIGHT') status = 'DÉCOLLÉ';
     }
 
     // ===== GRISAGE LIGNE =====
