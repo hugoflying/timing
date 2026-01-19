@@ -2539,24 +2539,33 @@ function renderAKList(flights, flow){
   const list = document.getElementById('akList');
   if(!list) return;
 
-  // calc retard (minutes) depuis les ISO Keeper
   function delayMinutes(f, flow){
     const parse = (v)=> v ? Date.parse(v) : NaN;
 
     if(flow === 'ARR'){
       const s = parse(f?.sibt);
-      const r = parse(f?.aibt || f?.eibt); // réel sinon estimé
+      const r = parse(f?.aibt || f?.eibt);
       if(!isFinite(s) || !isFinite(r)) return 0;
       const d = Math.round((r - s) / 60000);
       return d > 0 ? d : 0;
     }else{
       const s = parse(f?.sobt);
-      const r = parse(f?.aobt || f?.eobt); // réel sinon estimé
+      const r = parse(f?.aobt || f?.eobt);
       if(!isFinite(s) || !isFinite(r)) return 0;
       const d = Math.round((r - s) / 60000);
       return d > 0 ? d : 0;
     }
   }
+
+  const safeJsonForOnclick = (obj)=>{
+    return JSON.stringify(obj)
+      .replace(/</g, "\\u003c")
+      .replace(/>/g, "\\u003e")
+      .replace(/&/g, "\\u0026")
+      .replace(/'/g, "\\u0027")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029");
+  };
 
   const row = (f)=>{
     const ff = (f.fullFlightNumber || f.callsign || '').trim();
@@ -2567,43 +2576,29 @@ function renderAKList(flights, flow){
     let statusRaw = (f.status || f.milestone || '').toString().toUpperCase();
     let status = statusRaw;
 
-    // ===== RENOMMAGE STATUTS =====
     if(statusRaw === 'SCHEDULED') status = 'PRÉVU';
-
     if(flow === 'ARR'){
       if(statusRaw === 'TERMINATED') status = 'ARRIVÉ';
       if(statusRaw === 'IN_FLIGHT')  status = 'EN VOL';
     }
-
     if(flow === 'DEP'){
       if(statusRaw === 'IN_FLIGHT') status = 'DÉCOLLÉ';
     }
 
-    // ===== RETARD + BADGE =====
     const dly = delayMinutes(f, flow);
     const showDelay = dly >= 5;
 
-    // ===== COULEURS LIGNE (priorités) =====
     let bg = 'var(--card)';
-
-    // 1) ARR en vol = bleu
     if(flow === 'ARR' && statusRaw === 'IN_FLIGHT'){
       bg = 'rgba(37, 99, 235, 0.12)';
-    }
-    // 2) arrivé / terminé = gris
-    else if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
+    } else if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
       bg = 'rgba(0,0,0,.04)';
-    }
-    // 3) DEP décollé = gris
-    else if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
+    } else if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
       bg = 'rgba(0,0,0,.04)';
-    }
-    // 4) sinon, retard => orange/rouge
-    else if(showDelay){
+    } else if(showDelay){
       bg = (dly <= 15) ? 'rgba(245, 158, 11, 0.18)' : 'rgba(239, 68, 68, 0.16)';
     }
 
-    // ===== IATA PRINCIPAL =====
     const mainIata = (flow === 'ARR')
       ? (f.adepIata || f.adepIcao || '')
       : (f.adesIata || f.adesIcao || '');
@@ -2615,6 +2610,8 @@ function renderAKList(flights, flow){
            RETARD +${dly}
          </span>`
       : '';
+
+    const json = safeJsonForOnclick(f);
 
     return `
       <div class="card mb-2"
@@ -2644,7 +2641,7 @@ function renderAKList(flights, flow){
             </div>
 
             <button class="button is-small is-link" type="button"
-              onclick='applyAKFlight(${JSON.stringify(f).replace(/</g,"\\u003c")}, "${flow}")'>
+              onclick='applyAKFlight(${json}, "${flow}")'>
               Utiliser
             </button>
           </div>
@@ -2665,44 +2662,29 @@ function akBuildSI(f){
   const rmk = (f?.remarks || '').trim();
   if(rmk) parts.push(rmk);
 
-  const reg = f?.regulation;
-  if(reg?.regul || reg?.cause || reg?.reason || reg?.description || reg?.remark){
-    const regLines = [];
-    if(reg.regul) regLines.push(`REG: ${reg.regul}`);
-    if(reg.cause) regLines.push(`CAUSE: ${reg.cause}`);
-    if(reg.reason) regLines.push(`REASON: ${reg.reason}`);
-    if(reg.description) regLines.push(String(reg.description).trim());
-    if(reg.remark) regLines.push(`RMK: ${reg.remark}`);
-    parts.push(regLines.join(' · '));
-  }
-
   const tb = f?.dlCodes?.typeb;
   if(Array.isArray(tb) && tb.length){
-    parts.push(`DL: ${tb.map(x => `${x.code} +${x.delay}`).join(' / ')}`);
+    parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
   }
 
-  return parts.join('\n');
+  return parts.join('\n').trim();
 }
 
 function applyAKFlight(f, flow){
-  // ===== BASE =====
   setVal('Immat', (f.reg || '').toUpperCase());
 
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
   if(stand) setVal('Parking', stand);
 
-  // ===== TYPE AVION (ICAO prioritaire) =====
   const ac = (f.acTypeIcao || f.acTypeIata || '').toUpperCase().trim();
   if(ac) setVal('TypeAvion', ac);
 
-  // ===== CIE / N° VOL =====
   const ff = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
   if(ff){
     const m = ff.match(/^([A-Z0-9]{2})([0-9]{1,6})$/);
     if(m){
       const cie  = m[1];
       const nvol = m[2];
-
       const cieSel = document.getElementById('Cie');
       if(cieSel){
         const ok = Array.from(cieSel.options).some(o => o.value === cie);
@@ -2714,38 +2696,23 @@ function applyAKFlight(f, flow){
     }
   }
 
-  // ===== ARRIVÉE =====
   if(flow === 'ARR'){
     setVal('From', (f.adepIata || '').toUpperCase() || HOME_IATA);
 
     const nextDep = findLinkedDepForArr(f);
-    if(nextDep){
-      const to = (nextDep.adesIata || '').toUpperCase();
-      setVal('To', to || HOME_IATA);
-    }else{
-      setVal('To', HOME_IATA);
-    }
+    setVal('To', nextDep ? ((nextDep.adesIata || '').toUpperCase() || HOME_IATA) : HOME_IATA);
 
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
 
-    // LOAD ARR
     setVal('LoadPAX',   (f?.paxNb ?? '') !== '' ? String(f.paxNb) : '');
     setVal('LoadPOIDS', (f?.bags  ?? '') !== '' ? String(f.bags)  : '');
     setVal('LoadSI', akBuildSI(f));
-  }
-
-  // ===== DÉPART =====
-  else {
+  } else {
     setVal('To', (f.adesIata || '').toUpperCase() || HOME_IATA);
 
     const prevArr = findLinkedArrForDep(f);
-    if(prevArr){
-      const from = (prevArr.adepIata || '').toUpperCase();
-      setVal('From', from || HOME_IATA);
-    }else{
-      setVal('From', HOME_IATA);
-    }
+    setVal('From', prevArr ? ((prevArr.adepIata || '').toUpperCase() || HOME_IATA) : HOME_IATA);
 
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
