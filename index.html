@@ -2498,6 +2498,25 @@ function renderAKList(flights, flow){
   const list = document.getElementById('akList');
   if(!list) return;
 
+  // calc retard (minutes) depuis les ISO Keeper
+  function delayMinutes(f, flow){
+    const parse = (v)=> v ? Date.parse(v) : NaN;
+
+    if(flow === 'ARR'){
+      const s = parse(f?.sibt);
+      const r = parse(f?.aibt || f?.eibt); // réel sinon estimé
+      if(!isFinite(s) || !isFinite(r)) return 0;
+      const d = Math.round((r - s) / 60000);
+      return d > 0 ? d : 0;
+    }else{
+      const s = parse(f?.sobt);
+      const r = parse(f?.aobt || f?.eobt); // réel sinon estimé
+      if(!isFinite(s) || !isFinite(r)) return 0;
+      const d = Math.round((r - s) / 60000);
+      return d > 0 ? d : 0;
+    }
+  }
+
   const row = (f)=>{
     const ff = (f.fullFlightNumber || f.callsign || '').trim();
     const reg = (f.reg || '').trim();
@@ -2519,22 +2538,28 @@ function renderAKList(flights, flow){
       if(statusRaw === 'IN_FLIGHT') status = 'DÉCOLLÉ';
     }
 
-    // ===== COULEURS LIGNE =====
+    // ===== RETARD + BADGE =====
+    const dly = delayMinutes(f, flow);
+    const showDelay = dly >= 5;
+
+    // ===== COULEURS LIGNE (priorités) =====
     let bg = 'var(--card)';
 
-    // ARR : en vol → BLEU
+    // 1) ARR en vol = bleu
     if(flow === 'ARR' && statusRaw === 'IN_FLIGHT'){
-      bg = 'rgba(37, 99, 235, 0.12)'; // bleu
+      bg = 'rgba(37, 99, 235, 0.12)';
     }
-
-    // ARR : arrivé → gris
-    if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
+    // 2) arrivé / terminé = gris
+    else if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
       bg = 'rgba(0,0,0,.04)';
     }
-
-    // DEP : décollé → gris
-    if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
+    // 3) DEP décollé = gris
+    else if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
       bg = 'rgba(0,0,0,.04)';
+    }
+    // 4) sinon, retard => orange/rouge
+    else if(showDelay){
+      bg = (dly <= 15) ? 'rgba(245, 158, 11, 0.18)' : 'rgba(239, 68, 68, 0.16)';
     }
 
     // ===== IATA PRINCIPAL =====
@@ -2542,7 +2567,13 @@ function renderAKList(flights, flow){
       ? (f.adepIata || f.adepIcao || '')
       : (f.adesIata || f.adesIcao || '');
 
-    const main = (mainIata || '---').trim();
+    const main = (mainIata || '---').trim().toUpperCase();
+
+    const delayBadge = showDelay
+      ? `<span class="tag" style="font-weight:900; margin-left:6px; background:${dly<=15 ? 'rgba(245, 158, 11, 0.20)' : 'rgba(239, 68, 68, 0.18)'};">
+           RETARD +${dly}
+         </span>`
+      : '';
 
     return `
       <div class="card mb-2"
@@ -2554,8 +2585,9 @@ function renderAKList(flights, flow){
         <div class="card-content" style="padding:10px 12px;">
           <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
             <div style="min-width:220px;">
-              <div style="font-weight:900; font-size:1.05rem;">
-                ${escapeHtml(main.toUpperCase())}
+              <div style="font-weight:900; font-size:1.05rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span>${escapeHtml(main)}</span>
+                ${delayBadge}
               </div>
 
               <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
