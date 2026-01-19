@@ -2309,8 +2309,14 @@ function renderTimeline(){
 }
 function setVal(id, v){
   const el = document.getElementById(id);
-  if(!el) return;
+  if(!el){
+    console.warn('[setVal] element introuvable:', id);
+    return;
+  }
   el.value = (v ?? '');
+  // déclenche les listeners si tu en as
+  el.dispatchEvent(new Event('input', { bubbles:true }));
+  el.dispatchEvent(new Event('change', { bubbles:true }));
 }
 
 function setTimeFromISO(id, iso){
@@ -2652,7 +2658,32 @@ function renderAKList(flights, flow){
     : `<p class="has-text-grey">Aucun vol.</p>`;
 }
 
-// ===== Import : règles BVA =====
+ // ===== Import : règles BVA =====
+function akBuildSI(f){
+  const parts = [];
+
+  const rmk = (f?.remarks || '').trim();
+  if(rmk) parts.push(rmk);
+
+  const reg = f?.regulation;
+  if(reg){
+    if(reg.regul) parts.push(`REG: ${reg.regul}`);
+    if(reg.cause) parts.push(`CAUSE: ${reg.cause}`);
+    if(reg.reason) parts.push(`REASON: ${reg.reason}`);
+    if(reg.description) parts.push(String(reg.description).trim());
+    if(reg.remark) parts.push(`RMK: ${reg.remark}`);
+  }
+
+  const tb = f?.dlCodes?.typeb;
+  if(Array.isArray(tb) && tb.length){
+    parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
+  }
+
+  const out = parts.filter(Boolean).join('\n');
+  console.log('[akBuildSI] out=', out);
+  return out;
+}
+
 function applyAKFlight(f, flow){
   // ===== BASE =====
   setVal('Immat', (f.reg || '').toUpperCase());
@@ -2660,11 +2691,11 @@ function applyAKFlight(f, flow){
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
   if(stand) setVal('Parking', stand);
 
-  // A/C TYPE : priorité ICAO
+  // ===== TYPE AVION (ICAO prioritaire) =====
   const ac = (f.acTypeIcao || f.acTypeIata || '').toUpperCase().trim();
   if(ac) setVal('TypeAvion', ac);
 
-  // ===== CIE / N° VOL (2 lettres + chiffres) =====
+  // ===== CIE / N° VOL =====
   const ff = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
   if(ff){
     const m = ff.match(/^([A-Z0-9]{2})([0-9]{1,6})$/);
@@ -2685,32 +2716,20 @@ function applyAKFlight(f, flow){
 
   // ===== ARRIVÉE =====
   if(flow === 'ARR'){
-    // FROM = provenance
-    const from = (f.adepIata || f.adepIcao || '').toUpperCase().trim();
-    setVal('From', from || HOME_IATA);
+    setVal('From', (f.adepIata || '').toUpperCase() || HOME_IATA);
 
-    // TO = destination du départ lié si même jour, sinon BVA
     const nextDep = findLinkedDepForArr(f);
-    if(!nextDep){
-      setVal('To', HOME_IATA);
+    if(nextDep){
+      const to = (nextDep.adesIata || '').toUpperCase();
+      setVal('To', to || HOME_IATA);
     }else{
-      const arrT = arrTimeMs(f);
-      const depT = depTimeMs(nextDep);
-      const arrD = arrT ? new Date(arrT) : null;
-      const depD = depT ? new Date(depT) : null;
-
-      if(!arrD || !depD || !sameLocalDay(arrD, depD)){
-        setVal('To', HOME_IATA);
-      }else{
-        const to = (nextDep.adesIata || nextDep.adesIcao || '').toUpperCase().trim();
-        setVal('To', to || HOME_IATA);
-      }
+      setVal('To', HOME_IATA);
     }
 
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
 
-    // ✅ LOAD ARR : PAX + "POIDS" = bags (comme demandé) + SI (remarks/fallback)
+    // LOAD ARR
     setVal('LoadPAX',   (f?.paxNb ?? '') !== '' ? String(f.paxNb) : '');
     setVal('LoadPOIDS', (f?.bags  ?? '') !== '' ? String(f.bags)  : '');
     setVal('LoadSI', akBuildSI(f));
@@ -2718,32 +2737,19 @@ function applyAKFlight(f, flow){
 
   // ===== DÉPART =====
   else {
-    // TO = destination
-    const to = (f.adesIata || f.adesIcao || '').toUpperCase().trim();
-    setVal('To', to || HOME_IATA);
+    setVal('To', (f.adesIata || '').toUpperCase() || HOME_IATA);
 
-    // FROM = provenance de l’arrivée liée si même jour, sinon BVA
-    const linkedArr = findLinkedArrForDep(f);
-    if(!linkedArr){
-      setVal('From', HOME_IATA);
+    const prevArr = findLinkedArrForDep(f);
+    if(prevArr){
+      const from = (prevArr.adepIata || '').toUpperCase();
+      setVal('From', from || HOME_IATA);
     }else{
-      const depT = depTimeMs(f);
-      const arrT = arrTimeMs(linkedArr);
-      const depD = depT ? new Date(depT) : null;
-      const arrD = arrT ? new Date(arrT) : null;
-
-      if(!depD || !arrD || !sameLocalDay(depD, arrD)){
-        setVal('From', HOME_IATA);
-      }else{
-        const from = (linkedArr.adepIata || linkedArr.adepIcao || '').toUpperCase().trim();
-        setVal('From', from || HOME_IATA);
-      }
+      setVal('From', HOME_IATA);
     }
 
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
 
-    // ✅ SI DEP -> LOAD EXP + LOAD FINAL
     const si = akBuildSI(f);
     setVal('ExpSI', si);
     setVal('FinalSI', si);
