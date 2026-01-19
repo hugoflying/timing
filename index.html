@@ -147,61 +147,31 @@ body.dark .fixed-header{
   justify-content:center;
 }
 
-/* CTOT éditable (look original + Android OK) */
+/* CTOT éditable */
 .ctot-pill{
   width: auto;
   min-width: 70px;
-
   border: 0 !important;
   outline: 0 !important;
   box-shadow: none !important;
-
   background:#334155 !important;
   color:#fff !important;
   font-weight: 900 !important;
-
   border-radius: 999px !important;
   padding: 6px 10px !important;
-
   text-align:center;
   height: auto;
   line-height: 1.2;
   font-size: 1rem;
-
   appearance: none;
   -webkit-appearance: none;
-
-  font-variant-numeric: tabular-nums;
 }
+.ctot-pill::-webkit-datetime-edit{ color:#fff; }
+.ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
 
-/* texte interne (évite réserve Android) */
-.ctot-pill::-webkit-datetime-edit{
-  color:#fff;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-/* centre la valeur sur Android */
-.ctot-pill::-webkit-date-and-time-value{
-  text-align: center;
-}
-
-/* cache le picker SANS espace réservé (Android + iOS) */
-.ctot-pill::-webkit-calendar-picker-indicator{
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  pointer-events: none;
-}
-
-/* supprime boutons internes */
-.ctot-pill::-webkit-clear-button,
-.ctot-pill::-webkit-inner-spin-button{
-  display:none;
-  -webkit-appearance:none;
+#timer-tobt{ background:#16a34a !important; }
+#timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
+#timer-cd{ background:#93c5fd !important; color:#111 !important; }
 }
 
 /* CD en dépassement (après 0) */
