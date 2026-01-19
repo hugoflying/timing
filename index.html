@@ -206,6 +206,11 @@ body.dark .card-header{
   border-color: var(--field-border) !important;
 }
 .input.uppercase{ text-transform: uppercase; }
+
+textarea.si-uppercase{
+  text-transform: uppercase;
+}
+
 .input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 .field .label{ font-weight: 900; color: var(--text) !important; }
 
@@ -490,7 +495,7 @@ body.dark .timeline-scroll{
   <div class="field">
     <label class="label">SI</label>
     <div class="control">
-      <textarea class="textarea" id="LoadSI" placeholder="Special Information…"></textarea>
+      <textarea class="textarea si-uppercase" id="LoadSI" placeholder="Special Information…"></textarea>
     </div>
   </div>
 </div>
@@ -538,7 +543,7 @@ body.dark .timeline-scroll{
   <div class="field">
     <label class="label">SI</label>
     <div class="control">
-      <textarea class="textarea" id="ExpSI" placeholder="Special Information…"></textarea>
+      <textarea class="textarea si-uppercase" id="ExpSI" placeholder="Special Information…"></textarea>
     </div>
   </div>
 </div>
@@ -622,7 +627,7 @@ body.dark .timeline-scroll{
   <!-- SI -->
   <div class="field">
     <label class="label">SI</label>
-    <textarea class="textarea" id="FinalSI" placeholder="Special Information…"></textarea>
+    <textarea class="textarea si-uppercase" id="FinalSI" placeholder="Special Information…"></textarea>
   </div>
 </div>
 
