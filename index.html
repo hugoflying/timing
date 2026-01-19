@@ -775,17 +775,18 @@ body.dark .timeline-scroll{
             <div class="control select is-fullwidth">
               <select id="TypeAvion" onchange="updateAllCalculations()">
                 <option value="">--</option>
-                <option>OTHER</option>
                 <option>A319</option>
                 <option>A320</option>
-                <option>A20N</option>
                 <option>A321</option>
+                <option>A20N</option>
                 <option>A21N</option>
                 <option>A21NY</option>
-                <option>B737-400</option>
-                <option>B737-700</option>
-                <option>B737-800</option>
-                <option>B737-8200</option>
+                <option>B734</option>
+                <option>B737</option>
+                <option>B738</option>
+                <option>B38M</option>
+                <option>BCS3</option>
+                <option>Autre</option>
               </select>
             </div>
           </div>
@@ -2659,7 +2660,8 @@ function applyAKFlight(f, flow){
   const stand = (f.pkg || '').toString().replace(/^P/i,'').trim();
   if(stand) setVal('Parking', stand);
 
-  const ac = (f.acTypeIata || f.acTypeIcao || '').toUpperCase().trim();
+  // A/C TYPE : priorité ICAO
+  const ac = (f.acTypeIcao || f.acTypeIata || '').toUpperCase().trim();
   if(ac) setVal('TypeAvion', ac);
 
   // ===== CIE / N° VOL (2 lettres + chiffres) =====
@@ -2677,7 +2679,6 @@ function applyAKFlight(f, flow){
       }
       setVal('NVol', nvol);
     }else{
-      // fallback si format non standard
       setVal('NVol', ff);
     }
   }
@@ -2708,6 +2709,11 @@ function applyAKFlight(f, flow){
 
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
+
+    // ✅ LOAD ARR : PAX + "POIDS" = bags (comme demandé) + SI (remarks/fallback)
+    setVal('LoadPAX',   (f?.paxNb ?? '') !== '' ? String(f.paxNb) : '');
+    setVal('LoadPOIDS', (f?.bags  ?? '') !== '' ? String(f.bags)  : '');
+    setVal('LoadSI', akBuildSI(f));
   }
 
   // ===== DÉPART =====
@@ -2736,6 +2742,11 @@ function applyAKFlight(f, flow){
 
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
+
+    // ✅ SI DEP -> LOAD EXP + LOAD FINAL
+    const si = akBuildSI(f);
+    setVal('ExpSI', si);
+    setVal('FinalSI', si);
   }
 
   updateAllCalculations();
