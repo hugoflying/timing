@@ -713,37 +713,18 @@ body.dark .timeline-scroll{
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <div class="topbar-inner">
-      <div class="brandline">
-        <div class="brand-title">
-          <strong>SUIVI PERFORMANCE</strong>
-        </div>
-      </div>
-
-      <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
-        <label class="toggle">
-          <span id="darkLabel">Clair</span>
-          <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
-          <span class="track"><span class="thumb"></span></span>
-        </label>
-
-        <label class="toggle">
-          <span id="tzLabel">Locale</span>
-          <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
-          <span class="track"><span class="thumb"></span></span>
-        </label>
-      </div>
-    </div>
-
+    <!-- Tabs (reste sticky) -->
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
+    <!-- Timers (reste sticky) -->
     <div class="timer-row">
       <div class="timer-chip">
         <div class="k">HLE</div>
         <div id="timer-h40" class="v">--:--</div>
       </div>
+
       <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
@@ -775,6 +756,29 @@ body.dark .timeline-scroll{
 
 <div class="app-wrap">
 
+  <!-- ===== HEADER SCROLLABLE (titre + toggles) ===== -->
+  <div class="scroll-header">
+    <div class="brandline">
+      <div class="brand-title">
+        <strong>SUIVI PERFORMANCE</strong>
+      </div>
+    </div>
+
+    <div class="top-toggles">
+      <label class="toggle">
+        <span id="darkLabel">Clair</span>
+        <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+
+      <label class="toggle">
+        <span id="tzLabel">Locale</span>
+        <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+    </div>
+  </div>
+ 
   <!-- INFO VOL -->
   <div class="card mb-5">
     <header class="card-header section-collapse" onclick="toggleCardBody(this)">
