@@ -537,6 +537,59 @@ body.dark .timeline-scroll{
     <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
   </div>
 
+  <!-- PAX (MALE/FEMALE/ADULT/CHILD/INFANT/TOB) -->
+  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+    <div class="field">
+      <label class="label">MALE</label>
+      <div class="control"><input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">FEMALE</label>
+      <div class="control"><input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">ADULT</label>
+      <div class="control"><input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+
+    <div class="field">
+      <label class="label">CHILD</label>
+      <div class="control"><input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">INFANT</label>
+      <div class="control"><input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">TOB</label>
+      <div class="control"><input class="input" id="FinalTOB" type="text" readonly></div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
+
+  <!-- ZONES OA/OB/OC/OD -->
+  <div class="grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+    <div class="field">
+      <label class="label">OA</label>
+      <div class="control"><input class="input" id="FinalOA" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">OB</label>
+      <div class="control"><input class="input" id="FinalOB" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">OC</label>
+      <div class="control"><input class="input" id="FinalOC" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+    <div class="field">
+      <label class="label">OD</label>
+      <div class="control"><input class="input" id="FinalOD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+    </div>
+  </div>
+
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
+
   <!-- BAGS / POIDS / GB -->
   <div class="grid">
     <div class="field">
@@ -550,7 +603,7 @@ body.dark .timeline-scroll{
     <div class="field">
       <label class="label">POIDS</label>
       <div class="control">
-        <input class="input" id="FinalPOIDS" inputmode="numeric">
+        <input class="input" id="FinalPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
       </div>
     </div>
 
@@ -571,7 +624,7 @@ body.dark .timeline-scroll{
     <div class="field"><label class="label">H4</label><input class="input" id="FinalH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
   </div>
 
-  <hr>
+  <hr style="margin:12px 0; border-top:2px solid #111; opacity:.25;">
 
   <!-- SI -->
   <div class="field">
@@ -2709,6 +2762,7 @@ CARGO : ${val("ExpCARGO")}
 H1 : ${val("ExpH1")} / H2 : ${val("ExpH2")} / H3 : ${val("ExpH3")} / H4 : ${val("ExpH4")}
 SI : ${val("ExpSI")}`;
 
+  // ✅ FINAL : on garde passagers + zones OA/OB/OC/OD + on ajoute H1..H4 + SI
   const loadFinalBlock =
 `== LOAD FINAL ==
 MALE : ${val("FinalMALE")}
