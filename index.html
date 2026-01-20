@@ -2257,40 +2257,6 @@ function computeTimelineWindow(allTimes){
 
   return {min:0, max:60};
 }
-
-  // Fallback si pas assez d'infos
-  if(allTimes && allTimes.length){
-    let min = Math.min(...allTimes) - 10;
-    let max = Math.max(...allTimes) + 10;
-    if(max <= min) max += 1440;
-    if(max - min < 30){ min -= 10; max += 10; }
-    return {min, max};
-  }
-
-  return {min:0, max:60};
-}
-
-  const SOBT = parseHHMM(document.getElementById('SOBT')?.value || '');
-  if (SOBT != null) {
-    let startRef = (SIBT != null) ? SIBT : (SOBT - 40);
-    let min = startRef - 5;
-    let endRef = (AOBT ?? TOBT ?? SOBT);
-    let max = endRef + 5;
-    if (max <= min) max += 1440;
-    if (max - min < 30) { min -= 10; max += 10; }
-    return {min, max};
-  }
-
-  if (allTimes && allTimes.length){
-    let min = Math.min(...allTimes) - 10;
-    let max = Math.max(...allTimes) + 10;
-    if (max <= min) max += 1440;
-    if (max - min < 30) { min -= 10; max += 10; }
-    return {min, max};
-  }
-
-  return {min:0, max:60};
-}
 function getPairWindow(idA,idB){
   const a = parseHHMM(document.getElementById(idA)?.value || '');
   const b = parseHHMM(document.getElementById(idB)?.value || '');
