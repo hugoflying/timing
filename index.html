@@ -1505,38 +1505,43 @@ function attachAutoSave(){
 
 /* Tabs */
 function renderTabs(){
-  const bar = document.getElementById('tab-bar');
-  if(!bar) return;
+  const tabBar = document.getElementById('tab-bar');
+  if(!tabBar) return;
 
-  bar.innerHTML = '';
+  tabBar.innerHTML = `
+    <button class="button is-success is-light" type="button" onclick="createNewTab()">
+      + Ajouter vol
+    </button>
+    <button class="button is-link is-light" type="button" onclick="openAKPicker()">
+      IMPORT AK
+    </button>
+  `;
 
-  tabs.forEach((t, i)=>{
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'button is-light' + (i === activeTab ? ' is-link' : '');
-    b.textContent = t.label || `Vol ${i+1}`;
-    b.onclick = ()=> switchTab(i);
-    bar.appendChild(b);
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+
+  tabs.forEach((id)=>{
+    const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
+
+    const cie  = (data.Cie  || '').toUpperCase();
+    const nvol = (data.NVol || '').toUpperCase();
+    const to   = (data.To   || '').toUpperCase();
+
+    let left = `${cie}${nvol}`.trim();
+    let label =
+      left || to
+        ? (to ? `${left} | ${to}`.trim() : left)
+        : 'VOL';
+
+    const btn = document.createElement('button');
+    btn.className = `button ${id === currentTabId ? 'is-link' : 'is-light'}`;
+    btn.textContent = label || 'VOL';
+    btn.onclick = ()=> switchTab(id);
+    btn.ondblclick = ()=> deleteTab(id);
+
+    tabBar.appendChild(btn);
   });
 
-  // ➕ bouton nouvelle fiche
-  const addBtn = document.createElement('button');
-  addBtn.type = 'button';
-  addBtn.className = 'button is-light';
-  addBtn.textContent = '+';
-  addBtn.onclick = ()=> createNewTab();
-  bar.appendChild(addBtn);
-
-  // ✈️ IMPORT AK = crée TOUJOURS une nouvelle tab
-  const importBtn = document.createElement('button');
-  importBtn.type = 'button';
-  importBtn.className = 'button is-link is-light';
-  importBtn.textContent = 'IMPORT AK';
-  importBtn.onclick = ()=>{
-    createNewTab();   // ne touche jamais à l’onglet courant
-    openAKPicker();   // ouvre AK sur une fiche vierge
-  };
-  bar.appendChild(importBtn);
+  updateHeaderOffset();
 }
 
 function createNewTab(){
@@ -2826,6 +2831,8 @@ function applyAKFlight(f, flow){
     }
   }
 
+  // État vol + salle arrivée (éditables)
+  setIfEmpty('AKStatus', (f.status || '').toUpperCase());
   // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
   const akStatusMap = {
     IN_FLIGHT: 'EN VOL',
@@ -2912,7 +2919,7 @@ function applyAKFlight(f, flow){
   closeAKPicker();
   showPopup("Vol importé", "#16a34a", 1600);
 }
-  
+
 /* validateForm */
 function validateForm() {
   const val = id => (document.getElementById(id)?.value || "");
