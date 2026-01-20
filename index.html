@@ -64,21 +64,37 @@ body.dark .fixed-header{
   gap: 8px;
 }
 
-/* ===== TOPBAR SCROLLABLE (titre + toggles) ===== */
+/* ===== FIXED HEADER (tabs + timers SEULEMENT) ===== */
+.fixed-header{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 3000;
+  background: rgba(246,247,251,.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .fixed-header{
+  background: rgba(15,17,21,.82);
+  border-bottom-color: rgba(255,255,255,.08);
+}
+
+.fixed-header-inner{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 14px 10px;   /* header compact */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== TOPBAR SCROLLABLE (toggles UNIQUEMENT) ===== */
 .scroll-topbar{
   max-width: 1120px;
   margin: 0 auto;
   padding: calc(var(--fixed-header-h) + 10px) 14px 0;
 }
 
-/* contenu principal : ne réserve PLUS la place du header */
-.app-wrap{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 14px 14px 14px;
-}
-
-/* Topbar layout */
+/* layout des toggles */
 .topbar-inner{
   display:flex;
   gap:12px;
@@ -87,21 +103,12 @@ body.dark .fixed-header{
   flex-wrap: wrap;
 }
 
-/* Titre centré */
-.brandline{
-  flex: 1 1 100%;
-  display:flex;
-  align-items:center;
-  justify-content: center;
-}
-.brand-title{
-  text-align:center;
-  line-height: 1.05;
-}
-.brand-title strong{
-  display:block;
-  font-size: 1.2rem;
-  color: var(--text);
+/* ===== CONTENU PRINCIPAL ===== */
+/* ne réserve PLUS la hauteur du header */
+.app-wrap{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px;
 }
 
 /* ===== TABS ===== */
