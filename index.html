@@ -58,64 +58,39 @@ body.dark .fixed-header{
 .fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 8px 14px 10px;   /* header plus compact */
+  padding: 10px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* ===== FIXED HEADER (tabs + timers SEULEMENT) ===== */
-.fixed-header{
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 3000;
-  background: rgba(246,247,251,.82);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-body.dark .fixed-header{
-  background: rgba(15,17,21,.82);
-  border-bottom-color: rgba(255,255,255,.08);
-}
-
-.fixed-header-inner{
+.app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 8px 14px 10px;   /* header compact */
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
 }
 
-/* ===== TOPBAR SCROLLABLE (toggles UNIQUEMENT) ===== */
-.scroll-topbar{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: calc(var(--fixed-header-h) + 10px) 14px 0;
-}
-
-/* layout des toggles */
+/* Topbar */
 .topbar-inner{
   display:flex;
   gap:12px;
   align-items:center;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
-/* ===== CONTENU PRINCIPAL ===== */
-/* ne réserve PLUS la hauteur du header */
-.app-wrap{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 14px;
-}
-
-/* ===== TABS ===== */
-.tabs-row{
+/* Titre centré */
+.brandline{
+  flex: 1 1 100%;
   display:flex;
-  justify-content:center;
+  align-items:center;
+  justify-content: center;
 }
+.brand-title{ text-align:center; line-height: 1.05; }
+.brand-title strong{ display:block; font-size: 1.2rem; color: var(--text); }
+
+/* Tabs row */
+.tabs-row{ display:flex; justify-content:center; }
 .tabs-chip{
   width: 100%;
   max-width: 1120px;
@@ -139,7 +114,7 @@ body.dark .fixed-header{
   font-weight: 900;
 }
 
-/* ===== TIMERS ===== */
+/* Timers chips */
 .timer-row{
   display:flex;
   gap:10px;
@@ -158,10 +133,7 @@ body.dark .fixed-header{
   gap:10px;
   color: var(--text);
 }
-.timer-chip .k{
-  font-weight: 900;
-  color: var(--text);
-}
+.timer-chip .k{ font-weight: 900; color: var(--text); }
 .timer-chip .v{
   font-weight: 900;
   padding: 6px 10px;
@@ -175,7 +147,7 @@ body.dark .fixed-header{
   justify-content:center;
 }
 
-/* ===== CTOT éditable ===== */
+/* CTOT éditable */
 .ctot-pill{
   width: auto;
   min-width: 70px;
@@ -879,6 +851,16 @@ body.has-tab .app-wrap{ display:block; }
           <label class="label">SALLE ARRIVÉ</label>
           <div class="control">
             <input class="input uppercase" type="text" id="BorderControl">
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAT VOL -->
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">ETAT VOL</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="AKStatus">
           </div>
         </div>
       </div>
@@ -2906,6 +2888,14 @@ function applyAKFlight(f, flow){
     }
   }
 
+  // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
+  const akStatusMap = {
+    IN_FLIGHT: 'EN VOL',
+    TERMINATED: 'ARRIVÉ',
+    SCHEDULED: 'PRÉVU'
+  };
+  const rawStatus = (f.status || '').toUpperCase();
+  setIfEmpty('AKStatus', akStatusMap[rawStatus] || rawStatus);
   // ===== SALLE ARRIVÉ (éditable) =====
   setIfEmpty('BorderControl', (f.borderControl || '').toUpperCase());
 
