@@ -1388,12 +1388,16 @@ function initForm(){
   const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   const tabs = Array.isArray(tabsLS) ? tabsLS : [];
 
-  if(tabs.length === 0){
-    createNewTab();
-  }else if(Number.isFinite(lastTab) && tabs.includes(lastTab)){
-    switchTab(lastTab);
+  if(tabs.length > 0){
+    if(Number.isFinite(lastTab) && tabs.includes(lastTab)){
+      switchTab(lastTab);
+    }else{
+      switchTab(tabs[0]);
+    }
   }else{
-    switchTab(tabs[0]);
+    // Aucune fiche par défaut
+    currentTabId = null;
+    stopCountdown();
   }
 
   generateTimingFields();
@@ -1470,7 +1474,6 @@ function initForm(){
   });
 
   renderTimeline();
-  ensureCountdownRunning();
   updateFinalTOB();
 }
 
