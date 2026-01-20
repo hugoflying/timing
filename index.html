@@ -27,7 +27,7 @@
 }
 
 body{ background: var(--bg); color: var(--text); margin: 0; }
-body.dark{
+html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
   --text: #e5e7eb;
@@ -46,15 +46,15 @@ body.dark{
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 3000;
-  background: rgba(246,247,251,.82);
-  backdrop-filter: blur(10px);
+  background: var(--bg);
+  backdrop-filter: none;
   border-bottom: 1px solid rgba(0,0,0,.08);
 }
-body.dark .fixed-header{
-  background: rgba(15,17,21,.82);
+
+/* sombre */
+html.dark .fixed-header{
   border-bottom-color: rgba(255,255,255,.08);
 }
-
 .fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
