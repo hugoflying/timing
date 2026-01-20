@@ -491,6 +491,10 @@ body.dark .timeline-scroll{
   .ctot-pill{ min-width: 64px; }
 }
 
+/* rien afficher tant qu'il n'y a pas d'onglet */
+.app-wrap{ display:none; }
+body.has-tab .app-wrap{ display:block; }
+
 /* Forcer 2 colonnes sur "petites tablettes" (600–768px) */
 @media (min-width: 600px) and (max-width: 768px){
   .columns.is-multiline > .column.is-full-mobile.is-one-quarter-tablet,
@@ -1379,10 +1383,25 @@ function updateFinalTOB(){
 
   setTOBValidity(sum === main);
 }
+function renderTabs(){ ... }
+
+function refreshUIForTabs(){
+  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const hasTab = Array.isArray(tabsLS) && tabsLS.length > 0;
+  document.body.classList.toggle('has-tab', hasTab);
+
+  if(!hasTab){
+    currentTabId = null;
+    hideAllLoadPopovers();
+    closeAKPicker();
+    stopCountdown(true);
+  }
+}
 
 /* INIT */
 function initForm(){
   renderTabs();
+  refreshUIForTabs();
 
   const lastTab = parseInt(localStorage.getItem('lastTabId') || '', 10);
   const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
@@ -1474,6 +1493,7 @@ function initForm(){
   });
 
   renderTimeline();
+  refreshUIForTabs();
   updateFinalTOB();
 }
 
@@ -1551,41 +1571,75 @@ function renderTabs(){
 }
 
 function createNewTab(){
-  const newId=Date.now();
-  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
+  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
+
+  const newId = Date.now();
   tabs.push(newId);
-  localStorage.setItem('flightTabs',JSON.stringify(tabs));
+
+  localStorage.setItem('flightTabs', JSON.stringify(tabs));
+  localStorage.setItem('lastTabId', String(newId));
+
+  currentTabId = newId;
+
   clearFormFields();
-  currentTabId=newId;
-  localStorage.setItem('lastTabId',newId);
   saveCurrentTabData();
+
   renderTabs();
-  updateHeaderOffset();
+  refreshUIForTabs();
 }
 
 function switchTab(id){
   stopCountdown();
   saveCurrentTabData();
-  currentTabId=id;
-  localStorage.setItem('lastTabId',id);
+
+  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
+  if(!tabs.includes(id)) return;
+
+  currentTabId = id;
+  localStorage.setItem('lastTabId', String(id));
+
   loadTabData(id);
+
   renderTabs();
+  refreshUIForTabs();
   renderTimeline();
-  updateHeaderOffset();
 }
 
 function deleteTab(id){
   stopCountdown();
-  if(!confirm("Supprimer cet onglet ?")) return;
-  let tabs=JSON.parse(localStorage.getItem('flightTabs')||'[]');
-  tabs=tabs.filter(t=>t!==id);
-  localStorage.setItem('flightTabs',JSON.stringify(tabs));
-  localStorage.removeItem('tab-'+id);
-  if(tabs.length>0) switchTab(tabs[0]);
-  else createNewTab();
+  if(!confirm('Supprimer cette fiche ?')) return;
+
+  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
+  if(!tabs.includes(id)) return;
+
+  // supprimer l’ID
+  const idx = tabs.indexOf(id);
+  tabs.splice(idx, 1);
+
+  // nettoyer le stockage
+  localStorage.setItem('flightTabs', JSON.stringify(tabs));
+  localStorage.removeItem('tab-' + id);
+
+  // choisir la nouvelle tab active
+  if(tabs.length > 0){
+    const nextId = tabs[Math.max(0, idx - 1)];
+    localStorage.setItem('lastTabId', String(nextId));
+    currentTabId = nextId;
+    loadTabData(nextId);
+  }else{
+    // plus aucune fiche
+    localStorage.removeItem('lastTabId');
+    currentTabId = null;
+    clearFormFields();
+    stopCountdown(true);
+  }
+
   renderTabs();
+  refreshUIForTabs();
   renderTimeline();
-  updateHeaderOffset();
 }
 
 function clearFormFields(){
@@ -2179,23 +2233,30 @@ function computeTimelineWindow(allTimes){
   const starts = [H40, SIBT, AIBT].filter(v => v != null);
   const ends   = [SOBT, AOBT, TOBT, CTOT].filter(v => v != null);
 
-  // Si on a au moins un start et un end => fenêtre basée sur tes règles
   if(starts.length && ends.length){
     let startRef = Math.min(...starts);
     let endRef   = Math.max(...ends);
 
-    // gère le passage minuit
-    // si l'end est "avant" le start, on considère qu'il est le lendemain
     if(endRef <= startRef) endRef += 1440;
 
     let min = startRef - 5;
     let max = endRef + 5;
 
-    // fenêtre minimale
     if(max - min < 30){ min -= 10; max += 10; }
 
     return { min, max };
   }
+
+  if(allTimes && allTimes.length){
+    let min = Math.min(...allTimes) - 10;
+    let max = Math.max(...allTimes) + 10;
+    if(max <= min) max += 1440;
+    if(max - min < 30){ min -= 10; max += 10; }
+    return {min, max};
+  }
+
+  return {min:0, max:60};
+}
 
   // Fallback si pas assez d'infos
   if(allTimes && allTimes.length){
