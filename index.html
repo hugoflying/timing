@@ -1543,6 +1543,8 @@ function renderTabs(){
   `;
 
   let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  if(!Array.isArray(tabs)) tabs = [];
+
 
   tabs.forEach((id)=>{
     const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
@@ -1642,18 +1644,19 @@ function deleteTab(id){
 }
 
 function clearFormFields(){
+  const ignore = new Set(['darkToggle','utcToggle','akFlow']);
+
   document.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(!el.id) return;
+    if(ignore.has(el.id)) return;
+
     if(el.type==='checkbox'||el.type==='radio') el.checked=false;
     else if(el.tagName==='SELECT') el.selectedIndex=0;
     else el.value='';
   });
+
   const d = document.getElementById('Date');
   if(d) d.valueAsDate=new Date();
-
-  const prmA = document.getElementById('LoadPRMData');
-  const prmE = document.getElementById('ExpPRMData');
-  if(prmA) prmA.value = '[]';
-  if(prmE) prmE.value = '[]';
 
   updateAllCalculations();
   updateFinalTOB();
