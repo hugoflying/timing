@@ -2424,12 +2424,25 @@ function escapeHtml(s){
 
 function pickBestTimeForList(f, flow){
   const iso = (v)=> v ? new Date(v) : null;
-  const toHHMM = (d)=> d ? `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : '';
+
+  const toHHMM = (d)=>{
+    if(!d || isNaN(d.getTime())) return '';
+    const hh = String(isUTC ? d.getUTCHours() : d.getHours()).padStart(2,'0');
+    const mm = String(isUTC ? d.getUTCMinutes() : d.getMinutes()).padStart(2,'0');
+    return `${hh}:${mm}`;
+  };
+
   if(flow === 'DEP'){
-    return toHHMM(iso(f.aobt) || iso(f.sobt) || iso(f.eobt) || iso(f.atot) || iso(f.etot));
+    return toHHMM(
+      iso(f.aobt) || iso(f.sobt) || iso(f.eobt) || iso(f.atot) || iso(f.etot)
+    );
   }
-  return toHHMM(iso(f.aibt) || iso(f.sibt) || iso(f.eibt) || iso(f.aldt) || iso(f.eldt));
+
+  return toHHMM(
+    iso(f.aibt) || iso(f.sibt) || iso(f.eibt) || iso(f.aldt) || iso(f.eldt)
+  );
 }
+
 // ===== Airport Keeper (AK) =====
 const AK_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJidmFfZXh0IiwidXNlcm5hbWUiOiJidmFfZXh0IiwiYWlycG9ydHMiOiJMRk9CIn0.PkSbBw_BF5dnX0bG3gbP7E7P7SHhW9egJ_in6OaWTnJm0OpirhJP4FZzbztH0r6lQxrA5JliEopo7__CyYvfIA";
 const AK_BASE    = "https://api.app.airport-keeper.com/flights/v1/airport";
