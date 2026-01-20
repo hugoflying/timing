@@ -2169,23 +2169,45 @@ function toExtended(t, min, max){
 function computeTimelineWindow(allTimes){
   const H40  = parseHHMM((document.getElementById('timer-h40')?.textContent || '').replace('--:--',''));
   const SIBT = parseHHMM(document.getElementById('SIBT')?.value || '');
+  const AIBT = parseHHMM(document.getElementById('AIBT')?.value || '');
+
+  const SOBT = parseHHMM(document.getElementById('SOBT')?.value || '');
   const AOBT = parseHHMM(document.getElementById('AOBT')?.value || '');
   const TOBT = parseHHMM((document.getElementById('timer-tobt')?.textContent || '').replace('--:--',''));
+  const CTOT = parseHHMM(document.getElementById('CTOT')?.value || '');
 
-  const haveStart = (H40 != null) || (SIBT != null);
-  const haveEnd   = (AOBT != null) || (TOBT != null);
+  const starts = [H40, SIBT, AIBT].filter(v => v != null);
+  const ends   = [SOBT, AOBT, TOBT, CTOT].filter(v => v != null);
 
-  if (haveStart && haveEnd) {
-    let startRef = null;
-    if (H40 != null && SIBT != null) startRef = (H40 < SIBT) ? H40 : SIBT;
-    else startRef = (H40 != null) ? H40 : SIBT;
+  // Si on a au moins un start et un end => fenêtre basée sur tes règles
+  if(starts.length && ends.length){
+    let startRef = Math.min(...starts);
+    let endRef   = Math.max(...ends);
+
+    // gère le passage minuit
+    // si l'end est "avant" le start, on considère qu'il est le lendemain
+    if(endRef <= startRef) endRef += 1440;
+
     let min = startRef - 5;
-    let endRef = (AOBT != null ? AOBT : TOBT);
     let max = endRef + 5;
-    if (max <= min) max += 1440;
-    if (max - min < 30) { min -= 10; max += 10; }
+
+    // fenêtre minimale
+    if(max - min < 30){ min -= 10; max += 10; }
+
+    return { min, max };
+  }
+
+  // Fallback si pas assez d'infos
+  if(allTimes && allTimes.length){
+    let min = Math.min(...allTimes) - 10;
+    let max = Math.max(...allTimes) + 10;
+    if(max <= min) max += 1440;
+    if(max - min < 30){ min -= 10; max += 10; }
     return {min, max};
   }
+
+  return {min:0, max:60};
+}
 
   const SOBT = parseHHMM(document.getElementById('SOBT')?.value || '');
   if (SOBT != null) {
