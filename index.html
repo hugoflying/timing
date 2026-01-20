@@ -2831,8 +2831,14 @@ function applyAKFlight(f, flow){
     }
   }
 
-  // État vol + salle arrivée (éditables)
-  setIfEmpty('AKStatus', (f.status || '').toUpperCase());
+  // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
+  const akStatusMap = {
+    IN_FLIGHT: 'EN VOL',
+    TERMINATED: 'ARRIVÉ',
+    SCHEDULED: 'PRÉVU'
+  };
+  const rawStatus = (f.status || '').toUpperCase();
+  setIfEmpty('AKStatus', akStatusMap[rawStatus] || rawStatus);
   setIfEmpty('BorderControl', (f.borderControl || '').toUpperCase());
 
   // ===== DEP =====
