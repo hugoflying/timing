@@ -1384,12 +1384,17 @@ function updateFinalTOB(){
 function initForm(){
   renderTabs();
 
-  let lastTab = localStorage.getItem('lastTabId');
-  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const lastTab = parseInt(localStorage.getItem('lastTabId') || '', 10);
+  const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
 
-  if(tabs.length === 0) createNewTab();
-  else if(lastTab && tabs.includes(parseInt(lastTab))) switchTab(parseInt(lastTab));
-  else switchTab(tabs[0]);
+  if(tabs.length === 0){
+    createNewTab();
+  }else if(Number.isFinite(lastTab) && tabs.includes(lastTab)){
+    switchTab(lastTab);
+  }else{
+    switchTab(tabs[0]);
+  }
 
   generateTimingFields();
   attachAutoSave();
@@ -1403,7 +1408,7 @@ function initForm(){
   document.getElementById('NVol')?.addEventListener('input', updateTabLabelInstant);
   document.getElementById('To')?.addEventListener('input', updateTabLabelInstant);
 
-  setupUppercaseInputs(['NVol','From','To','Immat','RZA']);
+  setupUppercaseInputs(['NVol','From','To','Immat','RZA','BorderControl','AKStatus']);
 
   const storedDark = (localStorage.getItem('modeDark')||'0') === '1';
   const storedUTC  = (localStorage.getItem('modeUTC')||'0') === '1';
@@ -1412,8 +1417,8 @@ function initForm(){
 
   [
     'AIBT','SOBT','SIBT','AOBT','CTOT','ArrPNT','ArrPNC','TypeAvion',
-    'LoadPAX','LoadBAGS','LoadCARGO',
-    'ExpPAX','ExpBAGS','ExpCARGO',
+    'LoadPAX','LoadBAGS','LoadPOIDS',
+    'ExpPAX','ExpBAGS','ExpPOIDS',
     'FinalMALE','FinalFEMALE','FinalADULT','FinalCHILD','FinalINFANT',
     'FinalOA','FinalOB','FinalOC','FinalOD',
     'FinalBAGS','FinalPOIDS','FinalGB'
@@ -1426,7 +1431,6 @@ function initForm(){
     });
   });
 
-  // ✅ LOAD ARR / EXP / FINAL : H1–H4 / BAGS / POIDS auto
   [
     'LoadBAGS','LoadH1','LoadH2','LoadH3','LoadH4',
     'ExpBAGS','ExpH1','ExpH2','ExpH3','ExpH4',
@@ -1457,7 +1461,6 @@ function initForm(){
     });
   }
 
-  if(currentTabId) loadTabData(currentTabId);
   setDefaultDateToTodayIfEmpty();
 
   updateHeaderOffset();
@@ -1468,7 +1471,6 @@ function initForm(){
 
   renderTimeline();
   ensureCountdownRunning();
-
   updateFinalTOB();
 }
 
@@ -2832,8 +2834,6 @@ function applyAKFlight(f, flow){
     }
   }
 
-  // État vol + salle arrivée (éditables)
-  setIfEmpty('AKStatus', (f.status || '').toUpperCase());
   // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
   const akStatusMap = {
     IN_FLIGHT: 'EN VOL',
@@ -2859,7 +2859,7 @@ function applyAKFlight(f, flow){
     setTimeFromISOIfEmpty('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
     // SI DEP -> EXP + FINAL
-    const si = akBuildSI(f);
+    const si = akBuildSI(f, true);
     setVal('ExpSI', si);
     setVal('FinalSI', si);
 
@@ -2907,7 +2907,7 @@ function applyAKFlight(f, flow){
       setTimeFromISOIfEmpty('CTOT', nextDep.ctot);
 
       // SI EXP + FINAL
-      const siDep = akBuildSI(nextDep);
+      const siDep = akBuildSI(nextDep, true);
       setIfEmpty('ExpSI', siDep);
       setIfEmpty('FinalSI', siDep);
     }else{
