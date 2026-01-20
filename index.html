@@ -666,7 +666,6 @@ body.has-tab .app-wrap{ display:block; }
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <!-- Top toggles -->
     <div class="topbar-inner">
       <div class="brandline">
         <div class="brand-title">
@@ -674,8 +673,7 @@ body.has-tab .app-wrap{ display:block; }
         </div>
       </div>
 
-      <div class="top-toggles"
-           style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
+      <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
         <label class="toggle">
           <span id="darkLabel">Clair</span>
           <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
@@ -690,62 +688,45 @@ body.has-tab .app-wrap{ display:block; }
       </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <!-- Timers -->
     <div class="timer-row">
-
-      <!-- REFRESH -->
-      <button type="button" class="timer-chip chip-btn" onclick="refreshAll()">
-        <div class="k">REFRESH</div>
-        <div class="v" style="background:#0ea5e9;">↻</div>
-      </button>
-
-      <!-- HLE -->
       <div class="timer-chip">
         <div class="k">HLE</div>
         <div id="timer-h40" class="v">--:--</div>
       </div>
-
-      <!-- H-15 -->
       <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
       </div>
 
-      <!-- LID -->
       <div id="lidBlock" class="timer-chip" style="display:none;">
         <div class="k">LID</div>
         <div id="timer-h8" class="v">--:--</div>
       </div>
 
-      <!-- TOBT -->
       <div class="timer-chip">
         <div class="k">TOBT</div>
         <div id="timer-tobt" class="v">--:--</div>
       </div>
 
-      <!-- CTOT -->
       <div class="timer-chip">
         <div class="k">CTOT</div>
-        <input id="CTOT"
-               class="ctot-pill"
-               type="time"
-               onchange="updateAllCalculations()">
+        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
       </div>
 
-      <!-- CD -->
       <div class="timer-chip">
         <div class="k">CD</div>
         <div id="timer-cd" class="v">--:--</div>
       </div>
-
     </div>
+
   </div>
 </div>
+
+<div class="app-wrap">
 
 <!-- INFO VOL -->
 <div class="card mb-5">
@@ -870,6 +851,16 @@ body.has-tab .app-wrap{ display:block; }
           <label class="label">SALLE ARRIVÉ</label>
           <div class="control">
             <input class="input uppercase" type="text" id="BorderControl">
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAT VOL -->
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">ETAT VOL</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="AKStatus">
           </div>
         </div>
       </div>
@@ -1888,16 +1879,6 @@ function updateLIDVisibility(){
   lid.style.display = (cie === 'FR' || cie === 'RK') ? '' : 'none';
   updateHeaderOffset();
 }
-function refreshAll(){
-  updateAllCalculations();
-  renderTimeline();
-  updateHeaderOffset();
-
-  // si AK est ouvert
-  if(document.getElementById('akPopover')?.style.display !== 'none'){
-    loadAKFlights();
-  }
-}
 
 /* CALCULS */
 function updateAllCalculations() {
@@ -2907,6 +2888,14 @@ function applyAKFlight(f, flow){
     }
   }
 
+  // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
+  const akStatusMap = {
+    IN_FLIGHT: 'EN VOL',
+    TERMINATED: 'ARRIVÉ',
+    SCHEDULED: 'PRÉVU'
+  };
+  const rawStatus = (f.status || '').toUpperCase();
+  setIfEmpty('AKStatus', akStatusMap[rawStatus] || rawStatus);
   // ===== SALLE ARRIVÉ (éditable) =====
   setIfEmpty('BorderControl', (f.borderControl || '').toUpperCase());
 
