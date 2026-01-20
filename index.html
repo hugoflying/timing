@@ -2098,7 +2098,13 @@ function setTimeModeUTC(enable, fromInit=false){
   if(tzLabel) tzLabel.textContent = enable ? 'UTC' : 'Locale';
 
   localStorage.setItem('modeUTC', enable ? '1' : '0');
+
   updateAllCalculations();
+
+  // 🔁 refresh flight list AK si ouverte
+  if(document.getElementById('akPopover')?.style.display !== 'none'){
+    loadAKFlights();
+  }
 }
 
 /* Popup */
