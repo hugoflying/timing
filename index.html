@@ -2163,8 +2163,12 @@ function adjustTime(fieldId, delta) {
 /* Switches */
 function setDarkMode(enable, fromInit=false){
   const currentlyDark = document.body.classList.contains('dark');
+
   if (enable && !currentlyDark) document.body.classList.add('dark');
   if (!enable && currentlyDark) document.body.classList.remove('dark');
+
+  // ✅ applique aussi sur <html> pour les variables CSS
+  document.documentElement.classList.toggle('dark', enable);
 
   const dt = document.getElementById('darkToggle');
   if(dt) dt.checked = enable;
@@ -2177,6 +2181,7 @@ function setDarkMode(enable, fromInit=false){
   updateHeaderOffset();
   renderTimeline();
 }
+
 function setTimeModeUTC(enable, fromInit=false){
   const offsetHours = -new Date().getTimezoneOffset() / 60;
 
