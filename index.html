@@ -507,6 +507,18 @@ body.has-tab .app-wrap{ display:block; }
     width: 50% !important;
   }
 }
+
+/* ===== NO TAB ===== */
+body.no-tab .timer-row{
+  display: none !important;
+}
+
+/* Header aligné sur le thème (clair / sombre) */
+.fixed-header{
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
+}
+
 </style>
 </head>
 
@@ -1387,7 +1399,9 @@ function updateFinalTOB(){
 function refreshUIForTabs(){
   const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   const hasTab = Array.isArray(tabsLS) && tabsLS.length > 0;
+
   document.body.classList.toggle('has-tab', hasTab);
+  document.body.classList.toggle('no-tab', !hasTab);
 
   if(!hasTab){
     currentTabId = null;
