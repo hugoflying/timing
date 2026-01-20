@@ -2625,7 +2625,7 @@ function renderAKList(flights, flow){
   if(!list) return;
 
   function delayMinutes(f, flow){
-    const parse = (v)=> v ? Date.parse(v) : NaN;
+    const parse = v => v ? Date.parse(v) : NaN;
 
     if(flow === 'ARR'){
       const s = parse(f?.sibt);
@@ -2642,56 +2642,65 @@ function renderAKList(flights, flow){
     }
   }
 
-  const safeJsonForOnclick = (obj)=>{
-    return JSON.stringify(obj)
-      .replace(/</g, "\\u003c")
-      .replace(/>/g, "\\u003e")
-      .replace(/&/g, "\\u0026")
-      .replace(/'/g, "\\u0027")
-      .replace(/\u2028/g, "\\u2028")
-      .replace(/\u2029/g, "\\u2029");
-  };
+  const safeJsonForOnclick = obj =>
+    JSON.stringify(obj)
+      .replace(/</g,"\\u003c")
+      .replace(/>/g,"\\u003e")
+      .replace(/&/g,"\\u0026")
+      .replace(/'/g,"\\u0027")
+      .replace(/\u2028/g,"\\u2028")
+      .replace(/\u2029/g,"\\u2029");
 
   const row = (f)=>{
-    const ff = (f.fullFlightNumber || f.callsign || '').trim();
-    const reg = (f.reg || '').trim();
+    const ff    = (f.fullFlightNumber || f.callsign || '').trim();
+    const reg   = (f.reg || '').trim();
     const stand = (f.pkg || '').toString().replace(/^P/i,'');
-    const t = pickBestTimeForList(f, flow);
+    const t     = pickBestTimeForList(f, flow);
 
     let statusRaw = (f.status || f.milestone || '').toString().toUpperCase();
     let status = statusRaw;
 
     if(statusRaw === 'SCHEDULED') status = 'PRÉVU';
-    if(flow === 'ARR'){
-      if(statusRaw === 'TERMINATED') status = 'ARRIVÉ';
-      if(statusRaw === 'IN_FLIGHT')  status = 'EN VOL';
-    }
+
     if(flow === 'DEP'){
       if(statusRaw === 'IN_FLIGHT') status = 'DÉCOLLÉ';
+    }else{
+      // ARR
+      if(statusRaw === 'TERMINATED') status = 'ARRIVÉ';
+      if(statusRaw === 'IN_FLIGHT')  status = 'EN VOL';
+
+      // 🔥 ARR affiché DÉCOLLÉ si le DEP lié a décollé
+      const nextDep = findLinkedDepForArr(f);
+      if(nextDep){
+        const depStatusRaw = (nextDep.status || nextDep.milestone || '').toString().toUpperCase();
+        const depIsOff = depStatusRaw === 'IN_FLIGHT' || !!nextDep.atot;
+        if(depIsOff) status = 'DÉCOLLÉ';
+      }
     }
 
     const dly = delayMinutes(f, flow);
     const showDelay = dly >= 5;
 
     let bg = 'var(--card)';
-    if(flow === 'ARR' && statusRaw === 'IN_FLIGHT'){
-      bg = 'rgba(37, 99, 235, 0.12)';
-    } else if(flow === 'ARR' && (statusRaw === 'ARR' || statusRaw === 'TERMINATED')){
+    if(flow === 'ARR' && status === 'DÉCOLLÉ'){
       bg = 'rgba(0,0,0,.04)';
-    } else if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
+    }else if(flow === 'ARR' && statusRaw === 'IN_FLIGHT'){
+      bg = 'rgba(37,99,235,0.12)';
+    }else if(flow === 'DEP' && statusRaw === 'IN_FLIGHT'){
       bg = 'rgba(0,0,0,.04)';
-    } else if(showDelay){
-      bg = (dly <= 15) ? 'rgba(245, 158, 11, 0.18)' : 'rgba(239, 68, 68, 0.16)';
+    }else if(showDelay){
+      bg = (dly <= 15)
+        ? 'rgba(245,158,11,0.18)'
+        : 'rgba(239,68,68,0.16)';
     }
 
     const mainIata = (flow === 'ARR')
       ? (f.adepIata || f.adepIcao || '')
       : (f.adesIata || f.adesIcao || '');
 
-    const main = (mainIata || '---').trim().toUpperCase();
-
     const delayBadge = showDelay
-      ? `<span class="tag" style="font-weight:900; margin-left:6px; background:${dly<=15 ? 'rgba(245, 158, 11, 0.20)' : 'rgba(239, 68, 68, 0.18)'};">
+      ? `<span class="tag" style="font-weight:900; margin-left:6px;
+           background:${dly<=15 ? 'rgba(245,158,11,0.20)' : 'rgba(239,68,68,0.18)'};">
            RETARD +${dly}
          </span>`
       : '';
@@ -2700,26 +2709,22 @@ function renderAKList(flights, flow){
 
     return `
       <div class="card mb-2"
-        style="
-          box-shadow:none;
-          border:1px solid rgba(0,0,0,.08);
-          background:${bg};
-        ">
+        style="box-shadow:none;border:1px solid rgba(0,0,0,.08);background:${bg};">
         <div class="card-content" style="padding:10px 12px;">
-          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+          <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
             <div style="min-width:220px;">
-              <div style="font-weight:900; font-size:1.05rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                <span>${escapeHtml(main)}</span>
+              <div style="font-weight:900;font-size:1.05rem;display:flex;gap:6px;flex-wrap:wrap;">
+                <span>${escapeHtml(mainIata || '---')}</span>
                 ${delayBadge}
               </div>
 
-              <div style="color:var(--muted); font-weight:800; font-size:.95rem;">
+              <div style="color:var(--muted);font-weight:800;font-size:.95rem;">
                 ${escapeHtml(ff || '(sans numéro)')}
                 · Stand ${escapeHtml(stand || '—')}
                 · ${escapeHtml(reg || '—')}
               </div>
 
-              <div style="color:var(--muted); font-weight:800; font-size:.9rem;">
+              <div style="color:var(--muted);font-weight:800;font-size:.9rem;">
                 ${escapeHtml(t || '—')}
                 ${status ? '· ' + escapeHtml(status) : ''}
               </div>
