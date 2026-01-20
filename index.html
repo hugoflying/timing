@@ -58,32 +58,32 @@ body.dark .fixed-header{
 .fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 8px 14px 10px;   /* ↓ plus compact */
+  padding: 8px 14px 10px;   /* header plus compact */
   display: flex;
   flex-direction: column;
-  gap: 8px;                 /* ↓ plus compact */
+  gap: 8px;
 }
 
-/* la topbar (titre + toggles) n'est PLUS dans le header fixe */
+/* ===== TOPBAR SCROLLABLE (titre + toggles) ===== */
 .scroll-topbar{
   max-width: 1120px;
   margin: 0 auto;
   padding: calc(var(--fixed-header-h) + 10px) 14px 0;
 }
 
-/* le contenu principal ne réserve plus la place du topbar */
+/* contenu principal : ne réserve PLUS la place du header */
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 14px 14px 14px;  /* ← plus de calc(--fixed-header-h) */
+  padding: 14px 14px 14px;
 }
 
-/* Topbar */
+/* Topbar layout */
 .topbar-inner{
   display:flex;
   gap:12px;
   align-items:center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -94,11 +94,21 @@ body.dark .fixed-header{
   align-items:center;
   justify-content: center;
 }
-.brand-title{ text-align:center; line-height: 1.05; }
-.brand-title strong{ display:block; font-size: 1.2rem; color: var(--text); }
+.brand-title{
+  text-align:center;
+  line-height: 1.05;
+}
+.brand-title strong{
+  display:block;
+  font-size: 1.2rem;
+  color: var(--text);
+}
 
-/* Tabs row */
-.tabs-row{ display:flex; justify-content:center; }
+/* ===== TABS ===== */
+.tabs-row{
+  display:flex;
+  justify-content:center;
+}
 .tabs-chip{
   width: 100%;
   max-width: 1120px;
@@ -122,7 +132,7 @@ body.dark .fixed-header{
   font-weight: 900;
 }
 
-/* Timers chips */
+/* ===== TIMERS ===== */
 .timer-row{
   display:flex;
   gap:10px;
@@ -141,7 +151,10 @@ body.dark .fixed-header{
   gap:10px;
   color: var(--text);
 }
-.timer-chip .k{ font-weight: 900; color: var(--text); }
+.timer-chip .k{
+  font-weight: 900;
+  color: var(--text);
+}
 .timer-chip .v{
   font-weight: 900;
   padding: 6px 10px;
@@ -155,7 +168,7 @@ body.dark .fixed-header{
   justify-content:center;
 }
 
-/* CTOT éditable */
+/* ===== CTOT éditable ===== */
 .ctot-pill{
   width: auto;
   min-width: 70px;
