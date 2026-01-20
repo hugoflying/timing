@@ -58,16 +58,24 @@ body.dark .fixed-header{
 .fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
-  padding: 10px 14px 12px;
+  padding: 8px 14px 10px;   /* ↓ plus compact */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;                 /* ↓ plus compact */
 }
 
+/* la topbar (titre + toggles) n'est PLUS dans le header fixe */
+.scroll-topbar{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--fixed-header-h) + 10px) 14px 0;
+}
+
+/* le contenu principal ne réserve plus la place du topbar */
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
-  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
+  padding: 14px 14px 14px;  /* ← plus de calc(--fixed-header-h) */
 }
 
 /* Topbar */
