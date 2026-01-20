@@ -1105,14 +1105,7 @@ function updateArrExpWeightIfNeeded(){
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   if(cie !== 'FR' && cie !== 'RK') return;
 
-  // ARR
-  const bagsArr = asInt('LoadBAGS');
-  const poidsArrEl = document.getElementById('LoadPOIDS');
-  if(bagsArr != null && poidsArrEl && poidsArrEl.value === ''){
-    poidsArrEl.value = String(bagsArr * 13);
-  }
-
-  // EXP
+  // EXP uniquement (ARR désactivé)
   const bagsExp = asInt('ExpBAGS');
   const poidsExpEl = document.getElementById('ExpPOIDS');
   if(bagsExp != null && poidsExpEl && poidsExpEl.value === ''){
@@ -2798,19 +2791,18 @@ function applyAKFlight(f, flow){
     setTimeFromISO('SOBT', f.sobt || f.eobt);
     setTimeFromISO('AOBT', f.aobt);
 
-    // CTOT auto
+    // CTOT auto si vide
     setTimeFromISOIfEmpty('CTOT', f.ctot);
 
     // Embarquement
     setTimeFromISOIfEmpty('AvionPremierEmbarque', f?.boardingDetails?.startTime);
     setTimeFromISOIfEmpty('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
-    // SI EXP + FINAL (DL autorisés)
-    const siDep = akBuildSI(f, true);
-    setVal('ExpSI', siDep);
-    setVal('FinalSI', siDep);
+    const si = akBuildSI(f);
+    setVal('ExpSI', si);
+    setVal('FinalSI', si);
 
-    // ARR liée
+    // ARR liée (rotation précédente)
     const prevArr = findLinkedArrForDep(f);
     if(prevArr){
       setVal('From', ((prevArr.adepIata || '').toUpperCase() || HOME_IATA));
@@ -2818,11 +2810,10 @@ function applyAKFlight(f, flow){
       setTimeFromISOIfEmpty('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmpty('AIBT', prevArr.aibt);
 
-      if(prevArr?.bags != null) setIfEmpty('LoadBAGS', String(prevArr.bags));
+      // ⚠️ ARR : bags AK -> POIDS (pas BAGS)
+      if(prevArr?.bags != null) setIfEmpty('LoadPOIDS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmpty('LoadPAX', String(prevArr.paxNb));
-
-      // 🚫 DL supprimés en LOAD ARR
-      setIfEmpty('LoadSI', akBuildSI(prevArr, false));
+      setIfEmpty('LoadSI', akBuildSI(prevArr));
     }else{
       setVal('From', HOME_IATA);
     }
@@ -2834,13 +2825,12 @@ function applyAKFlight(f, flow){
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
 
-    if(f?.bags != null) setIfEmpty('LoadBAGS', String(f.bags));
+    // ⚠️ ARR : bags AK -> POIDS (pas BAGS)
+    if(f?.bags != null) setIfEmpty('LoadPOIDS', String(f.bags));
     if(f?.paxNb != null) setIfEmpty('LoadPAX', String(f.paxNb));
+    setIfEmpty('LoadSI', akBuildSI(f));
 
-    // 🚫 DL supprimés en LOAD ARR
-    setIfEmpty('LoadSI', akBuildSI(f, false));
-
-    // DEP liée
+    // DEP liée (rotation suivante)
     const nextDep = findLinkedDepForArr(f);
     if(nextDep){
       setVal('To', ((nextDep.adesIata || '').toUpperCase() || HOME_IATA));
@@ -2851,10 +2841,9 @@ function applyAKFlight(f, flow){
       // CTOT auto depuis DEP lié
       setTimeFromISOIfEmpty('CTOT', nextDep.ctot);
 
-      // SI EXP + FINAL (DL autorisés)
-      const siNext = akBuildSI(nextDep, true);
-      setIfEmpty('ExpSI', siNext);
-      setIfEmpty('FinalSI', siNext);
+      const siDep = akBuildSI(nextDep);
+      setIfEmpty('ExpSI', siDep);
+      setIfEmpty('FinalSI', siDep);
     }else{
       setVal('To', HOME_IATA);
     }
