@@ -724,143 +724,166 @@ body.dark .timeline-scroll{
 
 <div class="app-wrap">
 
-  <!-- INFO VOL -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">INFO VOL</p>
-      <span class="card-header-icon" aria-label="more options"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="columns is-multiline">
+<!-- INFO VOL -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">INFO VOL</p>
+    <span class="card-header-icon" aria-label="more options">
+      <span class="icon">⌄</span>
+    </span>
+  </header>
 
-        <div class="column is-6">
-          <div class="field">
-            <label class="label">DATE</label>
-            <div class="control">
-              <input class="input" type="date" id="Date">
-            </div>
+  <div class="card-content">
+    <div class="columns is-multiline">
+
+      <!-- DATE -->
+      <div class="column is-6">
+        <div class="field">
+          <label class="label">DATE</label>
+          <div class="control">
+            <input class="input" type="date" id="Date">
           </div>
         </div>
-        <div class="column is-6">
-          <div class="field">
-            <label class="label">RZA</label>
-            <div class="control">
-              <input class="input uppercase" type="text" id="RZA" maxlength="3">
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">AIRLINE</label>
-            <div class="control select is-fullwidth">
-              <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
-                <option value="">--</option>
-                <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
-                <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
-                <option>V7</option><option>Autre</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">FLT. NUMBER</label>
-            <div class="control">
-              <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">FROM</label>
-            <div class="control">
-              <input class="input uppercase" type="text" id="From" maxlength="3">
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">TO</label>
-            <div class="control">
-              <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
-            </div>
-          </div>
-        </div>
-
-        <!-- Row REG / A/C / PARK -->
-        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-          <div class="field">
-            <label class="label">REGISTRATION</label>
-            <div class="control">
-              <input class="input uppercase" type="text" id="Immat" maxlength="6">
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-          <div class="field">
-            <label class="label">A/C TYPE</label>
-            <div class="control select is-fullwidth">
-              <select id="TypeAvion" onchange="updateAllCalculations()">
-                <option value="">--</option>
-                <option>A319</option>
-                <option>A320</option>
-                <option>A321</option>
-                <option>A20N</option>
-                <option>A21N</option>
-                <option>A21NY</option>
-                <option>B734</option>
-                <option>B737</option>
-                <option>B738</option>
-                <option>B38M</option>
-                <option>BCS3</option>
-                <option>Autre</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-          <div class="field">
-            <label class="label">PARKING</label>
-            <div class="control select is-fullwidth">
-              <select id="Parking">
-                <option value="">--</option>
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option>
-                <option>9</option><option>10</option><option>11</option><option>12</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- LOAD buttons row -->
-        <div class="column is-12">
-          <div class="load-row-below">
-            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
-              <div class="k">LOAD</div>
-              <div class="v" style="background:#2563eb;">ARR.</div>
-            </button>
-
-            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadExp()">
-              <div class="k">LOAD</div>
-              <div class="v" style="background:#0ea5e9;">EXP.</div>
-            </button>
-
-            <button type="button" class="timer-chip chip-btn" onclick="toggleLoadFinal()">
-              <div class="k">LOAD</div>
-              <div class="v" style="background:#7c3aed;">FINAL</div>
-            </button>
-          </div>
-        </div>
-
       </div>
+
+      <!-- RZA -->
+      <div class="column is-6">
+        <div class="field">
+          <label class="label">RZA</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="RZA" maxlength="3">
+          </div>
+        </div>
+      </div>
+
+      <!-- AIRLINE -->
+      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+        <div class="field">
+          <label class="label">AIRLINE</label>
+          <div class="control select is-fullwidth">
+            <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
+              <option value="">--</option>
+              <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+              <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+              <option>V7</option><option>Autre</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLIGHT NUMBER -->
+      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+        <div class="field">
+          <label class="label">FLT. NUMBER</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
+          </div>
+        </div>
+      </div>
+
+      <!-- FROM -->
+      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+        <div class="field">
+          <label class="label">FROM</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="From" maxlength="3">
+          </div>
+        </div>
+      </div>
+
+      <!-- TO -->
+      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
+        <div class="field">
+          <label class="label">TO</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
+          </div>
+        </div>
+      </div>
+
+      <!-- REG / A/C / PARK / SALLE / ETAT -->
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">REGISTRATION</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="Immat" maxlength="6">
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">A/C TYPE</label>
+          <div class="control select is-fullwidth">
+            <select id="TypeAvion" onchange="updateAllCalculations()">
+              <option value="">--</option>
+              <option>A319</option><option>A320</option><option>A321</option>
+              <option>A20N</option><option>A21N</option><option>A21NY</option>
+              <option>B734</option><option>B737</option><option>B738</option>
+              <option>B38M</option><option>BCS3</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">PARKING</label>
+          <div class="control select is-fullwidth">
+            <select id="Parking">
+              <option value="">--</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+              <option>5</option><option>6</option><option>7</option><option>8</option>
+              <option>9</option><option>10</option><option>11</option><option>12</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SALLE ARRIVÉ -->
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">SALLE ARRIVÉ</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="BorderControl">
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAT VOL -->
+      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
+        <div class="field">
+          <label class="label">ETAT VOL</label>
+          <div class="control">
+            <input class="input uppercase" type="text" id="AKStatus">
+          </div>
+        </div>
+      </div>
+
+      <!-- LOAD buttons row -->
+      <div class="column is-12">
+        <div class="load-row-below">
+          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
+            <div class="k">LOAD</div>
+            <div class="v" style="background:#2563eb;">ARR.</div>
+          </button>
+
+          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadExp()">
+            <div class="k">LOAD</div>
+            <div class="v" style="background:#0ea5e9;">EXP.</div>
+          </button>
+
+          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadFinal()">
+            <div class="k">LOAD</div>
+            <div class="v" style="background:#7c3aed;">FINAL</div>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- HORAIRES -->
   <div class="card mb-5">
@@ -2808,6 +2831,10 @@ function applyAKFlight(f, flow){
     }
   }
 
+  // État vol + salle arrivée (éditables)
+  setIfEmpty('AKStatus', (f.status || '').toUpperCase());
+  setIfEmpty('BorderControl', (f.borderControl || '').toUpperCase());
+
   // ===== DEP =====
   if(flow === 'DEP'){
     setVal('To', (f.adesIata || '').toUpperCase() || HOME_IATA);
@@ -2822,6 +2849,7 @@ function applyAKFlight(f, flow){
     setTimeFromISOIfEmpty('AvionPremierEmbarque', f?.boardingDetails?.startTime);
     setTimeFromISOIfEmpty('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
+    // SI DEP -> EXP + FINAL
     const si = akBuildSI(f);
     setVal('ExpSI', si);
     setVal('FinalSI', si);
@@ -2834,10 +2862,12 @@ function applyAKFlight(f, flow){
       setTimeFromISOIfEmpty('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmpty('AIBT', prevArr.aibt);
 
-      // ⚠️ ARR : bags AK -> POIDS (pas BAGS)
+      // ARR : bags AK -> POIDS (pas BAGS)
       if(prevArr?.bags != null) setIfEmpty('LoadPOIDS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmpty('LoadPAX', String(prevArr.paxNb));
-      setIfEmpty('LoadSI', akBuildSI(prevArr));
+
+      // SI ARR sans DL
+      setIfEmpty('LoadSI', akBuildSI(prevArr, false));
     }else{
       setVal('From', HOME_IATA);
     }
@@ -2849,10 +2879,12 @@ function applyAKFlight(f, flow){
     setTimeFromISO('SIBT', f.sibt || f.eibt);
     setTimeFromISO('AIBT', f.aibt);
 
-    // ⚠️ ARR : bags AK -> POIDS (pas BAGS)
+    // ARR : bags AK -> POIDS (pas BAGS)
     if(f?.bags != null) setIfEmpty('LoadPOIDS', String(f.bags));
     if(f?.paxNb != null) setIfEmpty('LoadPAX', String(f.paxNb));
-    setIfEmpty('LoadSI', akBuildSI(f));
+
+    // SI ARR sans DL
+    setIfEmpty('LoadSI', akBuildSI(f, false));
 
     // DEP liée (rotation suivante)
     const nextDep = findLinkedDepForArr(f);
@@ -2865,6 +2897,7 @@ function applyAKFlight(f, flow){
       // CTOT auto depuis DEP lié
       setTimeFromISOIfEmpty('CTOT', nextDep.ctot);
 
+      // SI EXP + FINAL
       const siDep = akBuildSI(nextDep);
       setIfEmpty('ExpSI', siDep);
       setIfEmpty('FinalSI', siDep);
