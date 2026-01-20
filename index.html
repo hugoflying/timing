@@ -855,16 +855,6 @@ body.has-tab .app-wrap{ display:block; }
         </div>
       </div>
 
-      <!-- ETAT VOL -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">ETAT VOL</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="AKStatus">
-          </div>
-        </div>
-      </div>
-
       <!-- LOAD buttons row -->
       <div class="column is-12">
         <div class="load-row-below">
@@ -2888,14 +2878,7 @@ function applyAKFlight(f, flow){
     }
   }
 
-  // ===== ETAT VOL + SALLE ARRIVÉ (éditables) =====
-  const akStatusMap = {
-    IN_FLIGHT: 'EN VOL',
-    TERMINATED: 'ARRIVÉ',
-    SCHEDULED: 'PRÉVU'
-  };
-  const rawStatus = (f.status || '').toUpperCase();
-  setIfEmpty('AKStatus', akStatusMap[rawStatus] || rawStatus);
+  // ===== SALLE ARRIVÉ (éditable) =====
   setIfEmpty('BorderControl', (f.borderControl || '').toUpperCase());
 
   // ===== DEP =====
