@@ -833,6 +833,114 @@ body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   .lm-header{ gap:8px; }
   .lm-title strong{ font-size: 1rem; }
 }
+
+/* ===== LDM modal (single view, 2 columns, compact) ===== */
+#ldmBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.42);
+  z-index: 4400;
+}
+
+#ldmModal{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 10px) 10px 10px 10px;
+  z-index: 4500;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.10);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.dark #ldmModal{ border-color: rgba(255,255,255,.10); }
+
+.ldm-header{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .ldm-header{ border-bottom-color: rgba(255,255,255,.10); }
+
+.ldm-title{ display:flex; align-items:center; gap:10px; }
+.ldm-title strong{ font-weight:900; font-size:1.05rem; letter-spacing:.02em; }
+
+.ldm-body{
+  padding: 10px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.ldm-card{
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card) 92%, #000 8%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  overflow: hidden;
+}
+body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+
+.ldm-card-hdr{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card) 88%, #000 12%);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
+
+.ldm-dot{
+  width: 10px; height: 10px; border-radius: 999px;
+  background: var(--ldmAccent, #2563eb);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ldmAccent, #2563eb) 22%, transparent);
+}
+
+.ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
+.ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
+
+.ldm-arr  { --ldmAccent:#2563eb; }
+.ldm-exp  { --ldmAccent:#0ea5e9; }
+.ldm-final{ --ldmAccent:#7c3aed; }
+
+.ldm-grid{
+  padding: 10px 12px 12px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+
+.ldm-f{ margin-bottom: 0 !important; }
+.ldm-span-2{ grid-column: span 2; }
+
+.ldm-in{
+  height: 38px !important;
+  padding: 6px 10px !important;
+  font-weight: 900 !important;
+  text-align: center;
+  letter-spacing: .02em;
+}
+
+.ldm-ta{
+  min-height: 90px !important;
+  height: auto !important;
+  font-weight: 800;
+}
+
+@media (max-width: 520px){
+  #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
+  .ldm-grid{ gap: 7px 8px; }
+  .ldm-in{ height: 36px !important; padding: 6px 8px !important; }
+  .ldm-ta{ min-height: 86px !important; }
+}
  
 </style>
 </head>
@@ -1744,17 +1852,30 @@ function switchLoadPanel(mode){
   updateHeaderOffset();
 }
 
-function hideAllLoadPopovers(){
-  // compat : certains appels existent déjà
-  closeLoadModal();
+/* ===== LDM modal ===== */
+function openLDM(){
+  const b = document.getElementById('ldmBackdrop');
+  const m = document.getElementById('ldmModal');
+  if(b) b.style.display = '';
+  if(m) m.style.display = 'flex';
+  updateFinalTOB();
+  updateHeaderOffset();
+}
+function closeLDM(){
+  const b = document.getElementById('ldmBackdrop');
+  const m = document.getElementById('ldmModal');
+  if(m) m.style.display = 'none';
+  if(b) b.style.display = 'none';
 }
 
-function toggleLoadArr(){ openLoadModal('arr'); }
-function toggleLoadExp(){ openLoadModal('exp'); }
-function toggleLoadFinal(){ openLoadModal('final'); }
+/* compat : tes anciens boutons LOAD ARR/EXP/FINAL */
+function hideAllLoadPopovers(){ closeLDM(); }
+function toggleLoadArr(){ openLDM(); }
+function toggleLoadExp(){ openLDM(); }
+function toggleLoadFinal(){ openLDM(); }
 
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') closeLoadModal();
+  if(e.key === 'Escape') closeLDM();
 });
 
 /* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
