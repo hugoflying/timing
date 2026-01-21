@@ -925,7 +925,7 @@ body.dark #settingsMenu{
         <div class="kv-left">
           <div class="kv-title">Vol</div>
           <div class="kv-value">
-            <span id="kvCie">--</span><span id="kvNVol">----</span>
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
           </div>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
@@ -1771,20 +1771,42 @@ function initForm(){
 
 function updateInfoStrip(){
   const v = id => (document.getElementById(id)?.value || '').toUpperCase().trim();
-  const set = (id, txt) => {
+  const set = (id, txt, def='----') => {
     const el = document.getElementById(id);
-    if(el) el.textContent = txt || '--';
+    if(!el) return;
+    el.textContent = (txt && String(txt).trim()) ? String(txt).trim() : def;
   };
 
-  set('kvCie',  v('Cie') || '--');
-  set('kvNVol', v('NVol') || '----');
-  set('kvFrom', v('From') || '---');
-  set('kvTo',   v('To')   || '---');
+  // ----- vols ARR/DEP depuis AK (prioritaire) -----
+  let arrFF = '';
+  let depFF = '';
 
-  set('kvImmat', v('Immat') || '------');
-  set('kvType',  v('TypeAvion') || '----');
-  set('kvBC',    v('BorderControl') || '--');
-  set('kvPark',  v('Parking') || '--');
+  try{
+    if(window.currentTabId){
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      arrFF = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+      depFF = (data?.akMeta?.depFF || '').toUpperCase().trim();
+    }
+  }catch(e){}
+
+  // fallback manuel : DEP = CIE+N° (et ARR vide, comme tu veux)
+  if(!depFF){
+    const cie  = v('Cie');
+    const nvol = v('NVol');
+    if(cie || nvol) depFF = `${cie}${nvol}`;
+  }
+
+  set('kvArrVol', arrFF || '—', '—');
+  set('kvDepVol', depFF || '—', '—');
+
+  // route + autres
+  set('kvFrom', v('From') || '---', '---');
+  set('kvTo',   v('To')   || '---', '---');
+
+  set('kvImmat', v('Immat') || '------', '------');
+  set('kvType',  v('TypeAvion') || '----', '----');
+  set('kvBC',    v('BorderControl') || '--', '--');
+  set('kvPark',  v('Parking') || '--', '--');
 }
 
 // branche sur ton updateAllCalculations existant
@@ -3189,21 +3211,20 @@ function akBuildSI(f, allowDL = true){
   return parts.join('\n').trim();
 }
 
-function storeAKMetaForTab(f, flow){
+function storeAKMetaForTab(meta){
   if(!currentTabId) return;
 
-  const meta = {
-    flow,
-    reg: ((f?.reg || '') + '').toUpperCase().trim(),
-    ff:  ((f?.fullFlightNumber || f?.callsign || '') + '').toUpperCase().trim(),
-    sibt: f?.sibt || f?.eibt || f?.aibt || null,
-    sobt: f?.sobt || f?.eobt || f?.aobt || null,
-    pkg: (f?.pkg || '') + '',
+  const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+
+  data.akMeta = {
+    flow: meta.flow || null,
+    reg:  (meta.reg  || '').toUpperCase().trim(),
+    arrFF:(meta.arrFF|| '').toUpperCase().trim(),
+    depFF:(meta.depFF|| '').toUpperCase().trim(),
+    pkg:  (meta.pkg  || '') + '',
     ts: Date.now()
   };
 
-  const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-  data.akMeta = meta;
   localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
 }
 
@@ -3427,8 +3448,31 @@ function applyAKFlight(f, flow, opts = {}){
     }
   }
 
-  /* ===== mémorise la signature AK pour le ↻ ===== */
-  storeAKMetaForTab(f, flow);
+  /* ===== mémorise ARR + DEP fullFlightNumber pour le bandeau ===== */
+  let arrFF = '';
+  let depFF = '';
+
+  if(flow === 'ARR'){
+    arrFF = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
+    const nextDep = findLinkedDepForArr(f);
+    if(nextDep){
+      depFF = (nextDep.fullFlightNumber || nextDep.callsign || '').toUpperCase().trim();
+    }
+  }else{
+    depFF = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
+    const prevArr = findLinkedArrForDep(f);
+    if(prevArr){
+      arrFF = (prevArr.fullFlightNumber || prevArr.callsign || '').toUpperCase().trim();
+    }
+  }
+
+  storeAKMetaForTab({
+    flow,
+    reg: f.reg || '',
+    pkg: f.pkg || '',
+    arrFF,
+    depFF
+  });
 
   updateAllCalculations();
   updateTabLabelInstant();
