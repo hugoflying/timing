@@ -1175,7 +1175,7 @@ html.dark #settingsMenu, body.dark #settingsMenu{
 </div>
 
 <div class="buttons is-centered">
-  <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
+  <button class="button is-success is-medium" id="validate" onclick="promptRZAThenValidate()">VALIDER</button>
   <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
   <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
 </div>
@@ -3422,6 +3422,35 @@ function applyAKFlight(f, flow, opts = {}){
     closeAKPicker();
     showPopup("Vol importé", "#16a34a", 1600);
   }
+}
+
+function promptRZAThenValidate(){
+  const rzaEl = document.getElementById('RZA');
+  if(!rzaEl){
+    validateForm();
+    return;
+  }
+
+  // valeur actuelle (si déjà remplie)
+  const current = (rzaEl.value || '').toUpperCase().trim();
+
+  const rza = prompt("RZA (3 lettres)", current);
+
+  // Annuler => stop
+  if(rza === null) return;
+
+  const clean = (rza || '').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
+
+  if(clean.length !== 3){
+    showPopup("RZA invalide (3 lettres)", "#ef4444", 1600);
+    return;
+  }
+
+  rzaEl.value = clean;
+  rzaEl.dispatchEvent(new Event('input',  { bubbles:true }));
+  rzaEl.dispatchEvent(new Event('change', { bubbles:true }));
+
+  validateForm();
 }
 
 /* validateForm */
