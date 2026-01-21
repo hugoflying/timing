@@ -3500,7 +3500,6 @@ function closeRZAModal(validate){
 
 function submitRZAModal(){
   const inp = document.getElementById('rzaModalInput');
-  const rzaEl = document.getElementById('RZA');
   const v = (inp?.value || '').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
 
   if(v.length < 2){
@@ -3510,10 +3509,11 @@ function submitRZAModal(){
     return;
   }
 
-  if(rzaEl){
-    rzaEl.value = v;
-    rzaEl.dispatchEvent(new Event('input', { bubbles:true }));
-    rzaEl.dispatchEvent(new Event('change', { bubbles:true }));
+  // Stocke RZA dans l'onglet courant
+  if(currentTabId){
+    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+    data.RZA = v;
+    localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
   }
 
   closeRZAModal(true);
@@ -3542,7 +3542,21 @@ function validateForm() {
   const to = val("To");
   const immat = val("Immat");
   const typeAvion = val("TypeAvion");
-  const rza = val("RZA");
+
+  // ✅ RZA : plus dans INFO VOL -> on le prend du storage de l'onglet
+  let rza = '';
+  try{
+    if(currentTabId){
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      rza = (data.RZA || '').toUpperCase().trim();
+    }
+  }catch(e){}
+
+  // si pas de RZA -> on ouvre le popup et on stoppe l'envoi
+  if(!rza){
+    openRZAModal();
+    return;
+  }
 
   const titre = `[TIMING] ${dateTitre} / ${cie}${vol} ${from}-${to} / ${immat} / ${rza}`;
 
