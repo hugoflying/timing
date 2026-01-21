@@ -1682,12 +1682,12 @@ function initForm(){
   renderTabs();
   refreshUIForTabs();
 
-  const lastTab = parseInt(localStorage.getItem('lastTabId') || '', 10);
+  const lastTab = localStorage.getItem('lastTabId') || '';
   const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   const tabs = Array.isArray(tabsLS) ? tabsLS : [];
 
   if(tabs.length > 0){
-    if(Number.isFinite(lastTab) && tabs.includes(lastTab)){
+    if(lastTab && tabs.includes(lastTab)){
       switchTab(lastTab);
     }else{
       switchTab(tabs[0]);
@@ -1929,80 +1929,78 @@ function renderTabs(){
 }
 
 function createNewTab(){
-  const id = Date.now().toString();
+  const id = String(Date.now());
+
+  // ajoute l'onglet dans la liste
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  if(!Array.isArray(tabs)) tabs = [];
+  if(!tabs.includes(id)) tabs.push(id);
+  localStorage.setItem('flightTabs', JSON.stringify(tabs));
+
   currentTabId = id;
+  localStorage.setItem('lastTabId', id);
 
-  // reset formulaire
-  clearFormFields();
+  clearFormFields();            // reset champs
+  toggleInfoVolDetails(false);  // fermé par défaut
 
-  // INFO VOL fermé par défaut
-  toggleInfoVolDetails(false);
-
-  // données initiales
+  // snapshot initial
   const data = {};
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
-    if(el.type === 'checkbox'){
-      data[el.id] = el.checked;
-    }else{
-      data[el.id] = el.value || '';
-    }
+    data[el.id] = (el.type === 'checkbox') ? (el.checked ? '1' : '0') : (el.value || '');
   });
-
-  // état INFO VOL
   data.infovolOpen = '0';
 
-  // sauvegarde
   localStorage.setItem('tab-'+id, JSON.stringify(data));
 
-  // rendu onglets
   renderTabs();
+  refreshUIForTabs();
+  updateInfoStrip();
+  renderTimeline();
 }
 
 function switchTab(id){
   stopCountdown();
   saveCurrentTabData();
 
-  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
-  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  if(!Array.isArray(tabs)) tabs = [];
+
+  id = String(id);
   if(!tabs.includes(id)) return;
 
   currentTabId = id;
-  localStorage.setItem('lastTabId', String(id));
+  localStorage.setItem('lastTabId', id);
 
   loadTabData(id);
 
   renderTabs();
   refreshUIForTabs();
   renderTimeline();
-
-  updateInfoStrip();
 }
 
 function deleteTab(id){
   stopCountdown();
   if(!confirm('Supprimer cette fiche ?')) return;
 
-  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
-  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
-  if(!tabs.includes(id)) return;
+  id = String(id);
 
-  // supprimer l’ID
+  let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  if(!Array.isArray(tabs)) tabs = [];
+
   const idx = tabs.indexOf(id);
-  tabs.splice(idx, 1);
+  if(idx === -1) return;
 
-  // nettoyer le stockage
+  tabs.splice(idx, 1);
   localStorage.setItem('flightTabs', JSON.stringify(tabs));
   localStorage.removeItem('tab-' + id);
 
-  // choisir la nouvelle tab active
   if(tabs.length > 0){
     const nextId = tabs[Math.max(0, idx - 1)];
-    localStorage.setItem('lastTabId', String(nextId));
     currentTabId = nextId;
+    localStorage.setItem('lastTabId', nextId);
     loadTabData(nextId);
   }else{
-    // plus aucune fiche
     localStorage.removeItem('lastTabId');
     currentTabId = null;
     clearFormFields();
@@ -2012,6 +2010,7 @@ function deleteTab(id){
   renderTabs();
   refreshUIForTabs();
   renderTimeline();
+  updateInfoStrip();
 }
 
 function clearFormFields(){
@@ -2061,9 +2060,9 @@ function saveCurrentTabData(){
 }
 
 function loadTabData(id){
-  currentTabId = id;
+  currentTabId = String(id);
 
-  const raw = localStorage.getItem('tab-'+id);
+  const raw = localStorage.getItem('tab-'+currentTabId);
   if(!raw) return;
 
   const data = JSON.parse(raw);
@@ -2074,21 +2073,18 @@ function loadTabData(id){
     if(!el) continue;
 
     if(el.type === 'checkbox'){
-      el.checked = data[k] === true || data[k] === '1';
+      el.checked = (data[k] === true || data[k] === '1');
     }else{
       el.value = data[k];
     }
   }
 
-  // recalculs globaux
+  // INFO VOL ouvert/fermé
+  toggleInfoVolDetails(data.infovolOpen === '1');
+
   updateAllCalculations();
-  updateTabLabelInstant();
-
-  // INFO VOL : état ouvert / fermé par onglet
-  const openInfo = (data.infovolOpen === '1');
-  toggleInfoVolDetails(openInfo);
-
   updateHeaderOffset();
+  updateInfoStrip();
 }
 
 function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
