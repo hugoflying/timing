@@ -24,13 +24,55 @@
   --field-placeholder: rgba(107,114,128,.95);
 
   --fixed-header-h: 140px;
+
+  /* ✅ manquant chez toi (utilisé par .time-grid) */
+  --gap: 10px;
+}
+
+/* ===== TIME GRID (GLOBAL – PARTOUT) ===== */
+.time-grid{
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+/* ✅ autorise vraiment la réduction (sinon ça casse en wrap) */
+.time-grid .field{ min-width: 0; }
+.time-grid .control,
+.time-grid .input,
+.time-grid .select,
+.time-grid .select select{
+  min-width: 0;
+  width: 100%;
+}
+.time-grid .label{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* pleine largeur */
+.time-grid-full{
+  grid-column: 1 / -1;
+}
+
+/* mobile : priorité à la densité */
+@media (max-width: 768px){
+  .time-grid .field{ grid-column: span 6; }   /* 2 champs par ligne */
+}
+
+/* desktop : plus aéré */
+@media (min-width: 769px){
+  .time-grid .field{ grid-column: span 3; }   /* 4 champs par ligne */
 }
 
 body{ background: var(--bg); color: var(--text); margin: 0; }
+
+/* ✅ DARK MODE : correction du ;<style> qui cassait tout */
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
-  --text: #e5e7eb;<style>
+  --text: #e5e7eb;
   --muted: #9ca3af;
   --shadow: 0 10px 28px rgba(0,0,0,.45);
   --shadow2: 0 6px 18px rgba(0,0,0,.50);
@@ -928,12 +970,10 @@ body.dark #settingsMenu{
             <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
           </div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <div class="kv-left" style="text-align:right;">
-            <div class="kv-title">Route</div>
-            <div class="kv-value">
-              <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-            </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
         </div>
       </div>
@@ -954,24 +994,26 @@ body.dark #settingsMenu{
       </div>
     </div>
 
-    <!-- Form compact -->
-    <div class="grid-auto collapsed-body">
+    <!-- Form compact (TIME GRID) -->
+    <div class="time-grid collapsed-body">
 
-      <div class="field span-6">
+      <!-- L1 : DATE / RZA -->
+      <div class="field">
         <label class="label">Date</label>
         <div class="control">
           <input class="input" type="date" id="Date">
         </div>
       </div>
 
-      <div class="field span-6">
+      <div class="field">
         <label class="label">RZA</label>
         <div class="control">
           <input class="input uppercase" type="text" id="RZA" maxlength="3">
         </div>
       </div>
 
-      <div class="field span-3">
+      <!-- L2 : CIE / N° / FROM / TO -->
+      <div class="field">
         <label class="label">Cie</label>
         <div class="control select is-fullwidth">
           <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
@@ -983,35 +1025,36 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <div class="field span-3">
+      <div class="field">
         <label class="label">N°</label>
         <div class="control">
           <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
         </div>
       </div>
 
-      <div class="field span-3">
+      <div class="field">
         <label class="label">From</label>
         <div class="control">
           <input class="input uppercase" type="text" id="From" maxlength="3">
         </div>
       </div>
 
-      <div class="field span-3">
+      <div class="field">
         <label class="label">To</label>
         <div class="control">
           <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
         </div>
       </div>
 
-      <div class="field span-6">
+      <!-- L3 : IMMAT / TYPE / PARKING -->
+      <div class="field">
         <label class="label">Immat</label>
         <div class="control">
           <input class="input uppercase" type="text" id="Immat" maxlength="6">
         </div>
       </div>
 
-      <div class="field span-6">
+      <div class="field">
         <label class="label">Type avion</label>
         <div class="control select is-fullwidth">
           <select id="TypeAvion" onchange="updateAllCalculations()">
@@ -1025,7 +1068,7 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <div class="field span-6">
+      <div class="field">
         <label class="label">Parking</label>
         <div class="control select is-fullwidth">
           <select id="Parking">
@@ -1037,22 +1080,23 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <div class="field span-6">
+      <!-- L4 : SALLE ARRIVEE / ETAT VOL -->
+      <div class="field">
         <label class="label">Salle arrivée</label>
         <div class="control">
           <input class="input uppercase" type="text" id="BorderControl">
         </div>
       </div>
 
-      <div class="field span-12">
+      <div class="field">
         <label class="label">État vol</label>
         <div class="control">
           <input class="input uppercase" type="text" id="AKStatus">
         </div>
       </div>
 
-      <!-- LOAD buttons row -->
-      <div class="span-12">
+      <!-- LOAD buttons row (pleine largeur) -->
+      <div class="time-grid-full">
         <div class="load-row-below">
           <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
             <div class="k">LOAD</div>
@@ -1081,62 +1125,61 @@ body.dark #settingsMenu{
     <span class="card-header-icon"><span class="icon">⌄</span></span>
   </header>
 
-  <div class="card-content">
-    <div class="grid-auto">
+  <div class="card-content collapsed-body">
 
-      <!-- Arrivée -->
-      <div class="span-12">
+    <div class="time-grid">
+
+      <!-- ===== ARRIVÉE ===== -->
+      <div class="time-grid-full">
         <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SIBT</label>
-              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-
-            <div style="min-width:160px;">
-              <label class="label">AIBT</label>
-              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-          </div>
+          <strong style="text-transform:uppercase;color:var(--muted);">Arrivée</strong>
         </div>
       </div>
 
-      <!-- Départ -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SOBT</label>
-              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
+      <div class="field">
+        <label class="label">SIBT</label>
+        <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+        <div class="btn-actions">
+          <button class="button is-light" onclick="adjustTime('SIBT',-1)">-1</button>
+          <button class="button is-link" onclick="setNow('SIBT')">Now</button>
+          <button class="button is-light" onclick="adjustTime('SIBT',1)">+1</button>
+        </div>
+      </div>
 
-            <div style="min-width:160px;">
-              <label class="label">AOBT</label>
-              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-          </div>
+      <div class="field">
+        <label class="label">AIBT</label>
+        <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+        <div class="btn-actions">
+          <button class="button is-light" onclick="adjustTime('AIBT',-1)">-1</button>
+          <button class="button is-link" onclick="setNow('AIBT')">Now</button>
+          <button class="button is-light" onclick="adjustTime('AIBT',1)">+1</button>
+        </div>
+      </div>
+
+      <!-- ===== DÉPART ===== -->
+      <div class="time-grid-full">
+        <div class="kv-card" style="padding:12px;">
+          <strong style="text-transform:uppercase;color:var(--muted);">Départ</strong>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">SOBT</label>
+        <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+        <div class="btn-actions">
+          <button class="button is-light" onclick="adjustTime('SOBT',-1)">-1</button>
+          <button class="button is-link" onclick="setNow('SOBT')">Now</button>
+          <button class="button is-light" onclick="adjustTime('SOBT',1)">+1</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">AOBT</label>
+        <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+        <div class="btn-actions">
+          <button class="button is-light" onclick="adjustTime('AOBT',-1)">-1</button>
+          <button class="button is-link" onclick="setNow('AOBT')">Now</button>
+          <button class="button is-light" onclick="adjustTime('AOBT',1)">+1</button>
         </div>
       </div>
 
@@ -1175,55 +1218,64 @@ body.dark #settingsMenu{
     </div>
   </div>
 
-  <!-- RETARDS -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">RETARDS (Départ)</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="columns is-multiline">
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 1</label>
-            <div class="control"><input class="input" type="text" id="DLcode1"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 1 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
-          </div>
-        </div>
+<!-- RETARDS -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">RETARDS (Départ)</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 2</label>
-            <div class="control"><input class="input" type="text" id="DLcode2"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 2 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
-          </div>
-        </div>
+  <div class="card-content collapsed-body">
+    <div class="time-grid">
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 3</label>
-            <div class="control"><input class="input" type="text" id="DLcode3"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 3 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
-          </div>
+      <!-- Ligne 1 -->
+      <div class="field">
+        <label class="label">DL Code 1</label>
+        <div class="control">
+          <input class="input" type="text" id="DLcode1">
         </div>
       </div>
+
+      <div class="field">
+        <label class="label">DL Durée 1 (min)</label>
+        <div class="control">
+          <input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)">
+        </div>
+      </div>
+
+      <!-- Ligne 2 -->
+      <div class="field">
+        <label class="label">DL Code 2</label>
+        <div class="control">
+          <input class="input" type="text" id="DLcode2">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">DL Durée 2 (min)</label>
+        <div class="control">
+          <input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)">
+        </div>
+      </div>
+
+      <!-- Ligne 3 -->
+      <div class="field">
+        <label class="label">DL Code 3</label>
+        <div class="control">
+          <input class="input" type="text" id="DLcode3">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">DL Durée 3 (min)</label>
+        <div class="control">
+          <input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)">
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- FAITS SAILLANTS -->
   <div class="card mb-5">
