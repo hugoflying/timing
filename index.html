@@ -707,6 +707,44 @@ body.dark #settingsMenu{
   }
 }
 
+/* ===== INFO VOL : 1 ligne sur mobile ===== */
+@media (max-width: 480px){
+
+  /* DATE + RZA sur la même ligne */
+  #Date, #RZA{
+    grid-column: span 6 !important;
+  }
+
+  /* CIE + N° + FROM + TO sur une ligne (4 x 3 colonnes) */
+  #Cie, #NVol, #From, #To{
+    grid-column: span 3 !important;
+  }
+
+  /* IMMAT + TYPE AVION + PARKING sur une ligne (3 x 4 colonnes) */
+  #Immat, #TypeAvion, #Parking{
+    grid-column: span 4 !important;
+  }
+
+  /* SALLE ARRIVEE + ETAT VOL sur la même ligne */
+  #BorderControl, #AKStatus{
+    grid-column: span 6 !important;
+  }
+
+  /* ===== LOAD buttons sur 1 seule ligne ===== */
+  .load-row-below{
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+  }
+
+  .load-row-below .timer-chip{
+    min-width: 132px !important;
+    padding: 8px 10px !important;
+    flex: 0 0 auto;
+  }
+}
+  
 </style>
 </head>
 
