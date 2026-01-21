@@ -2134,7 +2134,6 @@ function generateTimingFields(){
   const container = document.getElementById('timing-grid');
   if(!container) return;
 
-  // Champ time + actions
   const fieldHTML = (id,label,full=false)=>`
     <div class="${full ? 'span-12' : 'span-6'}">
       <div class="field">
@@ -2153,7 +2152,7 @@ function generateTimingFields(){
       </div>
     </div>`;
 
-  // Panels (sans sous-headers internes)
+  /* ===== ARRIVÉE ===== */
   const arrNoHeader = `
     <div class="card mb-4">
       <div class="card-content">
@@ -2167,6 +2166,7 @@ function generateTimingFields(){
       </div>
     </div>`;
 
+  /* ===== DÉPART ===== */
   const depNoHeader = `
     <div class="card">
       <div class="card-content">
@@ -2177,15 +2177,25 @@ function generateTimingFields(){
           ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
           ${fieldHTML('ArriveeLift','Arrivée lift')}
           ${fieldHTML('DepartLift','Départ lift')}
-          ${fieldHTML('DepartFuel','Départ Avitair',true)}
-          ${fieldHTML('ArriveeINAD','Arrivée INAD')}
+
+          <!-- Départ Avitair + Arrivée INAD sur la même ligne -->
+          <div class="span-12">
+            <div class="grid-auto">
+              <div class="span-6">
+                ${fieldHTML('DepartFuel','Départ Avitair')}
+              </div>
+              <div class="span-6">
+                ${fieldHTML('ArriveeINAD','Arrivée INAD')}
+              </div>
+            </div>
+          </div>
+
           ${fieldHTML('RemiseLID','Remise LID/LDS')}
           ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
         </div>
       </div>
     </div>`;
 
-  // Toggle Bulma
   const toggle = `
     <div class="tabs is-toggle is-toggle-rounded is-centered mb-4">
       <ul>
