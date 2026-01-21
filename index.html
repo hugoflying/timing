@@ -30,7 +30,7 @@ body{ background: var(--bg); color: var(--text); margin: 0; }
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
-  --text: #e5e7eb;<style>
+  --text: #e5e7eb;
   --muted: #9ca3af;
   --shadow: 0 10px 28px rgba(0,0,0,.45);
   --shadow2: 0 6px 18px rgba(0,0,0,.50);
@@ -1237,11 +1237,36 @@ body.dark #settingsMenu{
   </div>
 
   <div class="buttons is-centered">
-    <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
+    <button class="button is-success is-medium" id="validate" onclick="openRZAModal()">VALIDER</button>
     <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
     <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
   </div>
 
+</div>
+
+  <!-- ===== RZA MODAL ===== -->
+<div id="rzaBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:6000;"></div>
+
+<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:6100; align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(420px, 100%);">
+    <header class="card-header">
+      <p class="card-header-title">RZA requis</p>
+    </header>
+    <div class="card-content">
+      <div class="field">
+        <label class="label">RZA (2 ou 3 lettres)</label>
+        <div class="control">
+          <input id="rzaModalInput" class="input uppercase" type="text" maxlength="3" autocomplete="off" spellcheck="false">
+        </div>
+        <p class="help" id="rzaHelp" style="display:none; color:#ef4444; font-weight:800;">2 ou 3 lettres uniquement.</p>
+      </div>
+
+      <div class="buttons is-right">
+        <button class="button is-light" type="button" onclick="closeRZAModal(false)">Annuler</button>
+        <button class="button is-link" type="button" onclick="submitRZAModal()">Valider</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -3485,6 +3510,73 @@ function applyAKFlight(f, flow, opts = {}){
     showPopup("Vol importé", "#16a34a", 1600);
   }
 }
+
+function openRZAModal(){
+  const back = document.getElementById('rzaBackdrop');
+  const modal = document.getElementById('rzaModal');
+  const inp = document.getElementById('rzaModalInput');
+  const rzaEl = document.getElementById('RZA');
+
+  if(back) back.style.display = '';
+  if(modal) modal.style.display = 'flex';
+
+  const current = (rzaEl?.value || '').toUpperCase().trim();
+  if(inp){
+    inp.value = current;
+    inp.focus();
+    inp.select();
+
+    // MAJUSCULE + lettres uniquement + max 3
+    inp.oninput = ()=>{
+      inp.value = (inp.value || '')
+        .toUpperCase()
+        .replace(/[^A-Z]/g,'')
+        .slice(0,3);
+      const ok = inp.value.length >= 2;
+      document.getElementById('rzaHelp').style.display = ok ? 'none' : '';
+    };
+    inp.oninput();
+  }
+}
+
+function closeRZAModal(validate){
+  const back = document.getElementById('rzaBackdrop');
+  const modal = document.getElementById('rzaModal');
+  if(modal) modal.style.display = 'none';
+  if(back) back.style.display = 'none';
+
+  if(validate) validateForm();
+}
+
+function submitRZAModal(){
+  const inp = document.getElementById('rzaModalInput');
+  const rzaEl = document.getElementById('RZA');
+  const v = (inp?.value || '').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
+
+  if(v.length < 2){
+    const h = document.getElementById('rzaHelp');
+    if(h) h.style.display = '';
+    if(inp) inp.focus();
+    return;
+  }
+
+  if(rzaEl){
+    rzaEl.value = v;
+    rzaEl.dispatchEvent(new Event('input', { bubbles:true }));
+    rzaEl.dispatchEvent(new Event('change', { bubbles:true }));
+  }
+
+  closeRZAModal(true);
+}
+
+// Enter/Escape
+document.addEventListener('keydown', (e)=>{
+  const modal = document.getElementById('rzaModal');
+  if(!modal || modal.style.display === 'none') return;
+
+  if(e.key === 'Escape') closeRZAModal(false);
+  if(e.key === 'Enter') submitRZAModal();
+});
 
 /* validateForm */
 function validateForm() {
