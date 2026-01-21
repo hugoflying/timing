@@ -1325,6 +1325,16 @@ function setTimeFromISOIfEmptyOrAK(id, iso){
   }
 }
 
+function setIfEmptyOrAK(id, v){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  // si champ vide OU déjà piloté AK -> on écrase
+  if(isEmptyVal(el) || el.dataset.ak === '1'){
+    setValAK(id, (v ?? ''));
+  }
+}
+
 /* Si l'utilisateur modifie un champ manuellement -> il n'est plus piloté AK */
 document.addEventListener('input', (e)=>{
   const t = e.target;
@@ -1332,7 +1342,6 @@ document.addEventListener('input', (e)=>{
   if(settingFromAK) return;
   if(t.dataset.ak === '1') delete t.dataset.ak;
 }, true);
-
 
 /* Timeline */
 let timelineZoom = 1;
@@ -3275,14 +3284,11 @@ async function refreshAKTab(tabId){
     return;
   }
 
-  // même fenêtre large que ta liste
   const now = new Date();
   const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
   const endDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
-  const linkFromDate = new Date(startDay.getTime() - 12*60*60*1000);
-  const linkToDate   = new Date(endDay.getTime()   + 12*60*60*1000);
-  const linkFrom = linkFromDate.toISOString().replace(/\.\d{3}Z$/, "Z");
-  const linkTo   = linkToDate.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const linkFrom = new Date(startDay.getTime() - 12*60*60*1000).toISOString().replace(/\.\d{3}Z$/, "Z");
+  const linkTo   = new Date(endDay.getTime()   + 12*60*60*1000).toISOString().replace(/\.\d{3}Z$/, "Z");
 
   try{
     const [arrAll, depAll] = await Promise.all([
@@ -3290,31 +3296,23 @@ async function refreshAKTab(tabId){
       fetchAK('DEP', linkFrom, linkTo),
     ]);
 
-    // met à jour le cache pour le linking interne
     window._akCache = { arr: arrAll, dep: depAll };
 
     const flow = meta.flow || 'DEP';
-    const list = (flow === 'DEP') ? depAll : arrAll;
-
+    const list = flow === 'DEP' ? depAll : arrAll;
     const match = findBestAKMatch(list, meta, flow);
+
     if(!match){
-      showPopup("Vol AK introuvable (match)", "#ef4444", 1800);
+      showPopup("Vol AK introuvable", "#ef4444", 1800);
       return;
     }
 
-    // refresh sur l'onglet demandé (sans switch si tu veux)
-    const prevTab = currentTabId;
     if(currentTabId !== tabId) switchTab(tabId);
 
     applyAKFlight(match, flow, { refresh: true });
-
-    storeAKMetaForTab(match, flow);
     saveCurrentTabData();
 
     showPopup("AK rafraîchi", "#16a34a", 1400);
-
-    // si tu veux revenir sur l’onglet d’avant :
-    // if(prevTab && prevTab !== tabId) switchTab(prevTab);
 
   }catch(e){
     showPopup(`Erreur AK (${String(e.message || e)})`, "#ef4444", 2000);
