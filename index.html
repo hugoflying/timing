@@ -1929,22 +1929,34 @@ function renderTabs(){
 }
 
 function createNewTab(){
-  const tabsLS = JSON.parse(localStorage.getItem('flightTabs') || '[]');
-  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
+  const id = Date.now().toString();
+  currentTabId = id;
 
-  const newId = Date.now();
-  tabs.push(newId);
-
-  localStorage.setItem('flightTabs', JSON.stringify(tabs));
-  localStorage.setItem('lastTabId', String(newId));
-
-  currentTabId = newId;
-
+  // reset formulaire
   clearFormFields();
-  saveCurrentTabData();
 
+  // INFO VOL fermé par défaut
+  toggleInfoVolDetails(false);
+
+  // données initiales
+  const data = {};
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
+    if(!el.id) return;
+    if(el.type === 'checkbox'){
+      data[el.id] = el.checked;
+    }else{
+      data[el.id] = el.value || '';
+    }
+  });
+
+  // état INFO VOL
+  data.infovolOpen = '0';
+
+  // sauvegarde
+  localStorage.setItem('tab-'+id, JSON.stringify(data));
+
+  // rendu onglets
   renderTabs();
-  refreshUIForTabs();
 }
 
 function switchTab(id){
@@ -2003,22 +2015,21 @@ function deleteTab(id){
 }
 
 function clearFormFields(){
-  const ignore = new Set(['darkToggle','utcToggle','akFlow']);
-
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
-    if(ignore.has(el.id)) return;
 
-    if(el.type==='checkbox'||el.type==='radio') el.checked=false;
-    else if(el.tagName==='SELECT') el.selectedIndex=0;
-    else el.value='';
+    if(el.type === 'checkbox'){
+      el.checked = false;
+    }else{
+      el.value = '';
+    }
   });
 
-  const d = document.getElementById('Date');
-  if(d) d.valueAsDate=new Date();
+  // reset INFO VOL (fermé)
+  toggleInfoVolDetails(false);
 
   updateAllCalculations();
-  updateFinalTOB();
+  updateTabLabelInstant();
 }
 
 function saveCurrentTabData(){
@@ -2050,62 +2061,33 @@ function saveCurrentTabData(){
 }
 
 function loadTabData(id){
-  stopCountdown();
+  currentTabId = id;
 
-  const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
+  const raw = localStorage.getItem('tab-'+id);
+  if(!raw) return;
 
-  // restore inputs/selects/textareas
-  document.querySelectorAll('input, select, textarea').forEach(el=>{
-    if(!el.id || data[el.id] === undefined) return;
-    if(el.type === 'checkbox') el.checked = (data[el.id] === '1');
-    else el.value = data[el.id];
-  });
+  const data = JSON.parse(raw);
 
-  // mode dark / utc
-  if(data.modeDark === '1') document.body.classList.add('dark');
-  else document.body.classList.remove('dark');
+  // recharge champs
+  for(const k in data){
+    const el = document.getElementById(k);
+    if(!el) continue;
 
-  isUTC = (data.modeUTC === '1');
+    if(el.type === 'checkbox'){
+      el.checked = data[k] === true || data[k] === '1';
+    }else{
+      el.value = data[k];
+    }
+  }
 
-  // restore timers display (chips)
-  const h40 = document.getElementById('timer-h40');
-  const h15 = document.getElementById('timer-h15');
-  const h8  = document.getElementById('timer-h8');
-  const tobt= document.getElementById('timer-tobt');
-  const cd  = document.getElementById('timer-cd');
-
-  if(h40) h40.textContent = data.timer_h40  || '--:--';
-  if(h15) h15.textContent = data.timer_h15  || '--:--';
-  if(h8)  h8.textContent  = data.timer_h8   || '--:--';
-  if(tobt)tobt.textContent= data.timer_tobt || '--:--';
-  if(cd)  cd.textContent  = data.timer_cd   || '--:--';
-
-  // sync toggles UI
-  const dt = document.getElementById('darkToggle');
-  const ut = document.getElementById('utcToggle');
-  if(dt) dt.checked = document.body.classList.contains('dark');
-  if(ut) ut.checked = isUTC;
-
-  const tzLabel = document.getElementById('tzLabel');
-  if(tzLabel) tzLabel.textContent = isUTC ? 'UTC' : 'Locale';
-
-  const darkLabel = document.getElementById('darkLabel');
-  if(darkLabel) darkLabel.textContent = document.body.classList.contains('dark') ? 'Sombre' : 'Clair';
-
-  setDefaultDateToTodayIfEmpty();
-
-  // recalc
+  // recalculs globaux
   updateAllCalculations();
+  updateTabLabelInstant();
 
-  // restore timing panel
-  const savedPanel = data.timingPanel || localStorage.getItem('timingPanel') || 'dep';
-  switchTimingPanel(savedPanel);
+  // INFO VOL : état ouvert / fermé par onglet
+  const openInfo = (data.infovolOpen === '1');
+  toggleInfoVolDetails(openInfo);
 
-  // ✅ plus de PRM (tu les as supprimés)
-  // renderPRMRows('arr');
-  // renderPRMRows('exp');
-
-  updateFinalTOB();
   updateHeaderOffset();
 }
 
@@ -3232,13 +3214,26 @@ function akBuildSI(f, allowDL = true){
   return parts.join('\n').trim();
 }
 
-  function toggleInfoVolDetails(){
+function toggleInfoVolDetails(forceOpen = null){
   const box = document.getElementById('infoVolDetails');
   const ic  = document.getElementById('infovolToggleIcon');
   if(!box) return;
 
-  const isHidden = box.classList.toggle('collapsed-body');
-  if(ic) ic.textContent = isHidden ? '›' : '⌄';
+  // état actuel
+  const currentlyOpen = !box.classList.contains('collapsed-body');
+
+  // état voulu
+  const wantOpen = (forceOpen === null) ? !currentlyOpen : !!forceOpen;
+
+  box.classList.toggle('collapsed-body', !wantOpen);
+  if(ic) ic.textContent = wantOpen ? '⌄' : '›';
+
+  // mémorise par onglet
+  if(currentTabId){
+    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+    data.infovolOpen = wantOpen ? '1' : '0';
+    localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
+  }
 
   updateHeaderOffset();
 }
