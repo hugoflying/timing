@@ -1708,7 +1708,7 @@ function initForm(){
   document.getElementById('NVol')?.addEventListener('input', updateTabLabelInstant);
   document.getElementById('To')?.addEventListener('input', updateTabLabelInstant);
 
-  setupUppercaseInputs(['NVol','From','To','Immat','RZA','BorderControl']);
+  setupUppercaseInputs(['NVol','From','To','Immat','BorderControl']);
 
   const storedDark = (localStorage.getItem('modeDark')||'0') === '1';
   const storedUTC  = (localStorage.getItem('modeUTC')||'0') === '1';
@@ -3454,15 +3454,22 @@ function applyAKFlight(f, flow, opts = {}){
 }
 
 function openRZAModal(){
-  const back = document.getElementById('rzaBackdrop');
+  const back  = document.getElementById('rzaBackdrop');
   const modal = document.getElementById('rzaModal');
-  const inp = document.getElementById('rzaModalInput');
-  const rzaEl = document.getElementById('RZA');
+  const inp   = document.getElementById('rzaModalInput');
 
   if(back) back.style.display = '';
   if(modal) modal.style.display = 'flex';
 
-  const current = (rzaEl?.value || '').toUpperCase().trim();
+  // RZA vient du storage de l’onglet (plus de champ #RZA dans INFO VOL)
+  let current = '';
+  try{
+    if(currentTabId){
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      current = (data.RZA || '').toUpperCase().trim();
+    }
+  }catch(e){}
+
   if(inp){
     inp.value = current;
     inp.focus();
@@ -3475,7 +3482,8 @@ function openRZAModal(){
         .replace(/[^A-Z]/g,'')
         .slice(0,3);
       const ok = inp.value.length >= 2;
-      document.getElementById('rzaHelp').style.display = ok ? 'none' : '';
+      const help = document.getElementById('rzaHelp');
+      if(help) help.style.display = ok ? 'none' : '';
     };
     inp.oninput();
   }
