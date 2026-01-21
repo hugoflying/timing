@@ -883,10 +883,10 @@ html, body{
         </div>
       </div>
 
-      <!-- SALLE ARRIVÉ -->
+      <!-- SALLE ARRIVÉE -->
       <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
         <div class="field">
-          <label class="label">SALLE ARRIVÉ</label>
+          <label class="label">SALLE ARRIVÉE</label>
           <div class="control">
             <input class="input uppercase" type="text" id="BorderControl">
           </div>
@@ -3162,7 +3162,10 @@ function applyAKFlight(f, flow, opts = {}){
   };
   const rawStatus = (f.status || '').toUpperCase();
   setIfEmptyOrAK('AKStatus', akStatusMap[rawStatus] || rawStatus);
-  setIfEmptyOrAK('BorderControl', (f.borderControl || '').toUpperCase());
+
+  // ⚠️ BorderControl : on le met depuis l'ARR liée pour un DEP (rotation complète),
+  // et depuis l'ARR elle-même pour un ARR. Donc ici on ne force pas à partir de f.
+  // (on le remplit plus bas selon flow)
 
   /* ===== DEP ===== */
   if(flow === 'DEP'){
@@ -3179,6 +3182,7 @@ function applyAKFlight(f, flow, opts = {}){
     setIfEmptyOrAK('ExpSI', si);
     setIfEmptyOrAK('FinalSI', si);
 
+    // ✅ rotation complète : récupérer l'ARR précédente (si existe)
     const prevArr = findLinkedArrForDep(f);
     if(prevArr){
       setValAK('From', (prevArr.adepIata || '') || HOME_IATA);
@@ -3186,12 +3190,19 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmptyOrAK('AIBT', prevArr.aibt);
 
+      // ✅ SALLE ARRIVÉ depuis l'ARR liée
+      setIfEmptyOrAK('BorderControl', (prevArr.borderControl || '').toUpperCase());
+
       if(prevArr?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(prevArr.paxNb));
 
       setIfEmptyOrAK('LoadSI', akBuildSI(prevArr, false));
     }else{
+      // pas d'arrivée (FROM = BVA)
       setValAK('From', HOME_IATA);
+
+      // optionnel : vider la salle arrivée si tu veux
+      // setValAK('BorderControl', '');
     }
 
   /* ===== ARR ===== */
@@ -3200,6 +3211,9 @@ function applyAKFlight(f, flow, opts = {}){
 
     setTimeFromISOAK('SIBT', f.sibt || f.eibt);
     setTimeFromISOAK('AIBT', f.aibt);
+
+    // ✅ SALLE ARRIVÉ depuis l'ARR elle-même
+    setIfEmptyOrAK('BorderControl', (f.borderControl || '').toUpperCase());
 
     if(f?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(f.bags));
     if(f?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(f.paxNb));
