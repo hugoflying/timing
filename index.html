@@ -675,6 +675,23 @@ body.dark #settingsMenu{
   gap: 10px;
 }
 
+.infovol-toggle{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap:10px;
+  margin: 6px 0 12px;
+  cursor:pointer;
+  user-select:none;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card) 92%, #000 8%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+body.dark .infovol-toggle{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
 /* ===== TIMER CHIPS COMPACT (MOBILE) ===== */
 @media (max-width: 480px){
 
@@ -910,11 +927,8 @@ body.dark #settingsMenu{
 
 <!-- INFO VOL -->
 <div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+  <header class="card-header">
     <p class="card-header-title">INFO VOL</p>
-    <span class="card-header-icon" aria-label="more options">
-      <span class="icon">⌄</span>
-    </span>
   </header>
 
   <div class="card-content">
@@ -954,26 +968,28 @@ body.dark #settingsMenu{
       </div>
     </div>
 
-    <!-- Form compact -->
-    <div class="grid-auto collapsed-body">
+    <!-- Toggle -->
+    <div class="infovol-toggle" onclick="toggleInfoVolDetails()">
+      <span class="tag is-light" style="font-weight:900;">Modifier les infos</span>
+      <span id="infovolToggleIcon" class="icon" style="font-weight:900;">›</span>
+    </div>
+
+    <!-- Formulaire (caché par défaut) -->
+    <div id="infoVolDetails" class="grid-auto collapsed-body">
 
       <div class="field span-6">
         <label class="label">Date</label>
-        <div class="control">
-          <input class="input" type="date" id="Date">
-        </div>
+        <input class="input" type="date" id="Date">
       </div>
 
       <div class="field span-6">
         <label class="label">RZA</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="RZA" maxlength="3">
-        </div>
+        <input class="input uppercase" type="text" id="RZA" maxlength="3">
       </div>
 
       <div class="field span-3">
         <label class="label">Cie</label>
-        <div class="control select is-fullwidth">
+        <div class="select is-fullwidth">
           <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
             <option value="">--</option>
             <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
@@ -985,35 +1001,27 @@ body.dark #settingsMenu{
 
       <div class="field span-3">
         <label class="label">N°</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
-        </div>
+        <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
       </div>
 
       <div class="field span-3">
         <label class="label">From</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="From" maxlength="3">
-        </div>
+        <input class="input uppercase" type="text" id="From" maxlength="3">
       </div>
 
       <div class="field span-3">
         <label class="label">To</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
-        </div>
+        <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
       </div>
 
       <div class="field span-6">
         <label class="label">Immat</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="Immat" maxlength="6">
-        </div>
+        <input class="input uppercase" type="text" id="Immat" maxlength="6">
       </div>
 
       <div class="field span-6">
         <label class="label">Type avion</label>
-        <div class="control select is-fullwidth">
+        <div class="select is-fullwidth">
           <select id="TypeAvion" onchange="updateAllCalculations()">
             <option value="">--</option>
             <option>A319</option><option>A320</option><option>A321</option>
@@ -1027,7 +1035,7 @@ body.dark #settingsMenu{
 
       <div class="field span-6">
         <label class="label">Parking</label>
-        <div class="control select is-fullwidth">
+        <div class="select is-fullwidth">
           <select id="Parking">
             <option value="">--</option>
             <option>1</option><option>2</option><option>3</option><option>4</option>
@@ -1039,12 +1047,10 @@ body.dark #settingsMenu{
 
       <div class="field span-6">
         <label class="label">Salle arrivée</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="BorderControl">
-        </div>
+        <input class="input uppercase" type="text" id="BorderControl">
       </div>
 
-      <!-- LOAD buttons row -->
+      <!-- LOAD buttons -->
       <div class="span-12">
         <div class="load-row-below">
           <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
@@ -1065,7 +1071,6 @@ body.dark #settingsMenu{
     </div>
   </div>
 </div>
-
 
 <!-- HORAIRES -->
 <div class="card mb-5">
@@ -3227,6 +3232,17 @@ function akBuildSI(f, allowDL = true){
   return parts.join('\n').trim();
 }
 
+  function toggleInfoVolDetails(){
+  const box = document.getElementById('infoVolDetails');
+  const ic  = document.getElementById('infovolToggleIcon');
+  if(!box) return;
+
+  const isHidden = box.classList.toggle('collapsed-body');
+  if(ic) ic.textContent = isHidden ? '›' : '⌄';
+
+  updateHeaderOffset();
+}
+  
 function storeAKMetaForTab(meta){
   if(!currentTabId) return;
 
