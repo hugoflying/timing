@@ -24,19 +24,13 @@
   --field-placeholder: rgba(107,114,128,.95);
 
   --fixed-header-h: 140px;
-
-  /* ===== PRO RESPONSIVE LAYOUT (PHONE / TABLET) ===== */
-  --gap: 10px;
-  --padCard: 12px;
-  --labelSize: .78rem;
-  --inputH: 42px;
 }
 
 body{ background: var(--bg); color: var(--text); margin: 0; }
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
-  --text: #e5e7eb;
+  --text: #e5e7eb;<style>
   --muted: #9ca3af;
   --shadow: 0 10px 28px rgba(0,0,0,.45);
   --shadow2: 0 6px 18px rgba(0,0,0,.50);
@@ -45,10 +39,6 @@ html.dark, body.dark{
   --field-text: #e5e7eb;
   --field-border: rgba(229,231,235,.16);
   --field-placeholder: rgba(156,163,175,.95);
-}
-
-@media (min-width: 769px){
-  :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
 }
 
 /* ===== FIXED HEADER ===== */
@@ -216,7 +206,10 @@ body.dark .card-header{
   border-color: var(--field-border) !important;
 }
 .input.uppercase{ text-transform: uppercase; }
-textarea.si-uppercase{ text-transform: uppercase; }
+
+textarea.si-uppercase{
+  text-transform: uppercase;
+}
 
 .input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 .field .label{ font-weight: 900; color: var(--text) !important; }
@@ -319,6 +312,7 @@ body.dark #akPopover{
   display: none;
   flex-direction: column;
 }
+
 #akPopover .ak-header{
   position: sticky;
   top: 0;
@@ -328,9 +322,11 @@ body.dark #akPopover{
   padding: 10px 0;
   border-bottom: 1px solid rgba(0,0,0,.08);
 }
+
 body.dark #akPopover .ak-header{
   border-bottom-color: rgba(255,255,255,.10);
 }
+
 #akList{
   flex: 1 1 auto;
   overflow-y: auto;
@@ -379,6 +375,7 @@ body.dark #loadFinalPopover{
   background: var(--card);
   z-index: 1;
 }
+
 #loadArrPopover .hdr strong,
 #loadExpPopover .hdr strong,
 #loadFinalPopover .hdr strong{
@@ -393,6 +390,7 @@ body.dark #loadFinalPopover{
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
+
 #loadArrPopover .field .label,
 #loadExpPopover .field .label,
 #loadFinalPopover .field .label{
@@ -507,7 +505,7 @@ body.no-tab .timer-row{
   background: var(--bg) !important;
   backdrop-filter: none !important;
 }
-
+  
 /* Forcer le fond plein écran même sans contenu */
 html, body{
   background: var(--bg) !important;
@@ -534,7 +532,19 @@ html, body{
   opacity:.7;
 }
 
-/* ===== PRO RESPONSIVE LAYOUT (PHONE / TABLET) ===== */
+  /* ===== PRO RESPONSIVE LAYOUT (PHONE / TABLET) ===== */
+
+:root{
+  --gap: 10px;
+  --padCard: 12px;
+  --labelSize: .78rem;
+  --inputH: 42px;
+}
+
+@media (min-width: 769px){
+  :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
+}
+
 .card-content{ padding: var(--padCard) !important; }
 
 .field .label{
@@ -600,22 +610,18 @@ body.dark .kv-card{
 .kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
 
 /* Boutons -1 Now +1 mieux rangés */
-.btn-actions{ grid-template-columns: repeat(3, 1fr); }
-.btn-actions .button{ height: 40px; }
+.btn-actions{
+  grid-template-columns: repeat(3, 1fr);
+}
+.btn-actions .button{
+  height: 40px;
+}
 
 /* Segments (Arr/Dep) plus compacts */
-.tabs.is-toggle.is-toggle-rounded ul li a{ font-weight: 900; }
-
-/* ===== HEADER TIMERS : version mobile compacte ===== */
-@media (max-width: 520px){
-  .timer-row{ gap:8px; }
-  .timer-chip{ min-width: 108px; padding: 8px 10px; }
-  .timer-chip .k{ font-size:.82rem; }
-  .timer-chip .v{ font-size:.95rem; min-width: 58px; padding: 5px 8px; }
-
-  /* sur téléphone: on masque HLE/H-15/LID */
-  #timerBlockH40, #timerBlockH15, #lidBlock{ display:none !important; }
+.tabs.is-toggle.is-toggle-rounded ul li a{
+  font-weight: 900;
 }
+
 </style>
 </head>
 
@@ -802,12 +808,11 @@ body.dark .kv-card{
     </div>
 
     <div class="timer-row">
-      <div class="timer-chip" id="timerBlockH40">
+      <div class="timer-chip">
         <div class="k">HLE</div>
         <div id="timer-h40" class="v">--:--</div>
       </div>
-
-      <div class="timer-chip" id="timerBlockH15">
+      <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
       </div>
@@ -1003,7 +1008,8 @@ body.dark .kv-card{
   </div>
 </div>
 
-<!-- ===== HORAIRES (compact + pro) ===== -->
+
+<!-- HORAIRES -->
 <div class="card mb-5">
   <header class="card-header section-collapse" onclick="toggleCardBody(this)">
     <p class="card-header-title">HORAIRES</p>
@@ -1013,19 +1019,12 @@ body.dark .kv-card{
   <div class="card-content">
     <div class="grid-auto">
 
-      <!-- ARRIVÉE -->
+      <!-- Arrivée -->
       <div class="span-12">
-        <div class="kv-card" style="padding:12px; flex-direction:column; align-items:stretch;">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
-            <div class="buttons are-small" style="margin:0;">
-              <button type="button" class="button is-light" onclick="setNow('SIBT');updateAllCalculations()">Now SIBT</button>
-              <button type="button" class="button is-light" onclick="setNow('AIBT');updateAllCalculations()">Now AIBT</button>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:10px; margin-top:10px;">
-            <div style="grid-column: span 12;">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
               <label class="label">SIBT</label>
               <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
               <div class="btn-actions">
@@ -1035,7 +1034,7 @@ body.dark .kv-card{
               </div>
             </div>
 
-            <div style="grid-column: span 12;">
+            <div style="min-width:160px;">
               <label class="label">AIBT</label>
               <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
               <div class="btn-actions">
@@ -1045,40 +1044,25 @@ body.dark .kv-card{
               </div>
             </div>
           </div>
-
-          <!-- 2 colonnes tablette/desktop sans dépendre de Bulma -->
-          <style>
-            @media (min-width: 769px){
-              #horaires-arr-grid > div{ grid-column: span 6 !important; }
-            }
-          </style>
-          <div id="horaires-arr-grid" style="display:none;"></div>
         </div>
       </div>
 
-      <!-- DÉPART -->
+      <!-- Départ -->
       <div class="span-12">
-        <div class="kv-card" style="padding:12px; flex-direction:column; align-items:stretch;">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
-            <div class="buttons are-small" style="margin:0;">
-              <button type="button" class="button is-light" onclick="setNow('SOBT');manualSOBT=true;updateAllCalculations()">Now SOBT</button>
-              <button type="button" class="button is-light" onclick="setNow('AOBT');updateAllCalculations()">Now AOBT</button>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:10px; margin-top:10px;">
-            <div style="grid-column: span 12;">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
               <label class="label">SOBT</label>
               <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
               <div class="btn-actions">
                 <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SOBT');manualSOBT=true;updateAllCalculations()">Now</button>
+                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
                 <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
               </div>
             </div>
 
-            <div style="grid-column: span 12;">
+            <div style="min-width:160px;">
               <label class="label">AOBT</label>
               <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
               <div class="btn-actions">
@@ -1088,87 +1072,6 @@ body.dark .kv-card{
               </div>
             </div>
           </div>
-
-          <style>
-            @media (min-width: 769px){
-              #horaires-dep-grid > div{ grid-column: span 6 !important; }
-            }
-          </style>
-          <div id="horaires-dep-grid" style="display:none;"></div>
-        </div>
-      </div>
-
-      <!-- TIMERS (carte détaillée, utile surtout sur mobile si tu masques HLE/H-15/LID dans le header) -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px; flex-direction:column; align-items:stretch;">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Timers</div>
-            <div class="buttons are-small" style="margin:0;">
-              <button type="button" class="button is-light" onclick="setNow('CTOT');updateAllCalculations()">Now CTOT</button>
-            </div>
-          </div>
-
-          <div class="grid-auto" style="margin-top:10px;">
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">HLE</div>
-                  <div class="kv-value" id="dHLE">--:--</div>
-                </div>
-                <span class="tag is-light" id="dHLETag">timer</span>
-              </div>
-            </div>
-
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">H-15</div>
-                  <div class="kv-value" id="dH15">--:--</div>
-                </div>
-                <span class="tag is-light" id="dH15Tag">timer</span>
-              </div>
-            </div>
-
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">LID</div>
-                  <div class="kv-value" id="dLID2">--:--</div>
-                </div>
-                <span class="tag is-light">H-8</span>
-              </div>
-            </div>
-
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">TOBT</div>
-                  <div class="kv-value" id="dTOBT">--:--</div>
-                </div>
-                <span class="tag is-success is-light">t</span>
-              </div>
-            </div>
-
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">CTOT</div>
-                  <div class="kv-value" id="dCTOT2">--:--</div>
-                </div>
-                <span class="tag is-dark is-light">edit</span>
-              </div>
-            </div>
-
-            <div class="span-6">
-              <div class="kv-card" style="margin:0;">
-                <div class="kv-left">
-                  <div class="kv-title">CD</div>
-                  <div class="kv-value" id="dCD">--:--</div>
-                </div>
-                <span class="tag is-info is-light">calc</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1176,99 +1079,103 @@ body.dark .kv-card{
   </div>
 </div>
 
-<!-- ===== TIMING (inchangé) ===== -->
-<div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-    <p class="card-header-title">TIMING</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
-  </header>
-  <div class="card-content">
-    <div id="timing-grid"></div>
-  </div>
-</div>
-
-<!-- ===== TIMELINE (inchangé) ===== -->
-<div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-    <p class="card-header-title">TIMELINE</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
-  </header>
-  <div class="card-content">
-    <div class="timeline-toolbar">
-      <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
-      <span class="tag is-light" id="timelineZoomLabel">100%</span>
-      <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
-      <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
-    </div>
-
-    <div class="timeline-scroll" id="timelineScroll">
-      <div id="timelineCanvas" class="timeline-canvas"></div>
+  <!-- TIMING -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMING</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div id="timing-grid"></div>
     </div>
   </div>
-</div>
 
-<!-- ===== RETARDS (version carte + popover) ===== -->
-<div class="card mb-5">
-  <header class="card-header">
-    <p class="card-header-title">RETARDS (Départ)</p>
-    <div class="card-header-icon">
-      <button type="button" class="button is-small is-ghost" onclick="openDelaysEditor()">Modifier</button>
+  <!-- TIMELINE -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMELINE</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="timeline-toolbar">
+        <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
+        <span class="tag is-light" id="timelineZoomLabel">100%</span>
+        <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
+        <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
+      </div>
+
+      <div class="timeline-scroll" id="timelineScroll">
+        <div id="timelineCanvas" class="timeline-canvas"></div>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <div class="card-content">
-    <div class="grid-auto">
-      <div class="span-6">
-        <div class="kv-card" style="margin:0;">
-          <div class="kv-left">
-            <div class="kv-title">DL1</div>
-            <div class="kv-value" id="dDL1">—</div>
+  <!-- RETARDS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">RETARDS (Départ)</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 1</label>
+            <div class="control"><input class="input" type="text" id="DLcode1"></div>
           </div>
-          <span class="tag is-light">code + min</span>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 1 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 2</label>
+            <div class="control"><input class="input" type="text" id="DLcode2"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 2 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 3</label>
+            <div class="control"><input class="input" type="text" id="DLcode3"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 3 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+          </div>
         </div>
       </div>
-
-      <div class="span-6">
-        <div class="kv-card" style="margin:0;">
-          <div class="kv-left">
-            <div class="kv-title">DL2 / DL3</div>
-            <div class="kv-value" id="dDL23">—</div>
-          </div>
-          <span class="tag is-light">code + min</span>
-        </div>
-      </div>
     </div>
   </div>
-</div>
 
-<!-- ===== FAITS SAILLANTS (carte + popover) ===== -->
-<div class="card mb-5">
-  <header class="card-header">
-    <p class="card-header-title">FAITS SAILLANTS</p>
-    <div class="card-header-icon">
-      <button type="button" class="button is-small is-ghost" onclick="openFaitsEditor()">Modifier</button>
+  <!-- FAITS SAILLANTS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">FAITS SAILLANTS</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
     </div>
-  </header>
-
-  <div class="card-content">
-    <div class="kv-card" style="margin:0;">
-      <div class="kv-left">
-        <div class="kv-title">Résumé</div>
-        <div class="kv-value" id="dFaits">—</div>
-      </div>
-    </div>
-
-    <!-- input caché (conserve ton id + autosave) -->
-    <textarea class="textarea" id="FaitsSaillants" style="display:none;"></textarea>
   </div>
-</div>
 
-<!-- ===== ACTIONS ===== -->
-<div class="buttons is-centered">
-  <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
-  <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
-  <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
-</div>
+  <div class="buttons is-centered">
+    <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
+    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
+    <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
+  </div>
 
 </div>
 
@@ -1812,6 +1719,13 @@ function updateInfoStrip(){
   set('kvType', v('TypeAvion') || '----');
   set('kvRza',  v('RZA') || '--');
 }
+
+// branche sur ton updateAllCalculations existant
+const _oldUpdateAll = updateAllCalculations;
+updateAllCalculations = function(){
+  _oldUpdateAll();
+  updateInfoStrip();
+};
 
 /* date défaut */
 function setDefaultDateToTodayIfEmpty(){
@@ -3556,247 +3470,6 @@ function clearAutoSave() {
     location.reload();
   }
 }
-
-/* ===== DASHBOARD (cartes résumé) + éditeurs ===== */
-
-function updateDashboard(){
-  // Résumé DL
-  const code1 = (document.getElementById('DLcode1')?.value || '').trim().toUpperCase();
-  const dur1  = (document.getElementById('DLduree1')?.value || '').trim();
-  const code2 = (document.getElementById('DLcode2')?.value || '').trim().toUpperCase();
-  const dur2  = (document.getElementById('DLduree2')?.value || '').trim();
-  const code3 = (document.getElementById('DLcode3')?.value || '').trim().toUpperCase();
-  const dur3  = (document.getElementById('DLduree3')?.value || '').trim();
-
-  const dDL1  = document.getElementById('dDL1');
-  const dDL23 = document.getElementById('dDL23');
-
-  if(dDL1){
-    dDL1.textContent = (code1 && dur1) ? `${code1} +${dur1}` : '—';
-  }
-  if(dDL23){
-    const parts = [];
-    if(code2 && dur2) parts.push(`${code2} +${dur2}`);
-    if(code3 && dur3) parts.push(`${code3} +${dur3}`);
-    dDL23.textContent = parts.length ? parts.join(' / ') : '—';
-  }
-
-  // Résumé faits saillants
-  const faits = (document.getElementById('FaitsSaillants')?.value || '').trim();
-  const dFaits = document.getElementById('dFaits');
-  if(dFaits){
-    if(!faits) dFaits.textContent = '—';
-    else{
-      // 1 ligne courte
-      const oneLine = faits.replace(/\s+/g,' ').trim();
-      dFaits.textContent = oneLine.length > 140 ? oneLine.slice(0, 140) + '…' : oneLine;
-    }
-  }
-}
-
-/* Injecte dashboard dans ton updateAllCalculations existant */
-(function(){
-  const _u = updateAllCalculations;
-  updateAllCalculations = function(){
-    _u();
-    updateInfoStrip();
-    updateDashboard();
-  };
-})();
-
-/* ===== Popover générique ===== */
-function ensureEditorPopover(id, title, bodyHTML){
-  if(document.getElementById(id)) return;
-
-  const pop = document.createElement('div');
-  pop.id = id;
-  pop.setAttribute('role','dialog');
-  pop.setAttribute('aria-modal','true');
-  pop.style.position = 'fixed';
-  pop.style.inset = 'calc(var(--fixed-header-h) + 12px) 12px 12px 12px';
-  pop.style.background = 'var(--card)';
-  pop.style.borderRadius = '16px';
-  pop.style.boxShadow = 'var(--shadow)';
-  pop.style.zIndex = '4800';
-  pop.style.padding = '12px';
-  pop.style.border = '1px solid rgba(0,0,0,.08)';
-  pop.style.display = 'none';
-  pop.style.overflow = 'auto';
-
-  pop.innerHTML = `
-    <div class="hdr" style="display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--card);z-index:1;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.08);">
-      <strong style="font-weight:900;">${title}</strong>
-      <button class="button is-small is-light" type="button" onclick="hideEditors()">Fermer</button>
-    </div>
-    <div style="padding-top:12px;">
-      ${bodyHTML}
-    </div>
-  `;
-
-  document.body.appendChild(pop);
-}
-
-function showEditorsBackdrop(){
-  const b = document.getElementById('loadArrBackdrop');
-  if(b) b.style.display = '';
-}
-function hideEditors(){
-  ['delaysPopover','faitsPopover'].forEach(pid=>{
-    const p = document.getElementById(pid);
-    if(p) p.style.display = 'none';
-  });
-  hideAllLoadPopovers(); // ferme aussi les load popovers + backdrop
-}
-
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') hideEditors();
-});
-
-/* ===== Éditeur RETARDS ===== */
-function openDelaysEditor(){
-  ensureEditorPopover(
-    'delaysPopover',
-    'RETARDS (Départ)',
-    `
-      <div class="grid-auto">
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Code 1</label>
-            <div class="control"><input class="input uppercase" type="text" id="DLcode1_edit"></div>
-          </div>
-        </div>
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Durée 1 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree1_edit" min="0" step="1"></div>
-          </div>
-        </div>
-
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Code 2</label>
-            <div class="control"><input class="input uppercase" type="text" id="DLcode2_edit"></div>
-          </div>
-        </div>
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Durée 2 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree2_edit" min="0" step="1"></div>
-          </div>
-        </div>
-
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Code 3</label>
-            <div class="control"><input class="input uppercase" type="text" id="DLcode3_edit"></div>
-          </div>
-        </div>
-        <div class="span-6">
-          <div class="field">
-            <label class="label">DL Durée 3 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree3_edit" min="0" step="1"></div>
-          </div>
-        </div>
-
-        <div class="span-12" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
-          <button class="button is-light" type="button" onclick="hideEditors()">Annuler</button>
-          <button class="button is-link" type="button" onclick="saveDelaysEditor()">Enregistrer</button>
-        </div>
-      </div>
-    `
-  );
-
-  // copie valeurs depuis les champs cachés/actuels
-  const map = [
-    ['DLcode1','DLcode1_edit'],
-    ['DLduree1','DLduree1_edit'],
-    ['DLcode2','DLcode2_edit'],
-    ['DLduree2','DLduree2_edit'],
-    ['DLcode3','DLcode3_edit'],
-    ['DLduree3','DLduree3_edit'],
-  ];
-  map.forEach(([src,dst])=>{
-    const s = document.getElementById(src);
-    const d = document.getElementById(dst);
-    if(s && d) d.value = s.value || '';
-  });
-
-  showEditorsBackdrop();
-  document.getElementById('delaysPopover').style.display = 'block';
-}
-
-function saveDelaysEditor(){
-  const pull = (id)=> (document.getElementById(id)?.value || '').trim();
-  const push = (id,v)=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.value = v;
-    el.dispatchEvent(new Event('input', {bubbles:true}));
-    el.dispatchEvent(new Event('change',{bubbles:true}));
-  };
-
-  push('DLcode1', pull('DLcode1_edit').toUpperCase());
-  push('DLduree1', pull('DLduree1_edit'));
-  push('DLcode2', pull('DLcode2_edit').toUpperCase());
-  push('DLduree2', pull('DLduree2_edit'));
-  push('DLcode3', pull('DLcode3_edit').toUpperCase());
-  push('DLduree3', pull('DLduree3_edit'));
-
-  // ton système
-  lastDLChanged = 1;
-  redistributeDL();
-  updateAllCalculations();
-  hideEditors();
-}
-
-/* ===== Éditeur FAITS SAILLANTS ===== */
-function openFaitsEditor(){
-  ensureEditorPopover(
-    'faitsPopover',
-    'FAITS SAILLANTS',
-    `
-      <div class="field">
-        <label class="label">Texte</label>
-        <textarea class="textarea" id="FaitsSaillants_edit" placeholder="Faits saillants…"></textarea>
-      </div>
-
-      <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
-        <button class="button is-light" type="button" onclick="hideEditors()">Annuler</button>
-        <button class="button is-link" type="button" onclick="saveFaitsEditor()">Enregistrer</button>
-      </div>
-    `
-  );
-
-  const src = document.getElementById('FaitsSaillants');
-  const dst = document.getElementById('FaitsSaillants_edit');
-  if(src && dst) dst.value = src.value || '';
-
-  showEditorsBackdrop();
-  document.getElementById('faitsPopover').style.display = 'block';
-}
-
-function saveFaitsEditor(){
-  const src = document.getElementById('FaitsSaillants_edit');
-  const dst = document.getElementById('FaitsSaillants');
-  if(dst){
-    dst.value = src ? src.value : '';
-    dst.dispatchEvent(new Event('input', {bubbles:true}));
-    dst.dispatchEvent(new Event('change',{bubbles:true}));
-  }
-  updateAllCalculations();
-  hideEditors();
-}
-
-/* Clique backdrop -> ferme aussi */
-(function(){
-  const b = document.getElementById('loadArrBackdrop');
-  if(b){
-    b.addEventListener('click', ()=>{
-      hideEditors();
-    });
-  }
-})();
-
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
