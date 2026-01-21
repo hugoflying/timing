@@ -940,22 +940,22 @@ body.dark #settingsMenu{
 
       <div class="kv-card">
         <div class="kv-left">
-          <div class="kv-title">Immat / Parking</div>
+          <div class="kv-title">Immat / Type</div>
           <div class="kv-value">
-            <span id="kvImmat">------</span> · P<span id="kvPark">--</span>
+            <span id="kvImmat">------</span> · P<span id="kvType">--</span>
           </div>
         </div>
         <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Type / RZA</div>
+          <div class="kv-title">Salle arr. / Parking</div>
           <div class="kv-value">
-            <span id="kvType">----</span> · <span id="kvRza">--</span>
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Form compact -->
-    <div class="grid-auto">
+    <div class="grid-auto collapsed-body">
 
       <div class="field span-6">
         <label class="label">Date</label>
@@ -1770,19 +1770,21 @@ function initForm(){
 }
 
 function updateInfoStrip(){
-  const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
-  const t = (id)=> (document.getElementById(id)?.value || '').trim();
-
-  const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = txt || '--'; };
+  const v = id => (document.getElementById(id)?.value || '').toUpperCase().trim();
+  const set = (id, txt) => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = txt || '--';
+  };
 
   set('kvCie',  v('Cie') || '--');
   set('kvNVol', v('NVol') || '----');
   set('kvFrom', v('From') || '---');
-  set('kvTo',   v('To') || '---');
-  set('kvImmat',v('Immat') || '------');
-  set('kvPark', (v('Parking') || '--'));
-  set('kvType', v('TypeAvion') || '----');
-  set('kvRza',  v('RZA') || '--');
+  set('kvTo',   v('To')   || '---');
+
+  set('kvImmat', v('Immat') || '------');
+  set('kvType',  v('TypeAvion') || '----');
+  set('kvBC',    v('BorderControl') || '--');
+  set('kvPark',  v('Parking') || '--');
 }
 
 // branche sur ton updateAllCalculations existant
