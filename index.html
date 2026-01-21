@@ -3431,27 +3431,31 @@ function promptRZAThenValidate(){
     return;
   }
 
-  const current = (rzaEl.value || '').toUpperCase().trim();
-  const rza = prompt("RZA en charge du vol", current);
+  let current = (rzaEl.value || '').toUpperCase().trim();
+  let rza;
 
-  // Annuler
-  if(rza === null) return;
+  while(true){
+    rza = prompt("RZA en charge du vol :", current);
 
-  const clean = (rza || '')
-    .toUpperCase()
-    .replace(/[^A-Z]/g,'')
-    .slice(0,3);
+    // Annuler
+    if(rza === null) return;
 
-  if(clean.length < 2){
-    showPopup("RZA invalide (2 ou 3 lettres)", "#ef4444", 1600);
-    return;
+    const clean = rza
+      .toUpperCase()              // ✅ MAJUSCULE FORCÉE
+      .replace(/[^A-Z]/g,'')      // lettres uniquement
+      .slice(0,3);
+
+    if(clean.length >= 2){
+      rzaEl.value = clean;
+      rzaEl.dispatchEvent(new Event('input',  { bubbles:true }));
+      rzaEl.dispatchEvent(new Event('change', { bubbles:true }));
+      validateForm();
+      return;
+    }
+
+    // sinon on reboucle
+    current = clean;
   }
-
-  rzaEl.value = clean;
-  rzaEl.dispatchEvent(new Event('input',  { bubbles:true }));
-  rzaEl.dispatchEvent(new Event('change', { bubbles:true }));
-
-  validateForm();
 }
 
 /* validateForm */
