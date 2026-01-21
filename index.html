@@ -670,8 +670,11 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   .ldm-ta{ min-height: 86px !important; }
 }
 
+html.modal-open,
 body.modal-open{
   overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
   touch-action: none;
 }
   
@@ -1187,6 +1190,35 @@ function toggleCardBody(headerEl){
   if(icon) icon.textContent = collapsed ? '›' : '⌄';
 }
 
+let _scrollY = 0;
+
+function lockScroll(){
+  _scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+  document.documentElement.classList.add('modal-open');
+  document.body.classList.add('modal-open');
+
+  // iOS-proof
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${_scrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+
+function unlockScroll(){
+  document.documentElement.classList.remove('modal-open');
+  document.body.classList.remove('modal-open');
+
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+
+  window.scrollTo(0, _scrollY);
+}
+
 /* Header height */
 function updateHeaderOffset(){
   const header = document.getElementById('fixedHeader');
@@ -1550,7 +1582,7 @@ function openLDM(mode='arr'){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
 
-  document.body.classList.add('modal-open');
+  lockScroll();
 
   if(b) b.style.display = '';
   if(m) m.style.display = 'flex';
@@ -1558,12 +1590,12 @@ function openLDM(mode='arr'){
   ldmSwitch(mode);
   updateHeaderOffset();
 }
- 
+
 function closeLDM(){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
 
-  document.body.classList.remove('modal-open');
+  unlockScroll();
 
   if(m) m.style.display = 'none';
   if(b) b.style.display = 'none';
