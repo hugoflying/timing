@@ -1782,14 +1782,14 @@ function updateInfoStrip(){
   let depFF = '';
 
   try{
-    if(window.currentTabId){
+    if(currentTabId){ // ✅ PAS window.currentTabId
       const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
       arrFF = (data?.akMeta?.arrFF || '').toUpperCase().trim();
       depFF = (data?.akMeta?.depFF || '').toUpperCase().trim();
     }
   }catch(e){}
 
-  // fallback manuel : DEP = CIE+N° (et ARR vide, comme tu veux)
+  // fallback manuel : DEP = CIE+N°
   if(!depFF){
     const cie  = v('Cie');
     const nvol = v('NVol');
@@ -1799,7 +1799,6 @@ function updateInfoStrip(){
   set('kvArrVol', arrFF || '—', '—');
   set('kvDepVol', depFF || '—', '—');
 
-  // route + autres
   set('kvFrom', v('From') || '---', '---');
   set('kvTo',   v('To')   || '---', '---');
 
@@ -1957,6 +1956,8 @@ function switchTab(id){
   renderTabs();
   refreshUIForTabs();
   renderTimeline();
+
+  updateInfoStrip();
 }
 
 function deleteTab(id){
@@ -2220,6 +2221,8 @@ function updateAllCalculations() {
   ensureCountdownRunning();
   renderTimeline();
   updateHeaderOffset();
+
+  updateInfoStrip();
 }
 
 /* TIMERS HLE/H-15 */
