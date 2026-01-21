@@ -1889,8 +1889,6 @@ function switchLoadPanel(mode){
 
 let _ldmMode = 'arr';
 
-let _ldmMode = 'arr';
-
 function openLDM(mode='arr'){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
@@ -2153,13 +2151,6 @@ function updateInfoStrip(){
   set('kvBC',    v('BorderControl') || '--', '--');
   set('kvPark',  v('Parking') || '--', '--');
 }
-
-// branche sur ton updateAllCalculations existant
-const _oldUpdateAll = updateAllCalculations;
-updateAllCalculations = function(){
-  _oldUpdateAll();
-  updateInfoStrip();
-};
 
 /* date défaut */
 function setDefaultDateToTodayIfEmpty(){
