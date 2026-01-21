@@ -3431,18 +3431,19 @@ function promptRZAThenValidate(){
     return;
   }
 
-  // valeur actuelle (si déjà remplie)
   const current = (rzaEl.value || '').toUpperCase().trim();
+  const rza = prompt("RZA (2 ou 3 lettres)", current);
 
-  const rza = prompt("RZA (3 lettres)", current);
-
-  // Annuler => stop
+  // Annuler
   if(rza === null) return;
 
-  const clean = (rza || '').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
+  const clean = (rza || '')
+    .toUpperCase()
+    .replace(/[^A-Z]/g,'')
+    .slice(0,3);
 
-  if(clean.length !== 3){
-    showPopup("RZA invalide (3 lettres)", "#ef4444", 1600);
+  if(clean.length < 2){
+    showPopup("RZA invalide (2 ou 3 lettres)", "#ef4444", 1600);
     return;
   }
 
