@@ -1021,21 +1021,28 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 <body onload="initForm()">
 
 <!-- ===== LDM (FULLSCREEN) ===== -->
-<div id="ldmBackdrop" onclick="closeLDM()"></div>
+<div id="ldmBackdrop" onclick="closeLDM()" style="display:none;"></div>
 
-<div id="ldmModal" role="dialog" aria-modal="true">
+<div id="ldmModal" role="dialog" aria-modal="true" style="display:none;">
   <div class="ldm-header">
     <div class="ldm-title">
       <strong>LOAD</strong>
-      <span class="tag is-light">ARRIVÉE / EXPECTED / FINAL</span>
+      <span id="ldmHint" class="tag is-light">ARRIVÉE</span>
     </div>
+
+    <div class="lm-seg">
+      <button id="ldmTabArr" class="button is-small is-active" type="button" onclick="ldmSwitch('arr')">ARR</button>
+      <button id="ldmTabExp" class="button is-small" type="button" onclick="ldmSwitch('exp')">EXP</button>
+      <button id="ldmTabFinal" class="button is-small" type="button" onclick="ldmSwitch('final')">FINAL</button>
+    </div>
+
     <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
   </div>
 
   <div class="ldm-body">
 
     <!-- ===== LOAD ARRIVEE ===== -->
-    <section class="ldm-card ldm-arr">
+    <section class="ldm-card ldm-arr" id="ldmArr">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
         <div class="ldm-card-title">ARRIVÉE</div>
@@ -1064,7 +1071,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
     </section>
 
     <!-- ===== LOAD EXPECTED ===== -->
-    <section class="ldm-card ldm-exp">
+    <section class="ldm-card ldm-exp" id="ldmExp" style="display:none;">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
         <div class="ldm-card-title">EXPECTED</div>
@@ -1093,7 +1100,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
     </section>
 
     <!-- ===== LOAD FINAL ===== -->
-    <section class="ldm-card ldm-final">
+    <section class="ldm-card ldm-final" id="ldmFinal" style="display:none;">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
         <div class="ldm-card-title">FINAL</div>
@@ -1138,7 +1145,6 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 
   </div>
 </div>
-
 
 <!-- ===== FIXED HEADER ===== -->
 <div class="fixed-header" id="fixedHeader">
@@ -1303,20 +1309,12 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
         </div>
       </div>
 
-      <!-- LOAD buttons -->
+      <!-- LOAD button -->
       <div class="span-12">
         <div class="load-row-below">
-          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
+          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
             <div class="k">LOAD</div>
-            <div class="v" style="background:#2563eb;">ARR.</div>
-          </button>
-          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadExp()">
-            <div class="k">LOAD</div>
-            <div class="v" style="background:#0ea5e9;">EXP.</div>
-          </button>
-          <button type="button" class="timer-chip chip-btn" onclick="toggleLoadFinal()">
-            <div class="k">LOAD</div>
-            <div class="v" style="background:#7c3aed;">FINAL</div>
+            <div class="v" style="background:#111827;">OPEN</div>
           </button>
         </div>
       </div>
@@ -1644,7 +1642,6 @@ function updateHBagsValidity(mode){
 }
 
 /* ===== POIDS auto FR / RK : (BAGS + GB) * 13 ===== */
-/* ===== POIDS auto FR / RK : FINAL ===== */
 function updateFinalWeightIfNeeded(){
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   if(cie !== 'FR' && cie !== 'RK') return;
@@ -1889,14 +1886,20 @@ function switchLoadPanel(mode){
 }
 
 /* ===== LDM modal ===== */
-function openLDM(){
+
+let _ldmMode = 'arr';
+
+let _ldmMode = 'arr';
+
+function openLDM(mode='arr'){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
   if(b) b.style.display = '';
   if(m) m.style.display = 'flex';
-  updateFinalTOB();
+  ldmSwitch(mode);
   updateHeaderOffset();
 }
+
 function closeLDM(){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
@@ -1904,15 +1907,41 @@ function closeLDM(){
   if(b) b.style.display = 'none';
 }
 
-/* compat : tes anciens boutons LOAD ARR/EXP/FINAL */
-function hideAllLoadPopovers(){ closeLDM(); }
-function toggleLoadArr(){ openLDM(); }
-function toggleLoadExp(){ openLDM(); }
-function toggleLoadFinal(){ openLDM(); }
+function ldmSwitch(mode){
+  _ldmMode = mode;
 
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') closeLDM();
-});
+  const sArr   = document.getElementById('ldmArr');
+  const sExp   = document.getElementById('ldmExp');
+  const sFinal = document.getElementById('ldmFinal');
+
+  const tArr   = document.getElementById('ldmTabArr');
+  const tExp   = document.getElementById('ldmTabExp');
+  const tFinal = document.getElementById('ldmTabFinal');
+
+  if(sArr)   sArr.style.display   = (mode==='arr')   ? '' : 'none';
+  if(sExp)   sExp.style.display   = (mode==='exp')   ? '' : 'none';
+  if(sFinal) sFinal.style.display = (mode==='final') ? '' : 'none';
+
+  if(tArr)   tArr.classList.toggle('is-active', mode==='arr');
+  if(tExp)   tExp.classList.toggle('is-active', mode==='exp');
+  if(tFinal) tFinal.classList.toggle('is-active', mode==='final');
+
+  const hint = document.getElementById('ldmHint');
+  if(hint){
+    hint.textContent =
+      (mode==='arr') ? 'ARRIVÉE' :
+      (mode==='exp') ? 'EXPECTED' :
+      'FINAL';
+  }
+
+  if(mode==='final') updateFinalTOB();
+  updateHeaderOffset();
+}
+
+/* compat anciens boutons (optionnel) */
+function toggleLoadArr(){ openLDM('arr'); }
+function toggleLoadExp(){ openLDM('exp'); }
+function toggleLoadFinal(){ openLDM('final'); }
 
 /* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
 function asInt(id){
@@ -1982,7 +2011,6 @@ function refreshUIForTabs(){
 
   if(!hasTab){
     currentTabId = null;
-    hideAllLoadPopovers();
     closeAKPicker();
     stopCountdown(true);
   }
