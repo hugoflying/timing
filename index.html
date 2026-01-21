@@ -622,6 +622,59 @@ body.dark .kv-card{
   font-weight: 900;
 }
 
+/* ===== SETTINGS (gear) bottom menu ===== */
+#settingsBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 4800;
+  display: none;
+}
+
+#settingsFab{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 4900;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: var(--shadow2);
+}
+
+#settingsMenu{
+  position: fixed;
+  right: 14px;
+  bottom: 74px;
+  z-index: 4901;
+  width: min(320px, calc(100vw - 28px));
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.08);
+  padding: 12px;
+  display: none;
+}
+
+body.dark #settingsMenu{
+  border-color: rgba(255,255,255,.10);
+}
+
+#settingsMenu .settings-title{
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+#settingsMenu .settings-row{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 </style>
 </head>
 
@@ -781,27 +834,7 @@ body.dark .kv-card{
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <div class="topbar-inner">
-      <div class="brandline">
-        <div class="brand-title">
-          <strong>SUIVI PERFORMANCE</strong>
-        </div>
-      </div>
-
-      <div class="top-toggles" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%;">
-        <label class="toggle">
-          <span id="darkLabel">Clair</span>
-          <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
-          <span class="track"><span class="thumb"></span></span>
-        </label>
-
-        <label class="toggle">
-          <span id="tzLabel">Locale</span>
-          <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
-          <span class="track"><span class="thumb"></span></span>
-        </label>
-      </div>
-    </div>
+   <div class="topbar-inner"></div>
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
@@ -2765,6 +2798,31 @@ function pickBestTimeForList(f, flow){
   );
 }
 
+  /* ===== SETTINGS MENU ===== */
+function openSettingsMenu(){
+  const b = document.getElementById('settingsBackdrop');
+  const m = document.getElementById('settingsMenu');
+  if(b) b.style.display = '';
+  if(m) m.style.display = 'block';
+}
+function closeSettingsMenu(){
+  const b = document.getElementById('settingsBackdrop');
+  const m = document.getElementById('settingsMenu');
+  if(m) m.style.display = 'none';
+  if(b) b.style.display = 'none';
+}
+function toggleSettingsMenu(){
+  const m = document.getElementById('settingsMenu');
+  const isOpen = m && m.style.display !== 'none' && m.style.display !== '';
+  if(isOpen) closeSettingsMenu();
+  else openSettingsMenu();
+}
+
+// ESC ferme aussi le menu settings
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') closeSettingsMenu();
+});
+
 // ===== Airport Keeper (AK) =====
 const AK_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJidmFfZXh0IiwidXNlcm5hbWUiOiJidmFfZXh0IiwiYWlycG9ydHMiOiJMRk9CIn0.PkSbBw_BF5dnX0bG3gbP7E7P7SHhW9egJ_in6OaWTnJm0OpirhJP4FZzbztH0r6lQxrA5JliEopo7__CyYvfIA";
 const AK_BASE    = "https://api.app.airport-keeper.com/flights/v1/airport";
@@ -3499,6 +3557,34 @@ function clearAutoSave() {
 
   <div id="akList"></div>
 </div>
+
+<!-- ===== SETTINGS MENU (bottom gear) ===== -->
+<div id="settingsBackdrop" onclick="closeSettingsMenu()"></div>
+
+<button id="settingsFab" class="button is-link" type="button" onclick="toggleSettingsMenu()" aria-label="Paramètres">
+  ⚙️
+</button>
+
+<div id="settingsMenu" role="dialog" aria-modal="true">
+  <div class="settings-title">Paramètres</div>
+
+  <div class="settings-row">
+    <label class="toggle" style="justify-content:space-between;">
+      <span id="darkLabel">Clair</span>
+      <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
+      <span class="track"><span class="thumb"></span></span>
+    </label>
+
+    <label class="toggle" style="justify-content:space-between;">
+      <span id="tzLabel">Locale</span>
+      <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
+      <span class="track"><span class="thumb"></span></span>
+    </label>
+
+    <button class="button is-small is-light" type="button" onclick="closeSettingsMenu()">Fermer</button>
+  </div>
+</div>
+
 
 </body>
 </html>
