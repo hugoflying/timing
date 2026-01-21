@@ -2888,10 +2888,15 @@ const HOME_IATA  = "BVA";
 function openAKPicker(){
   const b = document.getElementById('akBackdrop');
   const p = document.getElementById('akPopover');
+  const flowSel = document.getElementById('akFlow');
+
+  if(flowSel) flowSel.value = 'DEP';   // <-- reset ici
+
   if(b) b.style.display = '';
-  if(p) p.style.display = 'flex'; // important pour header sticky + liste scrollable
+  if(p) p.style.display = 'flex';
   loadAKFlights();
 }
+
 function closeAKPicker(){
   const b = document.getElementById('akBackdrop');
   const p = document.getElementById('akPopover');
@@ -3400,7 +3405,6 @@ function applyAKFlight(f, flow, opts = {}){
     const prevArr = findLinkedArrForDep(f);
 
     if(prevArr){
-      // rotation complète → infos ARR
       setValAK('From', (prevArr.adepIata || '') || HOME_IATA);
 
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
@@ -3412,9 +3416,7 @@ function applyAKFlight(f, flow, opts = {}){
       if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(prevArr.paxNb));
 
       setIfEmptyOrAK('LoadSI', akBuildSI(prevArr, false));
-
     }else{
-      // FROM = BVA → pas d'arrivée
       setValAK('From', HOME_IATA);
     }
 
@@ -3477,8 +3479,14 @@ function applyAKFlight(f, flow, opts = {}){
   updateAllCalculations();
   updateTabLabelInstant();
 
+  /* ✅ CORRECTION : fermeture auto quand sélection utilisateur */
   if(!isRefresh){
     closeAKPicker();
+
+    // ✅ et on remet DEP par défaut pour la prochaine ouverture
+    const flowSel = document.getElementById('akFlow');
+    if(flowSel) flowSel.value = 'DEP';
+
     showPopup("Vol importé", "#16a34a", 1600);
   }
 }
