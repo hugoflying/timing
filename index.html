@@ -968,14 +968,8 @@ body.dark .infovol-toggle{
       </div>
     </div>
 
-    <!-- Toggle -->
-    <div class="infovol-toggle" onclick="toggleInfoVolDetails()">
-      <span class="tag is-light" style="font-weight:900;">Modifier les infos</span>
-      <span id="infovolToggleIcon" class="icon" style="font-weight:900;">›</span>
-    </div>
-
     <!-- Formulaire (caché par défaut) -->
-    <div id="infoVolDetails" class="grid-auto collapsed-body">
+    <div id="infoVolDetails" class="grid-auto">
 
       <div class="field span-6">
         <label class="label">Date</label>
@@ -1941,8 +1935,7 @@ function createNewTab(){
   localStorage.setItem('lastTabId', id);
 
   clearFormFields();            // reset champs
-  toggleInfoVolDetails(false);  // fermé par défaut
-
+  
   // snapshot initial
   const data = {};
   document.querySelectorAll('input, select, textarea').forEach(el=>{
@@ -2024,9 +2017,6 @@ function clearFormFields(){
     }
   });
 
-  // reset INFO VOL (fermé)
-  toggleInfoVolDetails(false);
-
   updateAllCalculations();
   updateTabLabelInstant();
 }
@@ -2078,9 +2068,6 @@ function loadTabData(id){
       el.value = data[k];
     }
   }
-
-  // INFO VOL ouvert/fermé
-  toggleInfoVolDetails(data.infovolOpen === '1');
 
   updateAllCalculations();
   updateHeaderOffset();
@@ -3215,30 +3202,6 @@ function akBuildSI(f, allowDL = true){
   return parts.join('\n').trim();
 }
 
-function toggleInfoVolDetails(forceOpen = null){
-  const box = document.getElementById('infoVolDetails');
-  const ic  = document.getElementById('infovolToggleIcon');
-  if(!box) return;
-
-  // état actuel
-  const currentlyOpen = !box.classList.contains('collapsed-body');
-
-  // état voulu
-  const wantOpen = (forceOpen === null) ? !currentlyOpen : !!forceOpen;
-
-  box.classList.toggle('collapsed-body', !wantOpen);
-  if(ic) ic.textContent = wantOpen ? '⌄' : '›';
-
-  // mémorise par onglet
-  if(currentTabId){
-    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-    data.infovolOpen = wantOpen ? '1' : '0';
-    localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
-  }
-
-  updateHeaderOffset();
-}
-  
 function storeAKMetaForTab(meta){
   if(!currentTabId) return;
 
