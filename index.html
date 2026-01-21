@@ -933,7 +933,7 @@ body.dark .infovol-toggle{
 
   <div class="card-content">
 
-    <!-- Bandeau "essentiel" -->
+    <!-- Bandeau ESSENTIEL -->
     <div class="kv-strip mb-4">
       <div class="kv-card">
         <div class="kv-left">
@@ -942,12 +942,10 @@ body.dark .infovol-toggle{
             <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
           </div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <div class="kv-left" style="text-align:right;">
-            <div class="kv-title">Route</div>
-            <div class="kv-value">
-              <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-            </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
         </div>
       </div>
@@ -968,18 +966,25 @@ body.dark .infovol-toggle{
       </div>
     </div>
 
-    <!-- Formulaire (caché par défaut) -->
+    <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
 
+      <!-- Date + Salle arrivée -->
       <div class="field span-6">
         <label class="label">Date</label>
         <input class="input" type="date" id="Date">
       </div>
 
+      <div class="field span-6">
+        <label class="label">Salle arrivée</label>
+        <input class="input uppercase" type="text" id="BorderControl">
+      </div>
+
+      <!-- Cie / N° -->
       <div class="field span-3">
         <label class="label">Cie</label>
         <div class="select is-fullwidth">
-          <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
+          <select id="Cie">
             <option value="">--</option>
             <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
             <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
@@ -990,9 +995,10 @@ body.dark .infovol-toggle{
 
       <div class="field span-3">
         <label class="label">N°</label>
-        <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
+        <input class="input uppercase" type="text" id="NVol">
       </div>
 
+      <!-- From / To -->
       <div class="field span-3">
         <label class="label">From</label>
         <input class="input uppercase" type="text" id="From" maxlength="3">
@@ -1000,9 +1006,10 @@ body.dark .infovol-toggle{
 
       <div class="field span-3">
         <label class="label">To</label>
-        <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
+        <input class="input uppercase" type="text" id="To" maxlength="3">
       </div>
 
+      <!-- Immat / Type avion -->
       <div class="field span-6">
         <label class="label">Immat</label>
         <input class="input uppercase" type="text" id="Immat" maxlength="6">
@@ -1011,7 +1018,7 @@ body.dark .infovol-toggle{
       <div class="field span-6">
         <label class="label">Type avion</label>
         <div class="select is-fullwidth">
-          <select id="TypeAvion" onchange="updateAllCalculations()">
+          <select id="TypeAvion">
             <option value="">--</option>
             <option>A319</option><option>A320</option><option>A321</option>
             <option>A20N</option><option>A21N</option><option>A21NY</option>
@@ -1022,6 +1029,7 @@ body.dark .infovol-toggle{
         </div>
       </div>
 
+      <!-- Parking -->
       <div class="field span-6">
         <label class="label">Parking</label>
         <div class="select is-fullwidth">
@@ -1032,11 +1040,6 @@ body.dark .infovol-toggle{
             <option>9</option><option>10</option><option>11</option><option>12</option>
           </select>
         </div>
-      </div>
-
-      <div class="field span-6">
-        <label class="label">Salle arrivée</label>
-        <input class="input uppercase" type="text" id="BorderControl">
       </div>
 
       <!-- LOAD buttons -->
