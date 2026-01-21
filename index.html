@@ -2178,6 +2178,7 @@ function generateTimingFields(){
           ${fieldHTML('ArriveeLift','Arrivée lift')}
           ${fieldHTML('DepartLift','Départ lift')}
           ${fieldHTML('DepartFuel','Départ Avitair',true)}
+          ${fieldHTML('ArriveeINAD','Arrivée INAD')}
           ${fieldHTML('RemiseLID','Remise LID/LDS')}
           ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
         </div>
@@ -3671,6 +3672,8 @@ Dernier embarqué : ${val("AvionDernierEmbarque")}
 
 Arrivée fuel : ${val("ArriveeFuel")}
 Départ fuel : ${val("DepartFuel")}
+
+Arrivée INAD : ${val("ArriveeINAD")}
 
 Lift arrivée : ${liftArrivee}
 Lift départ  : ${liftDepart}
