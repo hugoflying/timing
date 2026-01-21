@@ -508,6 +508,169 @@ body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
   .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
   .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
 }
+
+/* ===== LDM modal (neutre, sans pastilles couleur) ===== */
+#ldmBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.40);
+  z-index: 4400;
+  display: none;
+}
+
+#ldmModal{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 10px) 10px 10px 10px;
+  z-index: 4500;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.10);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.dark #ldmModal{ border-color: rgba(255,255,255,.10); }
+
+.ldm-header{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .ldm-header{ border-bottom-color: rgba(255,255,255,.10); }
+
+.ldm-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex: 1 1 auto;
+}
+.ldm-title strong{ font-weight: 900; font-size: 1.05rem; }
+
+#ldmHint{
+  font-weight: 900;
+  border-radius: 999px;
+}
+
+/* segment buttons */
+.lm-seg{
+  display:inline-flex;
+  gap:6px;
+  background: color-mix(in srgb, var(--card) 86%, #000 14%);
+  padding: 6px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.lm-seg .button{
+  border-radius: 999px !important;
+  font-weight: 900;
+  height: 34px;
+}
+.lm-seg .button.is-active{
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+.ldm-body{
+  padding: 12px;
+  overflow: auto;
+}
+
+/* cartes neutres (ARR/EXP/FINAL = même style) */
+.ldm-card{
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card) 92%, #000 8%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+
+/* header carte neutre */
+.ldm-card-hdr{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card) 88%, #000 12%);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
+
+/* on SUPPRIME l’indicateur couleur */
+.ldm-dot{ display:none !important; }
+
+.ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
+.ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
+
+/* grille 2 colonnes simple */
+.ldm-grid{
+  padding: 10px 12px 12px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+.ldm-span-2{ grid-column: span 2; }
+
+.ldm-in{
+  height: 38px !important;
+  padding: 6px 10px !important;
+  font-weight: 900 !important;
+  text-align: center;
+  letter-spacing: .02em;
+}
+.ldm-ta{
+  min-height: 90px !important;
+  height: auto !important;
+  font-weight: 800;
+}
+
+/* ===== ligne H1..H4 / OA..OD : plus de pastilles ===== */
+.ldm-row-4{
+  grid-column: span 2;
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* champ compact sans "badge" */
+.ldm-row-4 .field{
+  margin: 0 !important;
+}
+.ldm-row-4 .field .label{
+  margin: 0 0 6px !important;
+  padding: 0 !important;
+  display:block;
+  min-width: auto;
+  height: auto;
+  border-radius: 0;
+  font-size: var(--labelSize) !important;
+  font-weight: 900 !important;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text) !important;
+  opacity: .9;
+}
+.ldm-row-4 .field .label::before{ display:none !important; content:none !important; }
+
+@media (max-width: 520px){
+  #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
+  .ldm-row-4{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ldm-in{ height: 36px !important; padding: 6px 8px !important; }
+  .ldm-ta{ min-height: 86px !important; }
+}
+ 
+  
 </style>
 </head>
 
@@ -537,7 +700,6 @@ body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
     <!-- ===== LOAD ARRIVEE ===== -->
     <section class="ldm-card ldm-arr" id="ldmArr">
       <div class="ldm-card-hdr">
-        <div class="ldm-dot"></div>
         <div class="ldm-card-title">ARRIVÉE</div>
         <div class="ldm-card-sub">LOAD ARR</div>
       </div>
@@ -566,7 +728,6 @@ body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
     <!-- ===== LOAD EXPECTED ===== -->
     <section class="ldm-card ldm-exp" id="ldmExp" style="display:none;">
       <div class="ldm-card-hdr">
-        <div class="ldm-dot"></div>
         <div class="ldm-card-title">EXPECTED</div>
         <div class="ldm-card-sub">LOAD EXP</div>
       </div>
@@ -595,7 +756,6 @@ body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
     <!-- ===== LOAD FINAL ===== -->
     <section class="ldm-card ldm-final" id="ldmFinal" style="display:none;">
       <div class="ldm-card-hdr">
-        <div class="ldm-dot"></div>
         <div class="ldm-card-title">FINAL</div>
         <div class="ldm-card-sub">LOAD FINAL</div>
       </div>
