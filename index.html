@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
 
 <style>
+/* =========================
+   THEME + GLOBAL VARS
+========================= */
 :root{
   --bg: #f6f7fb;
   --card: #ffffff;
@@ -25,50 +28,29 @@
 
   --fixed-header-h: 140px;
 
-  /* ✅ manquant chez toi (utilisé par .time-grid) */
+  /* layout */
   --gap: 10px;
+  --padCard: 12px;
+  --labelSize: .78rem;
+  --inputH: 42px;
 }
 
-/* ===== TIME GRID (GLOBAL – PARTOUT) ===== */
-.time-grid{
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gap);
-}
-
-/* ✅ autorise vraiment la réduction (sinon ça casse en wrap) */
-.time-grid .field{ min-width: 0; }
-.time-grid .control,
-.time-grid .input,
-.time-grid .select,
-.time-grid .select select{
-  min-width: 0;
-  width: 100%;
-}
-.time-grid .label{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* pleine largeur */
-.time-grid-full{
-  grid-column: 1 / -1;
-}
-
-/* mobile : priorité à la densité */
-@media (max-width: 768px){
-  .time-grid .field{ grid-column: span 6; }   /* 2 champs par ligne */
-}
-
-/* desktop : plus aéré */
 @media (min-width: 769px){
-  .time-grid .field{ grid-column: span 3; }   /* 4 champs par ligne */
+  :root{
+    --gap: 12px;
+    --padCard: 14px;
+    --inputH: 44px;
+  }
 }
 
-body{ background: var(--bg); color: var(--text); margin: 0; }
+html, body{
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  min-height: 100%;
+}
 
-/* ✅ DARK MODE : correction du ;<style> qui cassait tout */
+/* ✅ DARK MODE : variables OK + appliquées via html.dark (et body.dark toléré) */
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
@@ -83,20 +65,68 @@ html.dark, body.dark{
   --field-placeholder: rgba(156,163,175,.95);
 }
 
-/* ===== FIXED HEADER ===== */
+/* =========================
+   GRIDS
+========================= */
+.time-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.time-grid .field{ min-width:0; }
+.time-grid .control,
+.time-grid .input,
+.time-grid .select,
+.time-grid .select select{
+  min-width:0;
+  width:100%;
+}
+.time-grid .label{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.time-grid-full{ grid-column: 1 / -1; }
+
+@media (max-width: 768px){
+  .time-grid .field{ grid-column: span 6; }   /* 2 champs/ligne */
+}
+@media (min-width: 769px){
+  .time-grid .field{ grid-column: span 3; }   /* 4 champs/ligne */
+}
+
+/* Grilles "pro" */
+.grid-auto{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.span-12{ grid-column: span 12; }
+.span-6{  grid-column: span 12; }
+.span-4{  grid-column: span 6; }
+.span-3{  grid-column: span 6; }
+
+@media (min-width: 769px){
+  .span-6{ grid-column: span 6; }
+  .span-4{ grid-column: span 4; }
+  .span-3{ grid-column: span 3; }
+}
+
+/* =========================
+   FIXED HEADER
+========================= */
 .fixed-header{
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 3000;
-  background: var(--bg);
-  backdrop-filter: none;
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
   border-bottom: 1px solid rgba(0,0,0,.08);
 }
-
-/* sombre */
-html.dark .fixed-header{
+html.dark .fixed-header, body.dark .fixed-header{
   border-bottom-color: rgba(255,255,255,.08);
 }
+
 .fixed-header-inner{
   max-width: 1120px;
   margin: 0 auto;
@@ -111,6 +141,11 @@ html.dark .fixed-header{
   margin: 0 auto;
   padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
 }
+
+/* rien afficher tant qu'il n'y a pas d'onglet */
+.app-wrap{ display:none; }
+body.has-tab .app-wrap{ display:block; }
+body.no-tab .timer-row{ display:none !important; }
 
 /* Topbar */
 .topbar-inner{
@@ -155,6 +190,22 @@ html.dark .fixed-header{
   flex: 0 0 auto;
   font-weight: 900;
 }
+
+/* bouton refresh collé à chaque onglet */
+.tab-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex: 0 0 auto;
+}
+.tab-refresh{
+  border-radius: 999px !important;
+  padding: 0 10px !important;
+  height: 36px;
+  min-width: 36px;
+  font-weight: 900;
+}
+.tab-refresh.is-loading{ pointer-events:none; opacity:.7; }
 
 /* Timers chips */
 .timer-row{
@@ -212,16 +263,13 @@ html.dark .fixed-header{
 .ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
 
 #timer-tobt{ background:#16a34a !important; }
-#timer-h8{ background:#facc15 !important; color:#fff !important; } /* LID blanc */
+#timer-h8{ background:#facc15 !important; color:#fff !important; }
 #timer-cd{ background:#93c5fd !important; color:#111 !important; }
+#timer-cd.cd-over{ background:#fee2e2 !important; color:#ef4444 !important; }
 
-/* CD en dépassement (après 0) */
-#timer-cd.cd-over{
-  background: #fee2e2 !important;
-  color: #ef4444 !important;
-}
-
-/* Bulma tweaks */
+/* =========================
+   BULMA TWEAKS
+========================= */
 .card{
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -233,12 +281,14 @@ html.dark .fixed-header{
   border-top-right-radius: var(--radius);
   background: color-mix(in srgb, var(--card) 85%, #3b82f6 15%);
 }
-body.dark .card-header{
+html.dark .card-header, body.dark .card-header{
   background: color-mix(in srgb, var(--card) 80%, #60a5fa 20%);
 }
 .card-header-title{ font-weight: 900; color: var(--text) !important; }
 .section-collapse{ cursor: pointer; user-select: none; }
 .collapsed-body{ display: none; }
+
+.card-content{ padding: var(--padCard) !important; }
 
 /* Inputs */
 .input, .select select, .textarea{
@@ -247,16 +297,27 @@ body.dark .card-header{
   color: var(--field-text) !important;
   border-color: var(--field-border) !important;
 }
-.input.uppercase{ text-transform: uppercase; }
+.input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 
-textarea.si-uppercase{
+.field .label{
+  font-weight: 900;
+  color: var(--text) !important;
+  font-size: var(--labelSize) !important;
+  letter-spacing: .02em;
   text-transform: uppercase;
+  opacity: .9;
 }
 
-.input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
-.field .label{ font-weight: 900; color: var(--text) !important; }
+.input.uppercase{ text-transform: uppercase; }
+textarea.si-uppercase{ text-transform: uppercase; }
 
-/* FORCE couleur TOB (sinon Bulma + !important bloque) */
+.input, .select select, .textarea{
+  height: var(--inputH);
+  font-weight: 800;
+}
+.textarea{ min-height: 110px; height:auto; }
+
+/* FORCE couleur TOB */
 #FinalTOB.is-invalid{ color:#ef4444 !important; }
 #FinalTOB.is-valid{ color: var(--field-text) !important; }
 
@@ -267,7 +328,7 @@ textarea.si-uppercase{
   gap: 6px;
   margin-top: 8px;
 }
-.btn-actions .button{ border-radius: 12px; font-weight: 900; }
+.btn-actions .button{ border-radius: 12px; font-weight: 900; height: 40px; }
 
 /* Popup toast */
 #popup{
@@ -282,7 +343,7 @@ textarea.si-uppercase{
   box-shadow: var(--shadow);
 }
 
-/* ===== Toggle switch ===== */
+/* Toggle switch */
 .toggle{
   display:inline-flex;
   align-items:center;
@@ -314,11 +375,11 @@ textarea.si-uppercase{
 }
 .toggle input:checked + .track .thumb{ transform: translateX(18px); }
 
-/* ===== LOAD popovers ===== */
-.chip-btn{ border: none; cursor: pointer; }
+/* LOAD popovers */
+.chip-btn{ border:none; cursor:pointer; }
 .chip-btn:active{ transform: translateY(1px); }
 
-/* ===== AK picker (FULLSCREEN POPUP) ===== */
+/* AK picker (fullscreen) */
 #akPopover{
   position: fixed;
   inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
@@ -335,9 +396,10 @@ textarea.si-uppercase{
 
   display: none;
   overflow: auto;
-}
 
-body.dark #akPopover{
+  flex-direction: column;
+}
+html.dark #akPopover, body.dark #akPopover{
   border-color: rgba(255,255,255,.10);
 }
 
@@ -349,12 +411,6 @@ body.dark #akPopover{
   display: none;
 }
 
-/* ===== AK picker : header figé ===== */
-#akPopover{
-  display: none;
-  flex-direction: column;
-}
-
 #akPopover .ak-header{
   position: sticky;
   top: 0;
@@ -364,17 +420,12 @@ body.dark #akPopover{
   padding: 10px 0;
   border-bottom: 1px solid rgba(0,0,0,.08);
 }
-
-body.dark #akPopover .ak-header{
+html.dark #akPopover .ak-header, body.dark #akPopover .ak-header{
   border-bottom-color: rgba(255,255,255,.10);
 }
+#akList{ flex: 1 1 auto; overflow-y: auto; }
 
-#akList{
-  flex: 1 1 auto;
-  overflow-y: auto;
-}
-
-/* ===== LOAD popovers (FULLSCREEN POPUP) ===== */
+/* LOAD popovers (fullscreen) */
 #loadArrPopover,
 #loadExpPopover,
 #loadFinalPopover{
@@ -395,14 +446,14 @@ body.dark #akPopover .ak-header{
 
   overflow-y: auto;
 }
-
+html.dark #loadArrPopover,
+html.dark #loadExpPopover,
+html.dark #loadFinalPopover,
 body.dark #loadArrPopover,
 body.dark #loadExpPopover,
 body.dark #loadFinalPopover{
   border-color: rgba(255,255,255,.10);
 }
-
-/* header inchangé, juste collant */
 #loadArrPopover .hdr,
 #loadExpPopover .hdr,
 #loadFinalPopover .hdr{
@@ -417,14 +468,10 @@ body.dark #loadFinalPopover{
   background: var(--card);
   z-index: 1;
 }
-
 #loadArrPopover .hdr strong,
 #loadExpPopover .hdr strong,
-#loadFinalPopover .hdr strong{
-  font-weight: 900;
-}
+#loadFinalPopover .hdr strong{ font-weight: 900; }
 
-/* grilles inchangées */
 #loadArrPopover .grid,
 #loadExpPopover .grid,
 #loadFinalPopover .grid{
@@ -432,14 +479,10 @@ body.dark #loadFinalPopover{
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
-
 #loadArrPopover .field .label,
 #loadExpPopover .field .label,
-#loadFinalPopover .field .label{
-  font-size: .9rem;
-}
+#loadFinalPopover .field .label{ font-size: .9rem; }
 
-/* backdrop */
 #loadArrBackdrop{
   position: fixed;
   inset: 0;
@@ -458,21 +501,47 @@ body.dark #loadFinalPopover{
 }
 .load-row-below .timer-chip{ min-width: 170px; }
 
-/* === TIMELINE === */
+/* Bandeau "essentiel" */
+.kv-strip{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+@media (min-width: 769px){
+  .kv-strip{ grid-template-columns: 1fr 1fr; }
+}
+.kv-card{
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+html.dark .kv-card, body.dark .kv-card{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.kv-left{ display:flex; flex-direction:column; gap:2px; }
+.kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
+.kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
+
+/* TIMELINE */
 .timeline-track {
   position: absolute; left:6%; right:6%;
   height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
 }
-body.dark .timeline-track{ background:#2e2e2e; }
+html.dark .timeline-track, body.dark .timeline-track{ background:#2e2e2e; }
 
 .timeline-tick { position: absolute; width: 1px; background:rgba(0,0,0,0.08); }
-body.dark .timeline-tick { background:#3e444b; }
+html.dark .timeline-tick, body.dark .timeline-tick { background:#3e444b; }
 
 .timeline-tick-label {
   position: absolute; transform: translateX(-50%);
   font-size: 14px; font-weight: 800; color:#111827;
 }
-body.dark .timeline-tick-label { color:#cfd4da; }
+html.dark .timeline-tick-label, body.dark .timeline-tick-label { color:#cfd4da; }
 
 .tl-event, .tl-range { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height:1; z-index: 1; }
 .tl-dot {
@@ -483,7 +552,7 @@ body.dark .timeline-tick-label { color:#cfd4da; }
   padding: 4px 10px; border-radius: 999px; background: #f1f3f5; color:#111; font-size: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.07);
   font-weight: 900;
 }
-body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+html.dark .tl-label, body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
 
 .tl--std  { --c:#64748b; }
 .tl--tobt { --c:#16a34a; }
@@ -502,7 +571,7 @@ body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px r
   padding: 2px 8px; border-radius: 10px; font-weight: 900;
   color: #111;
 }
-body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
+html.dark .tl-range-label, body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
 
 .timeline-toolbar{
   display:flex; align-items:center; gap:8px; margin: 4px 0 10px;
@@ -514,7 +583,7 @@ body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
   background: var(--card);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
 }
-body.dark .timeline-scroll{
+html.dark .timeline-scroll, body.dark .timeline-scroll{
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .timeline-canvas{ position:relative; min-width:600px; width:100%; }
@@ -522,7 +591,7 @@ body.dark .timeline-scroll{
 /* DL error */
 .dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
 
-/* ===== RESPONSIVE ===== */
+/* Responsive */
 @media (max-width: 768px){
   .timer-chip{ min-width: 128px; }
   .timeline-canvas{ min-width: 720px; }
@@ -532,139 +601,20 @@ body.dark .timeline-scroll{
   .timer-chip .v{ min-width: 64px; }
   .ctot-pill{ min-width: 64px; }
 }
-
-/* rien afficher tant qu'il n'y a pas d'onglet */
-.app-wrap{ display:none; }
-body.has-tab .app-wrap{ display:block; }
-
-/* ===== NO TAB ===== */
-body.no-tab .timer-row{
-  display: none !important;
+/* TIMER CHIPS COMPACT (MOBILE) */
+@media (max-width: 480px){
+  .timer-row{ gap: 6px; }
+  .timer-chip{
+    min-width: 96px;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
+  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
+  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
 }
 
-/* Header aligné sur le thème (clair / sombre) */
-.fixed-header{
-  background: var(--bg) !important;
-  backdrop-filter: none !important;
-}
-  
-/* Forcer le fond plein écran même sans contenu */
-html, body{
-  background: var(--bg) !important;
-  min-height: 100%;
-}
-
-/* bouton refresh collé à chaque onglet */
-.tab-wrap{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  flex: 0 0 auto;
-}
-
-.tab-refresh{
-  border-radius: 999px !important;
-  padding: 0 10px !important;
-  height: 36px;
-  min-width: 36px;
-  font-weight: 900;
-}
-.tab-refresh.is-loading{
-  pointer-events:none;
-  opacity:.7;
-}
-
-  /* ===== PRO RESPONSIVE LAYOUT (PHONE / TABLET) ===== */
-
-:root{
-  --gap: 10px;
-  --padCard: 12px;
-  --labelSize: .78rem;
-  --inputH: 42px;
-}
-
-@media (min-width: 769px){
-  :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
-}
-
-.card-content{ padding: var(--padCard) !important; }
-
-.field .label{
-  font-size: var(--labelSize) !important;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  opacity: .9;
-}
-
-/* Inputs un peu plus "app" */
-.input, .select select, .textarea{
-  height: var(--inputH);
-  font-weight: 800;
-}
-.textarea{ min-height: 110px; height: auto; }
-
-/* Grilles responsive simples */
-.grid-auto{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gap);
-}
-
-.span-12{ grid-column: span 12; }
-.span-6{  grid-column: span 12; }
-.span-4{  grid-column: span 6; }
-.span-3{  grid-column: span 6; }
-
-@media (min-width: 769px){
-  .span-6{ grid-column: span 6; }
-  .span-4{ grid-column: span 4; }
-  .span-3{ grid-column: span 3; }
-}
-
-/* "Rows" ultra compactes pour infos clés */
-.kv-strip{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: var(--gap);
-}
-
-@media (min-width: 769px){
-  .kv-strip{ grid-template-columns: 1fr 1fr; }
-}
-
-.kv-card{
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-  padding: 10px 12px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-body.dark .kv-card{
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-}
-
-.kv-left{ display:flex; flex-direction:column; gap:2px; }
-.kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
-.kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
-
-/* Boutons -1 Now +1 mieux rangés */
-.btn-actions{
-  grid-template-columns: repeat(3, 1fr);
-}
-.btn-actions .button{
-  height: 40px;
-}
-
-/* Segments (Arr/Dep) plus compacts */
-.tabs.is-toggle.is-toggle-rounded ul li a{
-  font-weight: 900;
-}
-
-/* ===== SETTINGS (gear) bottom menu ===== */
+/* SETTINGS (gear) bottom menu */
 #settingsBackdrop{
   position: fixed;
   inset: 0;
@@ -672,7 +622,6 @@ body.dark .kv-card{
   z-index: 4800;
   display: none;
 }
-
 #settingsFab{
   position: fixed;
   right: 14px;
@@ -687,7 +636,6 @@ body.dark .kv-card{
   font-weight: 900;
   box-shadow: var(--shadow2);
 }
-
 #settingsMenu{
   position: fixed;
   right: 14px;
@@ -701,54 +649,11 @@ body.dark .kv-card{
   padding: 12px;
   display: none;
 }
-
-body.dark #settingsMenu{
+html.dark #settingsMenu, body.dark #settingsMenu{
   border-color: rgba(255,255,255,.10);
 }
-
-#settingsMenu .settings-title{
-  font-weight: 900;
-  margin-bottom: 10px;
-}
-
-#settingsMenu .settings-row{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* ===== TIMER CHIPS COMPACT (MOBILE) ===== */
-@media (max-width: 480px){
-
-  .timer-row{
-    gap: 6px;
-  }
-
-  .timer-chip{
-    min-width: 96px;
-    padding: 6px 8px;
-    gap: 6px;
-  }
-
-  .timer-chip .k{
-    font-size: .7rem;
-    font-weight: 800;
-  }
-
-  .timer-chip .v{
-    min-width: 54px;
-    padding: 4px 6px;
-    font-size: .8rem;
-  }
-
-  /* CTOT input */
-  .ctot-pill{
-    min-width: 54px;
-    padding: 4px 6px !important;
-    font-size: .8rem;
-  }
-}
- 
+#settingsMenu .settings-title{ font-weight: 900; margin-bottom: 10px; }
+#settingsMenu .settings-row{ display:flex; flex-direction: column; gap: 10px; }
 </style>
 </head>
 
@@ -793,13 +698,8 @@ body.dark #settingsMenu{
 
   <div class="field">
     <label class="label">SI</label>
-    <textarea
-      class="textarea si-uppercase"
-      id="LoadSI"
-      autocorrect="off"
-      spellcheck="false"
-      autocapitalize="characters"
-      inputmode="text"></textarea>
+    <textarea class="textarea si-uppercase" id="LoadSI"
+      autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
   </div>
 </div>
 
@@ -839,13 +739,8 @@ body.dark #settingsMenu{
 
   <div class="field">
     <label class="label">SI</label>
-    <textarea
-      class="textarea si-uppercase"
-      id="ExpSI"
-      autocorrect="off"
-      spellcheck="false"
-      autocapitalize="characters"
-      inputmode="text"></textarea>
+    <textarea class="textarea si-uppercase" id="ExpSI"
+      autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
   </div>
 </div>
 
@@ -894,13 +789,8 @@ body.dark #settingsMenu{
 
   <div class="field">
     <label class="label">SI</label>
-    <textarea
-      class="textarea si-uppercase"
-      id="FinalSI"
-      autocorrect="off"
-      spellcheck="false"
-      autocapitalize="characters"
-      inputmode="text"></textarea>
+    <textarea class="textarea si-uppercase" id="FinalSI"
+      autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
   </div>
 </div>
 
@@ -959,7 +849,8 @@ body.dark #settingsMenu{
     </span>
   </header>
 
-  <div class="card-content">
+  <!-- ✅ ici c'est bien le card-content qui se collapse -->
+  <div class="card-content collapsed-body">
 
     <!-- Bandeau "essentiel" -->
     <div class="kv-strip mb-4">
@@ -995,7 +886,7 @@ body.dark #settingsMenu{
     </div>
 
     <!-- Form compact (TIME GRID) -->
-    <div class="time-grid collapsed-body">
+    <div class="time-grid">
 
       <!-- L1 : DATE / RZA -->
       <div class="field">
@@ -1117,7 +1008,6 @@ body.dark #settingsMenu{
   </div>
 </div>
 
-
 <!-- HORAIRES -->
 <div class="card mb-5">
   <header class="card-header section-collapse" onclick="toggleCardBody(this)">
@@ -1126,10 +1016,9 @@ body.dark #settingsMenu{
   </header>
 
   <div class="card-content collapsed-body">
-
     <div class="time-grid">
 
-      <!-- ===== ARRIVÉE ===== -->
+      <!-- ARRIVÉE -->
       <div class="time-grid-full">
         <div class="kv-card" style="padding:12px;">
           <strong style="text-transform:uppercase;color:var(--muted);">Arrivée</strong>
@@ -1140,9 +1029,9 @@ body.dark #settingsMenu{
         <label class="label">SIBT</label>
         <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
         <div class="btn-actions">
-          <button class="button is-light" onclick="adjustTime('SIBT',-1)">-1</button>
-          <button class="button is-link" onclick="setNow('SIBT')">Now</button>
-          <button class="button is-light" onclick="adjustTime('SIBT',1)">+1</button>
+          <button class="button is-light" type="button" onclick="adjustTime('SIBT',-1)">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('SIBT')">Now</button>
+          <button class="button is-light" type="button" onclick="adjustTime('SIBT',1)">+1</button>
         </div>
       </div>
 
@@ -1150,13 +1039,13 @@ body.dark #settingsMenu{
         <label class="label">AIBT</label>
         <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
         <div class="btn-actions">
-          <button class="button is-light" onclick="adjustTime('AIBT',-1)">-1</button>
-          <button class="button is-link" onclick="setNow('AIBT')">Now</button>
-          <button class="button is-light" onclick="adjustTime('AIBT',1)">+1</button>
+          <button class="button is-light" type="button" onclick="adjustTime('AIBT',-1)">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('AIBT')">Now</button>
+          <button class="button is-light" type="button" onclick="adjustTime('AIBT',1)">+1</button>
         </div>
       </div>
 
-      <!-- ===== DÉPART ===== -->
+      <!-- DÉPART -->
       <div class="time-grid-full">
         <div class="kv-card" style="padding:12px;">
           <strong style="text-transform:uppercase;color:var(--muted);">Départ</strong>
@@ -1167,9 +1056,9 @@ body.dark #settingsMenu{
         <label class="label">SOBT</label>
         <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
         <div class="btn-actions">
-          <button class="button is-light" onclick="adjustTime('SOBT',-1)">-1</button>
-          <button class="button is-link" onclick="setNow('SOBT')">Now</button>
-          <button class="button is-light" onclick="adjustTime('SOBT',1)">+1</button>
+          <button class="button is-light" type="button" onclick="adjustTime('SOBT',-1)">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('SOBT')">Now</button>
+          <button class="button is-light" type="button" onclick="adjustTime('SOBT',1)">+1</button>
         </div>
       </div>
 
@@ -1177,9 +1066,9 @@ body.dark #settingsMenu{
         <label class="label">AOBT</label>
         <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
         <div class="btn-actions">
-          <button class="button is-light" onclick="adjustTime('AOBT',-1)">-1</button>
-          <button class="button is-link" onclick="setNow('AOBT')">Now</button>
-          <button class="button is-light" onclick="adjustTime('AOBT',1)">+1</button>
+          <button class="button is-light" type="button" onclick="adjustTime('AOBT',-1)">-1</button>
+          <button class="button is-link" type="button" onclick="setNow('AOBT')">Now</button>
+          <button class="button is-light" type="button" onclick="adjustTime('AOBT',1)">+1</button>
         </div>
       </div>
 
@@ -1187,36 +1076,36 @@ body.dark #settingsMenu{
   </div>
 </div>
 
-  <!-- TIMING -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">TIMING</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div id="timing-grid"></div>
+<!-- TIMING -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">TIMING</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
+  <div class="card-content collapsed-body">
+    <div id="timing-grid"></div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">TIMELINE</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
+  <div class="card-content collapsed-body">
+    <div class="timeline-toolbar">
+      <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
+      <span class="tag is-light" id="timelineZoomLabel">100%</span>
+      <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
+      <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
+    </div>
+
+    <div class="timeline-scroll" id="timelineScroll">
+      <div id="timelineCanvas" class="timeline-canvas"></div>
     </div>
   </div>
-
-  <!-- TIMELINE -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">TIMELINE</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="timeline-toolbar">
-        <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
-        <span class="tag is-light" id="timelineZoomLabel">100%</span>
-        <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
-        <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
-      </div>
-
-      <div class="timeline-scroll" id="timelineScroll">
-        <div id="timelineCanvas" class="timeline-canvas"></div>
-      </div>
-    </div>
-  </div>
+</div>
 
 <!-- RETARDS -->
 <div class="card mb-5">
@@ -1228,7 +1117,6 @@ body.dark #settingsMenu{
   <div class="card-content collapsed-body">
     <div class="time-grid">
 
-      <!-- Ligne 1 -->
       <div class="field">
         <label class="label">DL Code 1</label>
         <div class="control">
@@ -1243,7 +1131,6 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <!-- Ligne 2 -->
       <div class="field">
         <label class="label">DL Code 2</label>
         <div class="control">
@@ -1258,7 +1145,6 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <!-- Ligne 3 -->
       <div class="field">
         <label class="label">DL Code 3</label>
         <div class="control">
@@ -1277,24 +1163,24 @@ body.dark #settingsMenu{
   </div>
 </div>
 
-  <!-- FAITS SAILLANTS -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">FAITS SAILLANTS</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
-    </div>
+<!-- FAITS SAILLANTS -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">FAITS SAILLANTS</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
+  <div class="card-content collapsed-body">
+    <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
   </div>
-
-  <div class="buttons is-centered">
-    <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
-    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
-    <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
-  </div>
-
 </div>
+
+<div class="buttons is-centered">
+  <button class="button is-success is-medium" id="validate" onclick="validateForm()">VALIDER</button>
+  <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
+  <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
+</div>
+
+</div><!-- /app-wrap -->
 
 <script>
 /* Collapse */
