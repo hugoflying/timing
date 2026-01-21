@@ -2026,10 +2026,16 @@ function clearFormFields(){
     }
   });
 
+  // date du jour auto
+  const d = document.getElementById('Date');
+  if(d){
+    const today = new Date().toISOString().slice(0,10);
+    d.value = today;
+  }
+
   updateAllCalculations();
   updateTabLabelInstant();
 }
-
 function saveCurrentTabData(){
   if(!currentTabId) return;
 
