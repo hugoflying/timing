@@ -935,24 +935,85 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   font-weight: 800;
 }
 
-/* lignes spéciales en 4 colonnes */
-.ldm-row-4{
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 8px;
-}
-
-/* pour que ça prenne toute la largeur des 2 colonnes */
-.ldm-grid .ldm-row-4{
-  grid-column: span 2;
-}
-
 @media (max-width: 520px){
   #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
   .ldm-grid{ gap: 7px 8px; }
   .ldm-in{ height: 36px !important; padding: 6px 8px !important; }
   .ldm-ta{ min-height: 86px !important; }
 }
+
+/* ===== LDM "cockpit" pills (H1..H4 / OA..OD) ===== */
+
+/* ligne 4 colonnes */
+.ldm-row-4{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+}
+.ldm-grid .ldm-row-4{ grid-column: span 2; }
+
+/* item = pastille + input, sur la même ligne */
+.ldm-row-4 .field{
+  margin: 0 !important;
+  display:flex;
+  align-items:center;
+  gap: 6px;
+}
+
+/* pastille label */
+.ldm-row-4 .field .label{
+  margin: 0 !important;
+  padding: 0 !important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width: 34px;
+  height: 22px;
+
+  border-radius: 999px;
+  font-size: .72rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+
+  background: color-mix(in srgb, var(--ldmAccent, #2563eb) 18%, var(--card));
+  color: color-mix(in srgb, var(--ldmAccent, #2563eb) 80%, var(--text));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ldmAccent, #2563eb) 28%, transparent);
+  opacity: 1 !important;
+}
+
+/* micro badge couleur (petit point) dans la pastille */
+.ldm-row-4 .field .label::before{
+  content:"";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  margin-right: 6px;
+  background: var(--ldmAccent, #2563eb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ldmAccent, #2563eb) 22%, transparent);
+}
+
+/* input collé, ultra compact */
+.ldm-row-4 .field .input{
+  flex: 1 1 auto;
+  height: 36px !important;
+  padding: 6px 8px !important;
+  font-weight: 950 !important;
+  text-align: center;
+  letter-spacing: .02em;
+}
+
+/* mobile : pastille un poil plus petite */
+@media (max-width: 520px){
+  .ldm-row-4{ gap: 7px; }
+  .ldm-row-4 .field .label{
+    min-width: 32px;
+    height: 21px;
+    font-size: .70rem !important;
+  }
+}
+
  
 </style>
 </head>
