@@ -1021,25 +1021,25 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 <body onload="initForm()">
 
 <!-- ===== LDM (FULLSCREEN) ===== -->
-<div id="ldmBackdrop" onclick="closeLDM()" style="display:none;"></div>
+<div id="ldmBackdrop" onclick="closeLDM()"></div>
 
-<div id="ldmModal" role="dialog" aria-modal="true" style="display:none;">
+<div id="ldmModal" role="dialog" aria-modal="true">
   <div class="ldm-header">
     <div class="ldm-title">
-      <strong>LDM</strong>
-      <span class="tag is-light">LOAD DATA MANIFEST</span>
+      <strong>LOAD</strong>
+      <span class="tag is-light">ARRIVÉE / EXPECTED / FINAL</span>
     </div>
     <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
   </div>
 
   <div class="ldm-body">
 
-    <!-- ===== ARR ===== -->
+    <!-- ===== LOAD ARRIVEE ===== -->
     <section class="ldm-card ldm-arr">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
-        <div class="ldm-card-title">ARR</div>
-        <div class="ldm-card-sub">Arrivée</div>
+        <div class="ldm-card-title">ARRIVÉE</div>
+        <div class="ldm-card-sub">LOAD ARR</div>
       </div>
 
       <div class="ldm-grid">
@@ -1047,6 +1047,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
         <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="LoadBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
 
         <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="LoadPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
+        <div class="field ldm-f"><label class="label">—</label><input class="input ldm-in" value="" disabled></div>
 
         <div class="ldm-row-4">
           <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="LoadH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
@@ -1062,12 +1063,12 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
       </div>
     </section>
 
-    <!-- ===== EXP ===== -->
+    <!-- ===== LOAD EXPECTED ===== -->
     <section class="ldm-card ldm-exp">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
-        <div class="ldm-card-title">EXP</div>
-        <div class="ldm-card-sub">Exploitation</div>
+        <div class="ldm-card-title">EXPECTED</div>
+        <div class="ldm-card-sub">LOAD EXP</div>
       </div>
 
       <div class="ldm-grid">
@@ -1075,6 +1076,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
         <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="ExpBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
 
         <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="ExpPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
+        <div class="field ldm-f"><label class="label">—</label><input class="input ldm-in" value="" disabled></div>
 
         <div class="ldm-row-4">
           <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="ExpH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
@@ -1090,12 +1092,12 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
       </div>
     </section>
 
-    <!-- ===== FINAL ===== -->
+    <!-- ===== LOAD FINAL ===== -->
     <section class="ldm-card ldm-final">
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
         <div class="ldm-card-title">FINAL</div>
-        <div class="ldm-card-sub">Manifest</div>
+        <div class="ldm-card-sub">LOAD FINAL</div>
       </div>
 
       <div class="ldm-grid">
@@ -1118,7 +1120,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
         <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="FinalBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
         <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="FinalPOIDS" readonly></div>
 
-        <div class="field ldm-f"><label class="label">GB</label><input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
+        <div class="field ldm-span-2"><label class="label">GB / ITG</label><input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
 
         <div class="ldm-row-4">
           <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="FinalH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
@@ -1136,6 +1138,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 
   </div>
 </div>
+
 
 <!-- ===== FIXED HEADER ===== -->
 <div class="fixed-header" id="fixedHeader">
