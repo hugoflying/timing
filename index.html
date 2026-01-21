@@ -723,104 +723,270 @@ body.dark .infovol-toggle{
     font-size: .8rem;
   }
 }
+
+/* ===== LOAD MODAL (pro fullscreen) ===== */
+#loadBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.40);
+  z-index: 4400;
+}
+
+#loadModal{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 10px) 10px 10px 10px;
+  z-index: 4500;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.10);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.dark #loadModal{ border-color: rgba(255,255,255,.10); }
+
+.lm-header{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .lm-header{ border-bottom-color: rgba(255,255,255,.10); }
+
+.lm-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex: 1 1 auto;
+}
+.lm-title strong{ font-weight: 900; font-size: 1.05rem; }
+#lmHint{ font-weight: 900; }
+
+.lm-seg{
+  display:inline-flex;
+  gap:6px;
+  background: color-mix(in srgb, var(--card) 86%, #000 14%);
+  padding: 6px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.lm-seg .button{
+  border-radius: 999px !important;
+  font-weight: 900;
+  height: 34px;
+}
+
+.lm-seg .button.is-active{
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+.lm-body{
+  padding: 12px;
+  overflow: auto;
+}
+
+.lm-panel{ width: 100%; }
+
+.lm-grid{
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lm-grid .field{ margin-bottom: 0 !important; }
+
+.lm-grid .field:nth-child(-n+3){ grid-column: span 4; }
+.lm-grid .field{ grid-column: span 3; }
+
+.lm-span-12{ grid-column: span 12 !important; }
+
+.lm-subtitle{
+  margin: 8px 0 8px;
+  font-weight: 900;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: .78rem;
+}
+
+.lm-grid-compact .field{ grid-column: span 4; }
+
+@media (max-width: 900px){
+  #loadModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
+  .lm-grid .field:nth-child(-n+3){ grid-column: span 6; }
+  .lm-grid .field{ grid-column: span 6; }
+  .lm-grid-compact .field{ grid-column: span 6; }
+}
+@media (max-width: 520px){
+  .lm-grid .field:nth-child(-n+3){ grid-column: span 12; }
+  .lm-grid .field{ grid-column: span 6; }
+  .lm-grid-compact .field{ grid-column: span 6; }
+  .lm-header{ gap:8px; }
+  .lm-title strong{ font-size: 1rem; }
+}
  
 </style>
 </head>
 
 <body onload="initForm()">
 
-<!-- BACKDROP commun -->
-<div id="loadArrBackdrop" onclick="hideAllLoadPopovers()" style="display:none;"></div>
+<!-- ===== LOAD MODAL (FULLSCREEN) ===== -->
+<div id="loadBackdrop" onclick="closeLoadModal()" style="display:none;"></div>
 
-<!-- ===== LOAD ARR popover ===== -->
-<div id="loadArrPopover" role="dialog" aria-modal="true">
-  <div class="hdr">
-    <strong>LOAD ARR.</strong>
-    <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
-  </div>
-
-  <div class="grid">
-    <div class="field">
-      <label class="label">PAX</label>
-      <input class="input" id="LoadPAX" inputmode="numeric" oninput="digitsOnly(this)">
+<div id="loadModal" role="dialog" aria-modal="true" style="display:none;">
+  <div class="lm-header">
+    <div class="lm-title">
+      <strong>LOAD</strong>
+      <span class="tag is-light" id="lmHint">—</span>
     </div>
 
-    <div class="field">
-      <label class="label">BAGS</label>
-      <input class="input" id="LoadBAGS" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('arr')">
+    <div class="lm-seg">
+      <button type="button" class="button is-small is-light" id="lmTabArr" onclick="switchLoadPanel('arr')">ARR</button>
+      <button type="button" class="button is-small is-light" id="lmTabExp" onclick="switchLoadPanel('exp')">EXP</button>
+      <button type="button" class="button is-small is-light" id="lmTabFinal" onclick="switchLoadPanel('final')">FINAL</button>
     </div>
 
-    <div class="field">
-      <label class="label">POIDS</label>
-      <input class="input" id="LoadPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
-    </div>
+    <button class="button is-small is-light" type="button" onclick="closeLoadModal()">Fermer</button>
   </div>
 
-  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
-    <div class="field"><label class="label">H1</label><input class="input" id="LoadH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H2</label><input class="input" id="LoadH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H3</label><input class="input" id="LoadH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-    <div class="field"><label class="label">H4</label><input class="input" id="LoadH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-  </div>
+  <div class="lm-body">
 
-  <hr>
+    <!-- ===== ARR ===== -->
+    <section id="lmPanelArr" class="lm-panel">
+      <div class="lm-grid">
+        <div class="field">
+          <label class="label">PAX</label>
+          <input class="input" id="LoadPAX" inputmode="numeric" oninput="digitsOnly(this)">
+        </div>
 
-  <div class="field">
-    <label class="label">SI</label>
-    <textarea
-      class="textarea si-uppercase"
-      id="LoadSI"
-      autocorrect="off"
-      spellcheck="false"
-      autocapitalize="characters"
-      inputmode="text"></textarea>
-  </div>
-</div>
+        <div class="field">
+          <label class="label">BAGS</label>
+          <input class="input" id="LoadBAGS" inputmode="numeric"
+                 oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
 
-<!-- ===== LOAD EXP popover ===== -->
-<div id="loadExpPopover" role="dialog" aria-modal="true">
-  <div class="hdr">
-    <strong>LOAD EXP.</strong>
-    <button class="button is-small is-light" type="button" onclick="hideAllLoadPopovers()">Fermer</button>
-  </div>
+        <div class="field">
+          <label class="label">POIDS</label>
+          <input class="input" id="LoadPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
+        </div>
 
-  <div class="grid">
-    <div class="field">
-      <label class="label">PAX</label>
-      <input class="input" id="ExpPAX" inputmode="numeric" oninput="digitsOnly(this)">
-    </div>
+        <div class="field">
+          <label class="label">H1</label>
+          <input class="input" id="LoadH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
+        <div class="field">
+          <label class="label">H2</label>
+          <input class="input" id="LoadH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
+        <div class="field">
+          <label class="label">H3</label>
+          <input class="input" id="LoadH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
+        <div class="field">
+          <label class="label">H4</label>
+          <input class="input" id="LoadH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
 
-    <div class="field">
-      <label class="label">BAGS</label>
-      <input class="input" id="ExpBAGS" inputmode="numeric"
-             oninput="digitsOnly(this); updateHBagsValidity('exp')">
-    </div>
+        <div class="field lm-span-12">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase" id="LoadSI"
+            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+        </div>
+      </div>
+    </section>
 
-    <div class="field">
-      <label class="label">POIDS</label>
-      <input class="input" id="ExpPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
-    </div>
-  </div>
+    <!-- ===== EXP ===== -->
+    <section id="lmPanelExp" class="lm-panel" style="display:none;">
+      <div class="lm-grid">
+        <div class="field">
+          <label class="label">PAX</label>
+          <input class="input" id="ExpPAX" inputmode="numeric" oninput="digitsOnly(this)">
+        </div>
 
-  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:12px;">
-    <div class="field"><label class="label">H1</label><input class="input" id="ExpH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-    <div class="field"><label class="label">H2</label><input class="input" id="ExpH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-    <div class="field"><label class="label">H3</label><input class="input" id="ExpH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-    <div class="field"><label class="label">H4</label><input class="input" id="ExpH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-  </div>
+        <div class="field">
+          <label class="label">BAGS</label>
+          <input class="input" id="ExpBAGS" inputmode="numeric"
+                 oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        </div>
 
-  <hr>
+        <div class="field">
+          <label class="label">POIDS</label>
+          <input class="input" id="ExpPOIDS" inputmode="numeric" oninput="digitsOnly(this)">
+        </div>
 
-  <div class="field">
-    <label class="label">SI</label>
-    <textarea
-      class="textarea si-uppercase"
-      id="ExpSI"
-      autocorrect="off"
-      spellcheck="false"
-      autocapitalize="characters"
-      inputmode="text"></textarea>
+        <div class="field">
+          <label class="label">H1</label>
+          <input class="input" id="ExpH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        </div>
+        <div class="field">
+          <label class="label">H2</label>
+          <input class="input" id="ExpH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        </div>
+        <div class="field">
+          <label class="label">H3</label>
+          <input class="input" id="ExpH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        </div>
+        <div class="field">
+          <label class="label">H4</label>
+          <input class="input" id="ExpH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        </div>
+
+        <div class="field lm-span-12">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase" id="ExpSI"
+            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FINAL ===== -->
+    <section id="lmPanelFinal" class="lm-panel" style="display:none;">
+      <div class="lm-subtitle">PAX</div>
+      <div class="lm-grid lm-grid-compact">
+        <div class="field"><label class="label">MALE</label><input class="input" id="FinalMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">FEMALE</label><input class="input" id="FinalFEMALE" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">ADULT</label><input class="input" id="FinalADULT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">CHILD</label><input class="input" id="FinalCHILD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">INFANT</label><input class="input" id="FinalINFANT" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">TOB</label><input class="input has-text-weight-bold" id="FinalTOB" type="text" readonly></div>
+      </div>
+
+      <div class="lm-subtitle">ZONES</div>
+      <div class="lm-grid lm-grid-compact">
+        <div class="field"><label class="label">OA</label><input class="input" id="FinalOA" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">OB</label><input class="input" id="FinalOB" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">OC</label><input class="input" id="FinalOC" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field"><label class="label">OD</label><input class="input" id="FinalOD" inputmode="numeric" oninput="digitsOnly(this); updateFinalTOB()"></div>
+      </div>
+
+      <div class="lm-subtitle">BAGAGES</div>
+      <div class="lm-grid lm-grid-compact">
+        <div class="field"><label class="label">BAGS</label><input class="input" id="FinalBAGS" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
+        <div class="field"><label class="label">POIDS</label><input class="input" id="FinalPOIDS" inputmode="numeric" readonly></div>
+        <div class="field"><label class="label">GB</label><input class="input" id="FinalGB" inputmode="numeric" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
+
+        <div class="field"><label class="label">H1</label><input class="input" id="FinalH1" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+        <div class="field"><label class="label">H2</label><input class="input" id="FinalH2" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+        <div class="field"><label class="label">H3</label><input class="input" id="FinalH3" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+        <div class="field"><label class="label">H4</label><input class="input" id="FinalH4" inputmode="numeric" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+
+        <div class="field lm-span-12">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase" id="FinalSI"
+            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -1583,26 +1749,62 @@ function timelineSetZoom(z){
   scroller.scrollLeft = prevCenterRatio * scroller.scrollWidth - scroller.clientWidth/2;
 }
 
-/* ===== LOAD POPovers ===== */
-function showBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = ''; }
-function hideBackdrop(){ const b = document.getElementById('loadArrBackdrop'); if(b) b.style.display = 'none'; }
+/* ===== LOAD MODAL (single fullscreen) ===== */
+function openLoadModal(mode='arr'){
+  const b = document.getElementById('loadBackdrop');
+  const m = document.getElementById('loadModal');
+  if(b) b.style.display = '';
+  if(m) m.style.display = 'flex';
+  switchLoadPanel(mode);
+}
+
+function closeLoadModal(){
+  const b = document.getElementById('loadBackdrop');
+  const m = document.getElementById('loadModal');
+  if(m) m.style.display = 'none';
+  if(b) b.style.display = 'none';
+}
+
+function switchLoadPanel(mode){
+  const pArr   = document.getElementById('lmPanelArr');
+  const pExp   = document.getElementById('lmPanelExp');
+  const pFinal = document.getElementById('lmPanelFinal');
+
+  const tArr   = document.getElementById('lmTabArr');
+  const tExp   = document.getElementById('lmTabExp');
+  const tFinal = document.getElementById('lmTabFinal');
+
+  if(pArr)   pArr.style.display   = (mode==='arr')   ? '' : 'none';
+  if(pExp)   pExp.style.display   = (mode==='exp')   ? '' : 'none';
+  if(pFinal) pFinal.style.display = (mode==='final') ? '' : 'none';
+
+  if(tArr)   tArr.classList.toggle('is-active', mode==='arr');
+  if(tExp)   tExp.classList.toggle('is-active', mode==='exp');
+  if(tFinal) tFinal.classList.toggle('is-active', mode==='final');
+
+  const hint = document.getElementById('lmHint');
+  if(hint){
+    if(mode==='arr') hint.textContent = 'ARRIVÉE';
+    if(mode==='exp') hint.textContent = 'EXPLOITATION';
+    if(mode==='final') hint.textContent = 'FINAL';
+  }
+
+  if(mode === 'final') updateFinalTOB();
+  updateHeaderOffset();
+}
+
 function hideAllLoadPopovers(){
-  ['loadArrPopover','loadExpPopover','loadFinalPopover'].forEach(id=>{
-    const p = document.getElementById(id);
-    if(p) p.style.display = 'none';
-  });
-  hideBackdrop();
+  // compat : certains appels existent déjà
+  closeLoadModal();
 }
-function showPopover(id){
-  hideAllLoadPopovers();
-  showBackdrop();
-  const p = document.getElementById(id);
-  if(p) p.style.display = 'block';
-}
-function toggleLoadArr(){ showPopover('loadArrPopover'); }
-function toggleLoadExp(){ showPopover('loadExpPopover'); }
-function toggleLoadFinal(){ showPopover('loadFinalPopover'); updateFinalTOB(); }
-document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hideAllLoadPopovers(); });
+
+function toggleLoadArr(){ openLoadModal('arr'); }
+function toggleLoadExp(){ openLoadModal('exp'); }
+function toggleLoadFinal(){ openLoadModal('final'); }
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') closeLoadModal();
+});
 
 /* ===== FINAL : calcul ADULT + TOB + contrôle OA/OB/OC/OD ===== */
 function asInt(id){
