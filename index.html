@@ -30,7 +30,7 @@ body{ background: var(--bg); color: var(--text); margin: 0; }
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
-  --text: #e5e7eb;
+  --text: #e5e7eb;<style>
   --muted: #9ca3af;
   --shadow: 0 10px 28px rgba(0,0,0,.45);
   --shadow2: 0 6px 18px rgba(0,0,0,.50);
@@ -495,19 +495,6 @@ body.dark .timeline-scroll{
 .app-wrap{ display:none; }
 body.has-tab .app-wrap{ display:block; }
 
-/* Forcer 2 colonnes sur "petites tablettes" (600–768px) */
-@media (min-width: 600px) and (max-width: 768px){
-  .columns.is-multiline > .column.is-full-mobile.is-one-quarter-tablet,
-  .columns.is-multiline > .column.is-full-mobile.is-one-third-tablet,
-  .columns.is-multiline > .column.is-full-mobile.is-half-tablet,
-  .column.is-full-mobile.is-half-tablet,
-  .column.is-full-mobile.is-one-third-tablet,
-  .column.is-full-mobile.is-one-quarter-tablet{
-    flex: 0 0 50% !important;
-    width: 50% !important;
-  }
-}
-
 /* ===== NO TAB ===== */
 body.no-tab .timer-row{
   display: none !important;
@@ -543,6 +530,96 @@ html, body{
 .tab-refresh.is-loading{
   pointer-events:none;
   opacity:.7;
+}
+
+  /* ===== PRO RESPONSIVE LAYOUT (PHONE / TABLET) ===== */
+
+:root{
+  --gap: 10px;
+  --padCard: 12px;
+  --labelSize: .78rem;
+  --inputH: 42px;
+}
+
+@media (min-width: 769px){
+  :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
+}
+
+.card-content{ padding: var(--padCard) !important; }
+
+.field .label{
+  font-size: var(--labelSize) !important;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  opacity: .9;
+}
+
+/* Inputs un peu plus "app" */
+.input, .select select, .textarea{
+  height: var(--inputH);
+  font-weight: 800;
+}
+.textarea{ min-height: 110px; height: auto; }
+
+/* Grilles responsive simples */
+.grid-auto{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.span-12{ grid-column: span 12; }
+.span-6{  grid-column: span 12; }
+.span-4{  grid-column: span 6; }
+.span-3{  grid-column: span 6; }
+
+@media (min-width: 769px){
+  .span-6{ grid-column: span 6; }
+  .span-4{ grid-column: span 4; }
+  .span-3{ grid-column: span 3; }
+}
+
+/* "Rows" ultra compactes pour infos clés */
+.kv-strip{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+
+@media (min-width: 769px){
+  .kv-strip{ grid-template-columns: 1fr 1fr; }
+}
+
+.kv-card{
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body.dark .kv-card{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.kv-left{ display:flex; flex-direction:column; gap:2px; }
+.kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
+.kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
+
+/* Boutons -1 Now +1 mieux rangés */
+.btn-actions{
+  grid-template-columns: repeat(3, 1fr);
+}
+.btn-actions .button{
+  height: 40px;
+}
+
+/* Segments (Arr/Dep) plus compacts */
+.tabs.is-toggle.is-toggle-rounded ul li a{
+  font-weight: 900;
 }
 
 </style>
@@ -776,146 +853,150 @@ html, body{
   </header>
 
   <div class="card-content">
-    <div class="columns is-multiline">
 
-      <!-- DATE -->
-      <div class="column is-6">
-        <div class="field">
-          <label class="label">DATE</label>
-          <div class="control">
-            <input class="input" type="date" id="Date">
+    <!-- Bandeau "essentiel" -->
+    <div class="kv-strip mb-4">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvCie">--</span><span id="kvNVol">----</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div class="kv-left" style="text-align:right;">
+            <div class="kv-title">Route</div>
+            <div class="kv-value">
+              <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- RZA -->
-      <div class="column is-6">
-        <div class="field">
-          <label class="label">RZA</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="RZA" maxlength="3">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Parking</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · P<span id="kvPark">--</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Type / RZA</div>
+          <div class="kv-value">
+            <span id="kvType">----</span> · <span id="kvRza">--</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- AIRLINE -->
-      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-        <div class="field">
-          <label class="label">AIRLINE</label>
-          <div class="control select is-fullwidth">
-            <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
-              <option value="">--</option>
-              <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
-              <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
-              <option>V7</option><option>Autre</option>
-            </select>
-          </div>
+    <!-- Form compact -->
+    <div class="grid-auto">
+
+      <div class="field span-6">
+        <label class="label">Date</label>
+        <div class="control">
+          <input class="input" type="date" id="Date">
         </div>
       </div>
 
-      <!-- FLIGHT NUMBER -->
-      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-        <div class="field">
-          <label class="label">FLT. NUMBER</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
-          </div>
+      <div class="field span-6">
+        <label class="label">RZA</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="RZA" maxlength="3">
         </div>
       </div>
 
-      <!-- FROM -->
-      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-        <div class="field">
-          <label class="label">FROM</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="From" maxlength="3">
-          </div>
+      <div class="field span-3">
+        <label class="label">Cie</label>
+        <div class="control select is-fullwidth">
+          <select id="Cie" onchange="updateAllCalculations(); updateTabLabelInstant();">
+            <option value="">--</option>
+            <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+            <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+            <option>V7</option><option>Autre</option>
+          </select>
         </div>
       </div>
 
-      <!-- TO -->
-      <div class="column is-full-mobile is-one-quarter-tablet is-one-quarter-desktop">
-        <div class="field">
-          <label class="label">TO</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
-          </div>
+      <div class="field span-3">
+        <label class="label">N°</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant()">
         </div>
       </div>
 
-      <!-- REG / A/C / PARK / SALLE / ETAT -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">REGISTRATION</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="Immat" maxlength="6">
-          </div>
+      <div class="field span-3">
+        <label class="label">From</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="From" maxlength="3">
         </div>
       </div>
 
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">A/C TYPE</label>
-          <div class="control select is-fullwidth">
-            <select id="TypeAvion" onchange="updateAllCalculations()">
-              <option value="">--</option>
-              <option>A319</option><option>A320</option><option>A321</option>
-              <option>A20N</option><option>A21N</option><option>A21NY</option>
-              <option>B734</option><option>B737</option><option>B738</option>
-              <option>B38M</option><option>BCS3</option>
-              <option>Autre</option>
-            </select>
-          </div>
+      <div class="field span-3">
+        <label class="label">To</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant()">
         </div>
       </div>
 
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">PARKING</label>
-          <div class="control select is-fullwidth">
-            <select id="Parking">
-              <option value="">--</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option>
-              <option>5</option><option>6</option><option>7</option><option>8</option>
-              <option>9</option><option>10</option><option>11</option><option>12</option>
-            </select>
-          </div>
+      <div class="field span-6">
+        <label class="label">Immat</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="Immat" maxlength="6">
         </div>
       </div>
 
-      <!-- SALLE ARRIVÉE -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">SALLE ARRIVÉE</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="BorderControl">
-          </div>
+      <div class="field span-6">
+        <label class="label">Type avion</label>
+        <div class="control select is-fullwidth">
+          <select id="TypeAvion" onchange="updateAllCalculations()">
+            <option value="">--</option>
+            <option>A319</option><option>A320</option><option>A321</option>
+            <option>A20N</option><option>A21N</option><option>A21NY</option>
+            <option>B734</option><option>B737</option><option>B738</option>
+            <option>B38M</option><option>BCS3</option>
+            <option>Autre</option>
+          </select>
         </div>
       </div>
 
-      <!-- ETAT VOL -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">ETAT VOL</label>
-          <div class="control">
-            <input class="input uppercase" type="text" id="AKStatus">
-          </div>
+      <div class="field span-6">
+        <label class="label">Parking</label>
+        <div class="control select is-fullwidth">
+          <select id="Parking">
+            <option value="">--</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-6">
+        <label class="label">Salle arrivée</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="BorderControl">
+        </div>
+      </div>
+
+      <div class="field span-12">
+        <label class="label">État vol</label>
+        <div class="control">
+          <input class="input uppercase" type="text" id="AKStatus">
         </div>
       </div>
 
       <!-- LOAD buttons row -->
-      <div class="column is-12">
+      <div class="span-12">
         <div class="load-row-below">
           <button type="button" class="timer-chip chip-btn" onclick="toggleLoadArr()">
             <div class="k">LOAD</div>
             <div class="v" style="background:#2563eb;">ARR.</div>
           </button>
-
           <button type="button" class="timer-chip chip-btn" onclick="toggleLoadExp()">
             <div class="k">LOAD</div>
             <div class="v" style="background:#0ea5e9;">EXP.</div>
           </button>
-
           <button type="button" class="timer-chip chip-btn" onclick="toggleLoadFinal()">
             <div class="k">LOAD</div>
             <div class="v" style="background:#7c3aed;">FINAL</div>
@@ -927,52 +1008,76 @@ html, body{
   </div>
 </div>
 
-  <!-- HORAIRES -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">HORAIRES</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="columns is-multiline">
 
-        <script>
-          function timeField(id,label,onchange, colClass){
-            return `
-            <div class="column ${colClass}">
-              <div class="field">
-                <label class="label">${label}</label>
-                <div class="control">
-                  <input class="input" type="time" id="${id}" onchange="${onchange}">
-                </div>
-                <div class="btn-actions">
-                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',-1);updateAllCalculations()">-1</button>
-                  <button class="button is-link" type="button" onclick="setNow('${id}');updateAllCalculations()">Now</button>
-                  <button class="button is-dark is-light" type="button" onclick="adjustTime('${id}',1);updateAllCalculations()">+1</button>
-                </div>
+<!-- HORAIRES -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">HORAIRES</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
+
+  <div class="card-content">
+    <div class="grid-auto">
+
+      <!-- Arrivée -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SIBT</label>
+              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
               </div>
-            </div>`;
-          }
-        </script>
+            </div>
 
-        <div id="horairesMount" class="column is-12"></div>
-        <script>
-          document.addEventListener("DOMContentLoaded", ()=>{
-            const mount = document.getElementById('horairesMount');
-            if(!mount) return;
-            const half = "is-full-mobile is-half-tablet is-half-desktop";
-            mount.innerHTML = `<div class="columns is-multiline">
-              ${timeField('SIBT','SIBT',"updateAllCalculations()", half)}
-              ${timeField('AIBT','AIBT',"updateAllCalculations()", half)}
-              ${timeField('SOBT','SOBT',"manualSOBT=true;updateAllCalculations()", half)}
-              ${timeField('AOBT','AOBT',"updateAllCalculations()", half)}
-            </div>`;
-          });
-        </script>
-
+            <div style="min-width:160px;">
+              <label class="label">AIBT</label>
+              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Départ -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SOBT</label>
+              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+
+            <div style="min-width:160px;">
+              <label class="label">AOBT</label>
+              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- TIMING -->
   <div class="card mb-5">
@@ -1599,6 +1704,29 @@ function initForm(){
   updateFinalTOB();
 }
 
+function updateInfoStrip(){
+  const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
+  const t = (id)=> (document.getElementById(id)?.value || '').trim();
+
+  const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = txt || '--'; };
+
+  set('kvCie',  v('Cie') || '--');
+  set('kvNVol', v('NVol') || '----');
+  set('kvFrom', v('From') || '---');
+  set('kvTo',   v('To') || '---');
+  set('kvImmat',v('Immat') || '------');
+  set('kvPark', (v('Parking') || '--'));
+  set('kvType', v('TypeAvion') || '----');
+  set('kvRza',  v('RZA') || '--');
+}
+
+// branche sur ton updateAllCalculations existant
+const _oldUpdateAll = updateAllCalculations;
+updateAllCalculations = function(){
+  _oldUpdateAll();
+  updateInfoStrip();
+};
+
 /* date défaut */
 function setDefaultDateToTodayIfEmpty(){
   const d = document.getElementById('Date');
@@ -1886,13 +2014,14 @@ function loadTabData(id){
 
 function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
-/* TIMING FIELDS – ARR / DEP */
+/* TIMING FIELDS – ARR / DEP (responsive pro) */
 function generateTimingFields(){
   const container = document.getElementById('timing-grid');
   if(!container) return;
 
+  // Champ time + actions
   const fieldHTML = (id,label,full=false)=>`
-    <div class="column ${full ? 'is-12' : 'is-full-mobile is-one-third-tablet is-one-quarter-desktop'}">
+    <div class="${full ? 'span-12' : 'span-6'}">
       <div class="field">
         <label class="label">${label}</label>
         <div class="control">
@@ -1909,49 +2038,11 @@ function generateTimingFields(){
       </div>
     </div>`;
 
-  const arr = `
-    <div class="card mb-4">
-      <header class="card-header">
-        <p class="card-header-title">Arrivée</p>
-      </header>
-      <div class="card-content">
-        <div class="columns is-multiline">
-          ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
-          ${fieldHTML('PremierDebarque','Premier débarqué')}
-          ${fieldHTML('DernierDebarque','Dernier débarqué')}
-          ${fieldHTML('ArriveeLiftArr','Arrivée lift')}
-          ${fieldHTML('DepartLiftArr','Départ lift')}
-        </div>
-      </div>
-    </div>`;
-
-  const dep = `
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">Départ</p>
-      </header>
-      <div class="card-content">
-        <div class="columns is-multiline">
-          ${fieldHTML('ArrPNT','Arrivée PNT')}
-          ${fieldHTML('ArrPNC','Arrivée PNC')}
-          ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
-          ${fieldHTML('AvionDernierEmbarque','Dernier embarqué')}
-          ${fieldHTML('ArriveeLift','Arrivée lift')}
-          ${fieldHTML('DepartLift','Départ lift')}
-          ${fieldHTML('DepartFuel','Départ Avitair',true)}
-          ${fieldHTML('RemiseLID','Remise LID/LDS')}
-          ${fieldHTML('FermeturePorteAvion','Fermeture porte avion')}
-        </div>
-      </div>
-    </div>`;
-
-  // ✅ on garde le toggle switch Bulma
-  // ✅ et on supprime juste le "sous menu" interne (les headers Arrivée/Départ bleus)
-  // -> donc: plus de card-header "Arrivée" / "Départ", mais les champs restent
+  // Panels (sans sous-headers internes)
   const arrNoHeader = `
     <div class="card mb-4">
       <div class="card-content">
-        <div class="columns is-multiline">
+        <div class="grid-auto">
           ${fieldHTML('ArriveeFuel','Arrivée Avitair',true)}
           ${fieldHTML('PremierDebarque','Premier débarqué')}
           ${fieldHTML('DernierDebarque','Dernier débarqué')}
@@ -1964,7 +2055,7 @@ function generateTimingFields(){
   const depNoHeader = `
     <div class="card">
       <div class="card-content">
-        <div class="columns is-multiline">
+        <div class="grid-auto">
           ${fieldHTML('ArrPNT','Arrivée PNT')}
           ${fieldHTML('ArrPNC','Arrivée PNC')}
           ${fieldHTML('AvionPremierEmbarque','Premier embarqué')}
@@ -1978,6 +2069,7 @@ function generateTimingFields(){
       </div>
     </div>`;
 
+  // Toggle Bulma
   const toggle = `
     <div class="tabs is-toggle is-toggle-rounded is-centered mb-4">
       <ul>
