@@ -1044,13 +1044,6 @@ body.dark #settingsMenu{
         </div>
       </div>
 
-      <div class="field span-12">
-        <label class="label">État vol</label>
-        <div class="control">
-          <input class="input uppercase" type="text" id="AKStatus">
-        </div>
-      </div>
-
       <!-- LOAD buttons row -->
       <div class="span-12">
         <div class="load-row-below">
@@ -1314,22 +1307,6 @@ function setValAK(id, v){
   settingFromAK = false;
 }
 
-function setIfEmptyAK(id, v){
-  const el = document.getElementById(id);
-  if(!el) return;
-  if(!isEmptyVal(el)) return;
-  setValAK(id, v);
-}
-
-function setIfEmptyOrAK(id, v){
-  const el = document.getElementById(id);
-  if(!el) return;
-
-  // overwrite seulement si vide OU si le champ est encore "piloté AK"
-  if(isEmptyVal(el) || el.dataset.ak === '1'){
-    setValAK(id, v);
-  }
-}
 function setTimeFromISOAK(id, iso){
   if(!iso) return;
   const d = new Date(iso);
@@ -1728,7 +1705,7 @@ function initForm(){
   document.getElementById('NVol')?.addEventListener('input', updateTabLabelInstant);
   document.getElementById('To')?.addEventListener('input', updateTabLabelInstant);
 
-  setupUppercaseInputs(['NVol','From','To','Immat','RZA','BorderControl','AKStatus']);
+  setupUppercaseInputs(['NVol','From','To','Immat','RZA','BorderControl']);
 
   const storedDark = (localStorage.getItem('modeDark')||'0') === '1';
   const storedUTC  = (localStorage.getItem('modeUTC')||'0') === '1';
@@ -3372,12 +3349,6 @@ async function refreshAKTab(tabId){
 function applyAKFlight(f, flow, opts = {}){
   const isRefresh = !!opts.refresh;
 
-  const akStatusMap = {
-    IN_FLIGHT: 'EN VOL',
-    TERMINATED: 'ARRIVÉ',
-    SCHEDULED: 'PRÉVU'
-  };
-
   /* ===== champs communs ===== */
   setValAK('Immat', (f.reg || ''));
 
@@ -3428,12 +3399,6 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmptyOrAK('AIBT', prevArr.aibt);
 
-      // ETAT VOL = ARR
-      setIfEmptyOrAK(
-        'AKStatus',
-        akStatusMap[(prevArr.status || '').toUpperCase()] || (prevArr.status || '').toUpperCase()
-      );
-
       setIfEmptyOrAK('BorderControl', (prevArr.borderControl || '').toUpperCase());
 
       if(prevArr?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(prevArr.bags));
@@ -3442,13 +3407,8 @@ function applyAKFlight(f, flow, opts = {}){
       setIfEmptyOrAK('LoadSI', akBuildSI(prevArr, false));
 
     }else{
-      // FROM = BVA → pas d'arrivée → ETAT VOL = DEP
+      // FROM = BVA → pas d'arrivée
       setValAK('From', HOME_IATA);
-
-      setIfEmptyOrAK(
-        'AKStatus',
-        akStatusMap[(f.status || '').toUpperCase()] || (f.status || '').toUpperCase()
-      );
     }
 
   /* ===== ARR ===== */
@@ -3457,12 +3417,6 @@ function applyAKFlight(f, flow, opts = {}){
 
     setTimeFromISOAK('SIBT', f.sibt || f.eibt);
     setTimeFromISOAK('AIBT', f.aibt);
-
-    // ETAT VOL = ARR
-    setIfEmptyOrAK(
-      'AKStatus',
-      akStatusMap[(f.status || '').toUpperCase()] || (f.status || '').toUpperCase()
-    );
 
     setIfEmptyOrAK('BorderControl', (f.borderControl || '').toUpperCase());
 
