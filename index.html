@@ -935,6 +935,18 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   font-weight: 800;
 }
 
+/* lignes spéciales en 4 colonnes */
+.ldm-row-4{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+}
+
+/* pour que ça prenne toute la largeur des 2 colonnes */
+.ldm-grid .ldm-row-4{
+  grid-column: span 2;
+}
+
 @media (max-width: 520px){
   #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
   .ldm-grid{ gap: 7px 8px; }
@@ -954,7 +966,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   <div class="ldm-header">
     <div class="ldm-title">
       <strong>LDM</strong>
-      <span class="tag is-light" id="ldmHint">LOAD DATA MANIFEST</span>
+      <span class="tag is-light">LOAD DATA MANIFEST</span>
     </div>
     <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
   </div>
@@ -970,41 +982,21 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
       </div>
 
       <div class="ldm-grid">
-        <div class="field ldm-f">
-          <label class="label">PAX</label>
-          <input class="input ldm-in" id="LoadPAX" inputmode="numeric" maxlength="4" oninput="digitsOnly(this)">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">BAGS</label>
-          <input class="input ldm-in" id="LoadBAGS" inputmode="numeric" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('arr')">
-        </div>
+        <div class="field ldm-f"><label class="label">PAX</label><input class="input ldm-in" id="LoadPAX" maxlength="4" oninput="digitsOnly(this)"></div>
+        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="LoadBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
 
-        <div class="field ldm-f">
-          <label class="label">POIDS</label>
-          <input class="input ldm-in" id="LoadPOIDS" inputmode="numeric" maxlength="4" oninput="digitsOnly(this)">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H1</label>
-          <input class="input ldm-in" id="LoadH1" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H2</label>
-          <input class="input ldm-in" id="LoadH2" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H3</label>
-          <input class="input ldm-in" id="LoadH3" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H4</label>
-          <input class="input ldm-in" id="LoadH4" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="LoadPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
+
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="LoadH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="LoadH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="LoadH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="LoadH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
         </div>
 
         <div class="field ldm-span-2">
           <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="LoadSI"
-            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+          <textarea class="textarea si-uppercase ldm-ta" id="LoadSI"></textarea>
         </div>
       </div>
     </section>
@@ -1018,41 +1010,21 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
       </div>
 
       <div class="ldm-grid">
-        <div class="field ldm-f">
-          <label class="label">PAX</label>
-          <input class="input ldm-in" id="ExpPAX" inputmode="numeric" maxlength="4" oninput="digitsOnly(this)">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">BAGS</label>
-          <input class="input ldm-in" id="ExpBAGS" inputmode="numeric" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('exp')">
-        </div>
+        <div class="field ldm-f"><label class="label">PAX</label><input class="input ldm-in" id="ExpPAX" maxlength="4" oninput="digitsOnly(this)"></div>
+        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="ExpBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
 
-        <div class="field ldm-f">
-          <label class="label">POIDS</label>
-          <input class="input ldm-in" id="ExpPOIDS" inputmode="numeric" maxlength="4" oninput="digitsOnly(this)">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H1</label>
-          <input class="input ldm-in" id="ExpH1" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H2</label>
-          <input class="input ldm-in" id="ExpH2" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H3</label>
-          <input class="input ldm-in" id="ExpH3" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')">
-        </div>
-        <div class="field ldm-f">
-          <label class="label">H4</label>
-          <input class="input ldm-in" id="ExpH4" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')">
+        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="ExpPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
+
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="ExpH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="ExpH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="ExpH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
+          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="ExpH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
         </div>
 
         <div class="field ldm-span-2">
           <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="ExpSI"
-            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+          <textarea class="textarea si-uppercase ldm-ta" id="ExpSI"></textarea>
         </div>
       </div>
     </section>
@@ -1062,41 +1034,41 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
       <div class="ldm-card-hdr">
         <div class="ldm-dot"></div>
         <div class="ldm-card-title">FINAL</div>
-        <div class="ldm-card-sub">Manif + zones + bags</div>
+        <div class="ldm-card-sub">Manifest</div>
       </div>
 
       <div class="ldm-grid">
-        <div class="field ldm-f"><label class="label">MALE</label><input class="input ldm-in" id="FinalMALE" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
-        <div class="field ldm-f"><label class="label">FEMALE</label><input class="input ldm-in" id="FinalFEMALE" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">MALE</label><input class="input ldm-in" id="FinalMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">FEMALE</label><input class="input ldm-in" id="FinalFEMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
 
-        <div class="field ldm-f"><label class="label">ADULT</label><input class="input ldm-in" id="FinalADULT" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
-        <div class="field ldm-f"><label class="label">CHILD</label><input class="input ldm-in" id="FinalCHILD" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">ADULT</label><input class="input ldm-in" id="FinalADULT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">CHILD</label><input class="input ldm-in" id="FinalCHILD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
 
-        <div class="field ldm-f"><label class="label">INFANT</label><input class="input ldm-in" id="FinalINFANT" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
-        <div class="field ldm-f"><label class="label">TOB</label><input class="input ldm-in has-text-weight-bold" id="FinalTOB" type="text" readonly></div>
+        <div class="field ldm-f"><label class="label">INFANT</label><input class="input ldm-in" id="FinalINFANT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">TOB</label><input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly></div>
 
-        <div class="field ldm-f"><label class="label">OA</label><input class="input ldm-in" id="FinalOA" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
-        <div class="field ldm-f"><label class="label">OB</label><input class="input ldm-in" id="FinalOB" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">OA</label><input class="input ldm-in" id="FinalOA" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OB</label><input class="input ldm-in" id="FinalOB" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OC</label><input class="input ldm-in" id="FinalOC" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OD</label><input class="input ldm-in" id="FinalOD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        </div>
 
-        <div class="field ldm-f"><label class="label">OC</label><input class="input ldm-in" id="FinalOC" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
-        <div class="field ldm-f"><label class="label">OD</label><input class="input ldm-in" id="FinalOD" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="FinalBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
+        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="FinalPOIDS" readonly></div>
 
-        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="FinalBAGS" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
-        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="FinalPOIDS" inputmode="numeric" readonly></div>
+        <div class="field ldm-f"><label class="label">GB</label><input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
 
-        <div class="field ldm-f"><label class="label">GB</label><input class="input ldm-in" id="FinalGB" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
-        <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="FinalH1" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
-
-        <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="FinalH2" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
-        <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="FinalH3" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
-
-        <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="FinalH4" inputmode="numeric" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
-        <div class="field ldm-f"></div>
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="FinalH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="FinalH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="FinalH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="FinalH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+        </div>
 
         <div class="field ldm-span-2">
           <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"
-            autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text"></textarea>
+          <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
         </div>
       </div>
     </section>
