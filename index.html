@@ -2304,72 +2304,118 @@ function updateSOBTDefault() {
 }
 
 /* TOBT + règle CTOT */
+/* TOBT + règle CTOT (NOUVELLE LOGIQUE) */
 function updateTOBT() {
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
   const sobttxt = document.getElementById('SOBT')?.value || '';
   const ctottxt = document.getElementById('CTOT')?.value || '';
 
-  if (!cie || !sibttxt || !sobttxt) {
-    document.getElementById('timer-tobt').textContent = '--:--';
+  const outEl = document.getElementById('timer-tobt');
+
+  // besoin mini : cie + SIBT + SOBT (AIBT facultatif, fallback = SIBT)
+  if (!cie || !sibttxt || !sobttxt || !outEl) {
+    if(outEl) outEl.textContent = '--:--';
     window._tobtRawMins = null;
     window._tobtAdjMins = null;
     return;
   }
 
-  const [sH, sM] = sibttxt.split(':').map(Number);
-  const [aH, aM] = aibttxt ? aibttxt.split(':').map(Number) : [sH, sM];
-  const [soH, soM] = sobttxt.split(':').map(Number);
+  const SIBT = parseHHMM(sibttxt);
+  const SOBT = parseHHMM(sobttxt);
+  if (SIBT == null || SOBT == null) {
+    outEl.textContent = '--:--';
+    window._tobtRawMins = null;
+    window._tobtAdjMins = null;
+    return;
+  }
 
-  const SIBT = new Date(); SIBT.setHours(sH, sM, 0, 0);
-  const AIBT = new Date(); AIBT.setHours(aH, aM, 0, 0);
-  const SOBT = new Date(); SOBT.setHours(soH, soM, 0, 0);
+  const AIBT = aibttxt ? parseHHMM(aibttxt) : SIBT;
+  if (AIBT == null) {
+    outEl.textContent = '--:--';
+    window._tobtRawMins = null;
+    window._tobtAdjMins = null;
+    return;
+  }
 
-  const isDelayed = (aibttxt && (AIBT > SIBT));
-  const crewChange = !!(document.getElementById('ArrPNT')?.value || document.getElementById('ArrPNC')?.value);
-  const addMin = (d, m)=> new Date(d.getTime() + m*60000);
+  // diff SOBT-SIBT en minutes, signé, gère minuit (plage -720..+720)
+  let diffRot = SOBT - SIBT;
+  if (diffRot > 720) diffRot -= 1440;
+  if (diffRot < -720) diffRot += 1440;
 
-  let TOBT_raw;
+  const crewChange = !!(
+    (document.getElementById('ArrPNT')?.value || '').trim() ||
+    (document.getElementById('ArrPNC')?.value || '').trim()
+  );
 
-  if (cie === 'FR' || cie === 'RK') {
-    if (!isDelayed) TOBT_raw = new Date(SOBT);
-    else {
-      const turn = crewChange ? 35 : 25;
-      const candidate = addMin(AIBT, turn);
-      TOBT_raw = (candidate <= SOBT) ? new Date(SOBT) : candidate;
-    }
-  } else if (cie === 'W4' || cie === 'W6') {
-    if (!isDelayed) TOBT_raw = new Date(SOBT);
-    else {
-      const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
-      const turn = (type === 'A321') ? 35 : 30;
-      const candidate = addMin(AIBT, turn);
-      TOBT_raw = (candidate <= SOBT) ? new Date(SOBT) : candidate;
-    }
+  const isDelayed = (AIBT > SIBT);
+
+  let TOBT_raw_mins = null;
+
+  // ===== REGLE COMMUNE : si AIBT <= SIBT -> TOBT = SOBT
+  if (!isDelayed) {
+    TOBT_raw_mins = SOBT;
   } else {
-    if (aibttxt && AIBT > SIBT) {
-      const diff = (SOBT - SIBT) / 60000;
-      TOBT_raw = new Date(AIBT.getTime() + diff * 60000);
-    } else TOBT_raw = new Date(SOBT);
+    // ===== CAS FR / RK
+    if (cie === 'FR' || cie === 'RK') {
+      const turn = crewChange ? 35 : 25;
+
+      // seuil: si (SOBT - SIBT) > turn -> TOBT = SOBT, sinon TOBT = AIBT + turn
+      // MAIS si rotation inversée (diffRot < 0) -> TOBT = AIBT + turn
+      if (diffRot < 0) {
+        TOBT_raw_mins = AIBT + turn;
+      } else if (diffRot > turn) {
+        TOBT_raw_mins = SOBT;
+      } else {
+        TOBT_raw_mins = AIBT + turn;
+      }
+    }
+
+    // ===== CAS W4 / W6
+    else if (cie === 'W4' || cie === 'W6') {
+      const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
+      const turn = (type === 'A321' || type === 'A21N' || type === 'A21NY') ? 35 : 30; // A320/A20N => 30, défaut => 30
+      TOBT_raw_mins = AIBT + turn;
+    }
+
+    // ===== CAS H4 / U5 / H6 / AUTRE
+    else {
+      // TOBT = AIBT + (SOBT - SIBT) (diff signé, gère minuit / rotation inversée)
+      TOBT_raw_mins = AIBT + diffRot;
+    }
   }
 
-  if (TOBT_raw < SOBT) TOBT_raw = new Date(SOBT);
-  window._tobtRawMins = TOBT_raw.getHours() * 60 + TOBT_raw.getMinutes();
+  // normalise 0..1439
+  TOBT_raw_mins = ((TOBT_raw_mins % 1440) + 1440) % 1440;
+  window._tobtRawMins = TOBT_raw_mins;
 
-  let TOBT_adj = new Date(TOBT_raw);
+  // ===== Règle CTOT (toutes compagnies)
+  // si CTOT <= TOBT + 15 => inchangé
+  // si CTOT > TOBT + 15 => TOBT = CTOT - 15
+  let TOBT_adj_mins = TOBT_raw_mins;
+
   if (ctottxt) {
-    const [cH, cM] = ctottxt.split(':').map(Number);
-    const CTOT = new Date(); CTOT.setHours(cH, cM, 0, 0);
-    const tobtPlus15 = new Date(TOBT_adj.getTime() + 15*60000);
-    if (CTOT > tobtPlus15) TOBT_adj = new Date(CTOT.getTime() - 15*60000);
-    if (TOBT_adj < SOBT) TOBT_adj = new Date(SOBT);
+    const CTOT = parseHHMM(ctottxt);
+    if (CTOT != null) {
+      // compare en "extended" autour de TOBT pour gérer minuit proprement
+      const base = TOBT_raw_mins;
+      let c = CTOT;
+      // si CTOT trop "avant" base, on le met potentiellement au lendemain
+      if (c < base - 720) c += 1440;
+      if (c > base + 720) c -= 1440;
+
+      const tobtPlus15 = base + 15;
+      if (c > tobtPlus15) {
+        TOBT_adj_mins = c - 15;
+      }
+    }
   }
 
-  window._tobtAdjMins = TOBT_adj.getHours() * 60 + TOBT_adj.getMinutes();
+  TOBT_adj_mins = ((TOBT_adj_mins % 1440) + 1440) % 1440;
+  window._tobtAdjMins = TOBT_adj_mins;
 
-  document.getElementById('timer-tobt').textContent =
-    `${String(TOBT_adj.getHours()).padStart(2, '0')}:${String(TOBT_adj.getMinutes()).padStart(2, '0')}`;
+  outEl.textContent = fmtHHMM(TOBT_adj_mins);
 }
 
 /* DL CODES */
