@@ -2305,6 +2305,7 @@ function updateSOBTDefault() {
 
 /* TOBT + règle CTOT */
 /* TOBT + règle CTOT (NOUVELLE LOGIQUE) */
+/* TOBT + règle CTOT (LOGIQUE FINALE) */
 function updateTOBT() {
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
@@ -2314,7 +2315,6 @@ function updateTOBT() {
 
   const outEl = document.getElementById('timer-tobt');
 
-  // besoin mini : cie + SIBT + SOBT (AIBT facultatif, fallback = SIBT)
   if (!cie || !sibttxt || !sobttxt || !outEl) {
     if(outEl) outEl.textContent = '--:--';
     window._tobtRawMins = null;
@@ -2339,83 +2339,77 @@ function updateTOBT() {
     return;
   }
 
-  // diff SOBT-SIBT en minutes, signé, gère minuit (plage -720..+720)
-  let diffRot = SOBT - SIBT;
-  if (diffRot > 720) diffRot -= 1440;
-  if (diffRot < -720) diffRot += 1440;
+  // diff signé (minutes), robuste minuit : résultat dans [-720..+720]
+  const diffSigned = (t, ref) => {
+    let d = t - ref;
+    if (d > 720) d -= 1440;
+    if (d < -720) d += 1440;
+    return d;
+  };
+
+  // Temps "étendus" ancrés sur SIBT (comparaisons correctes même au passage minuit)
+  const SIBT_ext = SIBT;
+  const AIBT_ext = SIBT_ext + diffSigned(AIBT, SIBT);
+  const SOBT_ext = SIBT_ext + diffSigned(SOBT, SIBT);
 
   const crewChange = !!(
     (document.getElementById('ArrPNT')?.value || '').trim() ||
     (document.getElementById('ArrPNC')?.value || '').trim()
   );
 
-  const isDelayed = (AIBT > SIBT);
+  const isDelayed = (AIBT_ext > SIBT_ext);
 
-  let TOBT_raw_mins = null;
+  let TOBT_raw_ext = null;
 
-  // ===== REGLE COMMUNE : si AIBT <= SIBT -> TOBT = SOBT
+  // ===== RÈGLE COMMUNE : si AIBT <= SIBT => TOBT = SOBT
   if (!isDelayed) {
-    TOBT_raw_mins = SOBT;
+    TOBT_raw_ext = SOBT_ext;
   } else {
-    // ===== CAS FR / RK
+    // ===== FR / RK : TOBT = max(SOBT, AIBT + turn)
     if (cie === 'FR' || cie === 'RK') {
       const turn = crewChange ? 35 : 25;
-
-      // seuil: si (SOBT - SIBT) > turn -> TOBT = SOBT, sinon TOBT = AIBT + turn
-      // MAIS si rotation inversée (diffRot < 0) -> TOBT = AIBT + turn
-      if (diffRot < 0) {
-        TOBT_raw_mins = AIBT + turn;
-      } else if (diffRot > turn) {
-        TOBT_raw_mins = SOBT;
-      } else {
-        TOBT_raw_mins = AIBT + turn;
-      }
+      const candidate = AIBT_ext + turn;
+      TOBT_raw_ext = (candidate <= SOBT_ext) ? SOBT_ext : candidate;
     }
 
-    // ===== CAS W4 / W6
+    // ===== W4 / W6 : TOBT = AIBT + 30/35 selon type
     else if (cie === 'W4' || cie === 'W6') {
       const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
       const turn = (type === 'A321' || type === 'A21N' || type === 'A21NY') ? 35 : 30; // A320/A20N => 30, défaut => 30
-      TOBT_raw_mins = AIBT + turn;
+      TOBT_raw_ext = AIBT_ext + turn;
     }
 
-    // ===== CAS H4 / U5 / H6 / AUTRE
+    // ===== H4 / U5 / H6 / AUTRE : TOBT = AIBT + (SOBT - SIBT)
     else {
-      // TOBT = AIBT + (SOBT - SIBT) (diff signé, gère minuit / rotation inversée)
-      TOBT_raw_mins = AIBT + diffRot;
+      const rot = SOBT_ext - SIBT_ext; // signé (gère minuit / rotation inversée)
+      TOBT_raw_ext = AIBT_ext + rot;
     }
   }
 
-  // normalise 0..1439
-  TOBT_raw_mins = ((TOBT_raw_mins % 1440) + 1440) % 1440;
-  window._tobtRawMins = TOBT_raw_mins;
+  // Raw minutes 0..1439
+  let TOBT_raw = ((TOBT_raw_ext % 1440) + 1440) % 1440;
+  window._tobtRawMins = TOBT_raw;
 
-  // ===== Règle CTOT (toutes compagnies)
-  // si CTOT <= TOBT + 15 => inchangé
-  // si CTOT > TOBT + 15 => TOBT = CTOT - 15
-  let TOBT_adj_mins = TOBT_raw_mins;
+  // ===== RÈGLE CTOT : si CTOT > TOBT + 15 => TOBT = CTOT - 15
+  let TOBT_adj_ext = TOBT_raw_ext;
 
   if (ctottxt) {
     const CTOT = parseHHMM(ctottxt);
     if (CTOT != null) {
-      // compare en "extended" autour de TOBT pour gérer minuit proprement
-      const base = TOBT_raw_mins;
-      let c = CTOT;
-      // si CTOT trop "avant" base, on le met potentiellement au lendemain
-      if (c < base - 720) c += 1440;
-      if (c > base + 720) c -= 1440;
+      // CTOT étendu autour de TOBT (pour gérer minuit)
+      const TOBT_ref = ((TOBT_raw_ext % 1440) + 1440) % 1440;
+      const CTOT_ext = TOBT_raw_ext + diffSigned(CTOT, TOBT_ref);
 
-      const tobtPlus15 = base + 15;
-      if (c > tobtPlus15) {
-        TOBT_adj_mins = c - 15;
+      if (CTOT_ext > (TOBT_raw_ext + 15)) {
+        TOBT_adj_ext = CTOT_ext - 15;
       }
     }
   }
 
-  TOBT_adj_mins = ((TOBT_adj_mins % 1440) + 1440) % 1440;
-  window._tobtAdjMins = TOBT_adj_mins;
+  let TOBT_adj = ((TOBT_adj_ext % 1440) + 1440) % 1440;
+  window._tobtAdjMins = TOBT_adj;
 
-  outEl.textContent = fmtHHMM(TOBT_adj_mins);
+  outEl.textContent = fmtHHMM(TOBT_adj);
 }
 
 /* DL CODES */
