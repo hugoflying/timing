@@ -930,15 +930,10 @@ body.modal-open{
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
 
-      <!-- Date + Salle arrivée + Parking + Immat + Type avion (même ligne dès >=600px via span-2/span-3) -->
-      <div class="field span-2">
+      <!-- Date + Parking + Immat + Type avion -->
+      <div class="field span-3">
         <label class="label">Date</label>
         <input class="input" type="date" id="Date">
-      </div>
-
-      <div class="field span-2">
-        <label class="label">Salle arrivée</label>
-        <input class="input uppercase" type="text" id="BorderControl">
       </div>
 
       <div class="field span-2">
@@ -953,12 +948,12 @@ body.modal-open{
         </div>
       </div>
 
-      <div class="field span-2">
+      <div class="field span-3">
         <label class="label">Immat</label>
         <input class="input uppercase" type="text" id="Immat" maxlength="6">
       </div>
 
-      <div class="field span-2">
+      <div class="field span-4">
         <label class="label">Type avion</label>
         <div class="select is-fullwidth">
           <select id="TypeAvion">
@@ -1851,15 +1846,17 @@ function updateInfoStrip(){
     el.textContent = (txt && String(txt).trim()) ? String(txt).trim() : def;
   };
 
-  // ----- vols ARR/DEP depuis AK (prioritaire) -----
+  // ----- vols ARR/DEP + BC depuis akMeta (prioritaire) -----
   let arrFF = '';
   let depFF = '';
+  let bcMeta = '';
 
   try{
-    if(currentTabId){ // ✅ PAS window.currentTabId
+    if(currentTabId){
       const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-      arrFF = (data?.akMeta?.arrFF || '').toUpperCase().trim();
-      depFF = (data?.akMeta?.depFF || '').toUpperCase().trim();
+      arrFF  = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+      depFF  = (data?.akMeta?.depFF || '').toUpperCase().trim();
+      bcMeta = (data?.akMeta?.bc    || '').toUpperCase().trim();
     }
   }catch(e){}
 
@@ -1867,7 +1864,7 @@ function updateInfoStrip(){
   if(!depFF){
     const cie  = v('Cie');
     const nvol = v('NVol');
-    if(cie || nvol) depFF = `${cie}${nvol}`;
+    if(cie || nvol) depFF = `${cie}${nvol}`.trim();
   }
 
   set('kvArrVol', arrFF || '—', '—');
@@ -1878,8 +1875,11 @@ function updateInfoStrip(){
 
   set('kvImmat', v('Immat') || '------', '------');
   set('kvType',  v('TypeAvion') || '----', '----');
-  set('kvBC',    v('BorderControl') || '--', '--');
-  set('kvPark',  v('Parking') || '--', '--');
+
+  // Salle arrivée : plus de champ BorderControl -> on prend akMeta.bc
+  set('kvBC', bcMeta || '--', '--');
+
+  set('kvPark', v('Parking') || '--', '--');
 }
 
 /* date défaut */
@@ -3338,6 +3338,7 @@ function storeAKMetaForTab(meta){
     arrFF:(meta.arrFF|| '').toUpperCase().trim(),
     depFF:(meta.depFF|| '').toUpperCase().trim(),
     pkg:  (meta.pkg  || '') + '',
+    bc:   (meta.bc   || '').toUpperCase().trim(),   // ✅ AJOUT
     ts: Date.now()
   };
 
@@ -3487,7 +3488,7 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmptyOrAK('AIBT', prevArr.aibt);
 
-      setIfEmptyOrAK('BorderControl', (prevArr.borderControl || '').toUpperCase());
+      // ⚠️ plus de champ BorderControl dans INFO VOL -> on ne set rien ici
 
       if(prevArr?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(prevArr.bags));
       if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(prevArr.paxNb));
@@ -3504,7 +3505,7 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOAK('SIBT', f.sibt || f.eibt);
     setTimeFromISOAK('AIBT', f.aibt);
 
-    setIfEmptyOrAK('BorderControl', (f.borderControl || '').toUpperCase());
+    // ⚠️ plus de champ BorderControl dans INFO VOL -> on ne set rien ici
 
     if(f?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(f.bags));
     if(f?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(f.paxNb));
@@ -3527,21 +3528,26 @@ function applyAKFlight(f, flow, opts = {}){
     }
   }
 
-  /* ===== mémorise ARR + DEP fullFlightNumber pour le bandeau ===== */
+  /* ===== mémorise ARR + DEP fullFlightNumber + BC pour le bandeau ===== */
   let arrFF = '';
   let depFF = '';
+  let bcForStrip = '';
 
   if(flow === 'ARR'){
     arrFF = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
+    bcForStrip = (f.borderControl || '').toUpperCase().trim();
+
     const nextDep = findLinkedDepForArr(f);
     if(nextDep){
       depFF = (nextDep.fullFlightNumber || nextDep.callsign || '').toUpperCase().trim();
     }
   }else{
     depFF = (f.fullFlightNumber || f.callsign || '').toUpperCase().trim();
+
     const prevArr = findLinkedArrForDep(f);
     if(prevArr){
       arrFF = (prevArr.fullFlightNumber || prevArr.callsign || '').toUpperCase().trim();
+      bcForStrip = (prevArr.borderControl || '').toUpperCase().trim();
     }
   }
 
@@ -3550,17 +3556,18 @@ function applyAKFlight(f, flow, opts = {}){
     reg: f.reg || '',
     pkg: f.pkg || '',
     arrFF,
-    depFF
+    depFF,
+    bc: bcForStrip
   });
 
   updateAllCalculations();
   updateTabLabelInstant();
 
-  /* ✅ CORRECTION : fermeture auto quand sélection utilisateur */
+  /* ✅ fermeture auto quand sélection utilisateur */
   if(!isRefresh){
     closeAKPicker();
 
-    // ✅ et on remet DEP par défaut pour la prochaine ouverture
+    // ✅ reset DEP par défaut pour la prochaine ouverture
     const flowSel = document.getElementById('akFlow');
     if(flowSel) flowSel.value = 'DEP';
 
