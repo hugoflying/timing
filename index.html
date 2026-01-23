@@ -300,6 +300,17 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
 }
 
+/* Aligner visuellement select comme input */
+.select.is-fullwidth select{
+  height: var(--inputH);
+  line-height: calc(var(--inputH) - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 800; /* <-- celle dont tu parles */
+}
+
 /* "Rows" ultra compactes pour infos clés */
 .kv-strip{
   display:grid;
