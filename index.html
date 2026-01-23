@@ -265,33 +265,39 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-4{ grid-column: span 4; }
   .span-3{ grid-column: span 3; }
 }
-  /* ===== TABLET PORTRAIT (ex: 600px) ===== */
-@media (min-width: 600px){
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+
+  /* grid spans tablette */
   .span-2{ grid-column: span 2; }
   .span-3{ grid-column: span 3; }
   .span-4{ grid-column: span 4; }
   .span-6{ grid-column: span 6; }
-}
 
-@media (min-width: 600px) and (max-width: 900px){
-  :root{
-    --gap: 10px;
-    --padCard: 10px;
-    --labelSize: .72rem;
-    --inputH: 38px;
-  }
-
-  .timer-chip{ padding: 8px 12px; }
-  .timer-chip .v{ padding: 5px 8px; }
-}
-
-/* ===== BANDEAU ESSENTIEL : 2 cartes sur une ligne tablette+ ===== */
-@media (min-width: 600px){
+  /* Bandeau essentiel : 2 cartes sur 1 ligne (tablette) */
   .kv-strip{
-    display: grid;
+    display:grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
   }
+
+  /* Réduction globale (c’est ça qui manque chez toi) */
+  .card-content{ padding: var(--padCard) !important; }
+
+  .kv-card{ padding: 8px 10px; }
+  .kv-title{ font-size: .70rem; }
+  .kv-value{ font-size: 1rem; }
+
+  .timer-chip{ min-width: 124px; padding: 8px 12px; }
+  .timer-chip .k{ font-size: .75rem; }
+  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
 }
 
 /* "Rows" ultra compactes pour infos clés */
@@ -1206,6 +1212,7 @@ body.modal-open{
 </div>
 
 <script>
+  
 /* Collapse */
 function toggleCardBody(headerEl){
   const card = headerEl.closest('.card');
@@ -3081,34 +3088,6 @@ function findLinkedArrForDep(dep){
     if(t > depT) continue;
 
     if(t > bestT){ best = a; bestT = t; }
-  }
-  return best;
-}
-
-// dernière ARR avant DEP (la plus proche)
-function findLinkedArrForDep(dep){
-  const reg = (dep?.reg || '').toUpperCase().trim();
-  if(!reg) return null;
-
-  const depT = depTimeMs(dep);
-  if(depT == null) return null;
-
-  const arrs = window._akCache?.arr || [];
-  let best = null;
-  let bestT = -Infinity;
-
-  for(const a of arrs){
-    const r = (a?.reg || '').toUpperCase().trim();
-    if(r !== reg) continue;
-
-    const t = arrTimeMs(a);
-    if(t == null) continue;
-    if(t > depT) continue;
-
-    if(t > bestT){
-      best = a;
-      bestT = t;
-    }
   }
   return best;
 }
