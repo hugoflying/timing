@@ -13,7 +13,7 @@
   --bg: #f6f7fb;
   --card: #ffffff;
   --text: #111827;
-  --muted: #6b7280; /* FIX: viré le "Su" */
+  --muted: #6b7280;Su
   --shadow: 0 10px 28px rgba(0,0,0,.08);
   --shadow2: 0 6px 18px rgba(0,0,0,.10);
   --radius: 14px;
@@ -265,8 +265,60 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-4{ grid-column: span 4; }
   .span-3{ grid-column: span 3; }
 }
+/* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE (base) ===== */
+.kv-strip{
+  display: grid;
+  grid-template-columns: 1fr; /* mobile */
+  gap: var(--gap);
+}
+@media (min-width: 600px){
+  .kv-strip{
+    grid-template-columns: 1fr 1fr; /* tablette + */
+  }
+}
 
-/* ===== BANDEAUX ESSENTIELS ===== */
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+
+  /* grid spans tablette */
+  .span-2{ grid-column: span 2; }
+  .span-3{ grid-column: span 3; }
+  .span-4{ grid-column: span 4; }
+  .span-6{ grid-column: span 6; }
+
+  /* Réduction globale */
+  .card-content{ padding: var(--padCard) !important; }
+
+  /* Bandeaux essentiels */
+  .kv-card{ padding: 8px 10px; }
+  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
+  .kv-value{ font-size: 1rem; font-weight: 800; }
+
+  /* Timers chips */
+  .timer-chip{ min-width: 124px; padding: 8px 12px; }
+  .timer-chip .k{ font-size: .75rem; }
+  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
+}
+
+/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
+.select.is-fullwidth select{
+  height: var(--inputH);
+  line-height: calc(var(--inputH) - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+}
+
+/* "Rows" ultra compactes pour infos clés */
 .kv-strip{
   display:grid;
   grid-template-columns: 1fr;
@@ -351,6 +403,7 @@ body.dark .kv-card{
   border: 1px solid rgba(0,0,0,.08);
   display: none;
   overflow: auto;
+
   flex-direction: column;
 }
 body.dark #akPopover{ border-color: rgba(255,255,255,.10); }
@@ -641,7 +694,9 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 }
 
 /* champ compact sans "badge" */
-.ldm-row-4 .field{ margin: 0 !important; }
+.ldm-row-4 .field{
+  margin: 0 !important;
+}
 .ldm-row-4 .field .label{
   margin: 0 0 6px !important;
   padding: 0 !important;
@@ -674,156 +729,7 @@ body.modal-open{
   overscroll-behavior: none;
   touch-action: none;
 }
-
-/* =========================================================
-   ===== DASHBOARD (remplace INFO VOL + HORAIRES) =====
-   ========================================================= */
-.dash{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap: var(--gap);
-  margin-bottom: 14px;
-}
-
-.dash-card{
-  grid-column: span 12;
-  border-radius: 16px;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  padding: 12px 12px;
-  border: 1px solid rgba(0,0,0,.06);
-}
-body.dark .dash-card{ border-color: rgba(255,255,255,.08); }
-
-.dash-card-title{
-  font-weight: 900;
-  letter-spacing: .08em;
-  color: var(--muted);
-  font-size: .75rem;
-  margin-bottom: 10px;
-}
-
-.dash-id{ padding: 14px; }
-.dash-row{
-  display:flex;
-  align-items:flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.dash-flight{
-  font-weight: 1000;
-  font-size: 1.35rem;
-  line-height: 1.1;
-}
-.dash-route{
-  margin-top: 2px;
-  font-weight: 900;
-  color: var(--muted);
-}
-.dash-actions{
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.dash-chips{
-  margin-top: 10px;
-  display:flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chip{
-  display:inline-flex;
-  align-items:center;
-  gap: 8px;
-  border-radius: 999px;
-  padding: 6px 10px;
-  background: color-mix(in srgb, var(--card) 86%, #3b82f6 14%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-}
-body.dark .chip{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.chip .k{
-  font-size: .68rem;
-  font-weight: 900;
-  letter-spacing: .08em;
-  color: var(--muted);
-}
-.chip .v{
-  font-weight: 900;
-  color: var(--text);
-}
-
-.mini-grid{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 10px;
-  align-items: center;
-}
-.mini-kv{
-  border-radius: 14px;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--card) 92%, #000 8%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-}
-body.dark .mini-kv{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.mini-kv .k{
-  font-size: .72rem;
-  font-weight: 900;
-  letter-spacing: .08em;
-  color: var(--muted);
-}
-.mini-kv .v{
-  margin-top: 2px;
-  font-size: 1.05rem;
-  font-weight: 1000;
-}
-
-.calc-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  align-items: stretch;
-}
-.mini-kv.big .v{ font-size: 1.25rem; }
-
-.ctot-box{
-  grid-column: span 2;
-  border-radius: 14px;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--card) 92%, #000 8%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-}
-body.dark .ctot-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.ctot-box .k{
-  font-size: .72rem;
-  font-weight: 900;
-  letter-spacing: .08em;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.ctot-box .input{ width: 100%; }
-
-.load-actions{
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* Desktop layout */
-@media (min-width: 900px){
-  .dash-id{ grid-column: span 12; }
-  .dash-card:nth-child(2){ grid-column: span 4; } /* ARR */
-  .dash-card:nth-child(3){ grid-column: span 4; } /* DEP */
-  .dash-calc{ grid-column: span 4; }              /* CALCULS */
-  .dash-card:nth-child(5){ grid-column: span 12; }/* LOAD */
-}
-/* Tablet */
-@media (min-width: 600px) and (max-width: 899px){
-  .dash-card:nth-child(2),
-  .dash-card:nth-child(3),
-  .dash-calc{ grid-column: span 6; }
-}
+  
 </style>
 </head>
 
@@ -998,99 +904,200 @@ body.dark .ctot-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
 <div class="app-wrap">
 
-  <!-- ===== DASHBOARD (remplace INFO VOL + HORAIRES) ===== -->
-  <div class="dash">
+<!-- INFO VOL -->
+<div class="card mb-5">
+  <header class="card-header">
+    <p class="card-header-title">INFO VOL</p>
+  </header>
 
-    <!-- Identité vol -->
-    <div class="dash-card dash-id">
-      <div class="dash-row">
-        <div class="dash-main">
-          <div class="dash-flight"><span id="dVol">—</span></div>
-          <div class="dash-route"><span id="dRoute">—</span></div>
+  <div class="card-content">
+
+    <!-- Bandeau ESSENTIEL -->
+    <div class="kv-strip mb-4">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+          </div>
         </div>
-
-        <div class="dash-actions">
-          <button class="button is-small is-light" type="button" onclick="openFlightEditor()">Éditer vol</button>
-          <button class="button is-small is-light" type="button" onclick="openTimesEditor()">Éditer horaires</button>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+          </div>
         </div>
       </div>
 
-      <div class="dash-chips">
-        <div class="chip"><span class="k">DATE</span><span class="v" id="dDate">—</span></div>
-        <div class="chip"><span class="k">PARK</span><span class="v" id="dPark">—</span></div>
-        <div class="chip"><span class="k">IMMAT</span><span class="v" id="dImmat">—</span></div>
-        <div class="chip"><span class="k">TYPE</span><span class="v" id="dType">—</span></div>
-        <div class="chip"><span class="k">BC</span><span class="v" id="dBC">—</span></div>
-      </div>
-    </div>
-
-    <!-- Arrivée -->
-    <div class="dash-card">
-      <div class="dash-card-title">ARRIVÉE</div>
-      <div class="mini-grid">
-        <div class="mini-kv">
-          <div class="k">SIBT</div>
-          <div class="v" id="dSIBT">--:--</div>
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Type</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          </div>
         </div>
-        <div class="mini-kv">
-          <div class="k">AIBT</div>
-          <div class="v" id="dAIBT">--:--</div>
-        </div>
-        <button class="button is-small is-link is-light" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now SIBT</button>
-        <button class="button is-small is-link is-light" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now AIBT</button>
-      </div>
-    </div>
-
-    <!-- Départ -->
-    <div class="dash-card">
-      <div class="dash-card-title">DÉPART</div>
-      <div class="mini-grid">
-        <div class="mini-kv">
-          <div class="k">SOBT</div>
-          <div class="v" id="dSOBT">--:--</div>
-        </div>
-        <div class="mini-kv">
-          <div class="k">AOBT</div>
-          <div class="v" id="dAOBT">--:--</div>
-        </div>
-        <button class="button is-small is-link is-light" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now SOBT</button>
-        <button class="button is-small is-link is-light" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now AOBT</button>
-      </div>
-    </div>
-
-    <!-- Calculs -->
-    <div class="dash-card dash-calc">
-      <div class="dash-card-title">CALCULS</div>
-      <div class="calc-grid">
-        <div class="mini-kv big">
-          <div class="k">TOBT</div>
-          <div class="v" id="dTOBT">--:--</div>
-        </div>
-
-        <div class="mini-kv big">
-          <div class="k">CD</div>
-          <div class="v" id="dCD">--:--</div>
-        </div>
-
-        <!-- IMPORTANT : on réutilise le même input CTOT (même ID) pour ta logique -->
-        <div class="ctot-box">
-          <div class="k">CTOT</div>
-          <input id="CTOT" class="input" type="time" onchange="updateAllCalculations()">
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Salle arr. / Parking</div>
+          <div class="kv-value">
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- LOAD -->
-    <div class="dash-card">
-      <div class="dash-card-title">LOAD</div>
-      <div class="load-actions">
-        <button type="button" class="button is-dark" onclick="openLDM('arr')">OPEN</button>
-        <button type="button" class="button is-light" onclick="openLDM('exp')">EXPECTED</button>
-        <button type="button" class="button is-light" onclick="openLDM('final')">FINAL</button>
-      </div>
-    </div>
+    <!-- DÉTAILS (éditables) -->
+    <div id="infoVolDetails" class="grid-auto">
 
+      <!-- Date + Parking + Immat + Type avion -->
+      <div class="field span-3">
+        <label class="label">Date</label>
+        <input class="input" type="date" id="Date">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Parking</label>
+        <div class="select is-fullwidth">
+          <select id="Parking">
+            <option value="">--</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Immat</label>
+        <input class="input uppercase" type="text" id="Immat" maxlength="6">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Type avion</label>
+        <div class="select is-fullwidth">
+          <select id="TypeAvion">
+            <option value="">--</option>
+            <option>A319</option><option>A320</option><option>A321</option>
+            <option>A20N</option><option>A21N</option><option>A21NY</option>
+            <option>B734</option><option>B737</option><option>B738</option>
+            <option>B38M</option><option>BCS3</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cie / N° -->
+      <div class="field span-3">
+        <label class="label">Cie</label>
+        <div class="select is-fullwidth">
+          <select id="Cie">
+            <option value="">--</option>
+            <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+            <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+            <option>V7</option><option>Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-3">
+        <label class="label">N°</label>
+        <input class="input uppercase" type="text" id="NVol">
+      </div>
+
+      <!-- From / To -->
+      <div class="field span-3">
+        <label class="label">From</label>
+        <input class="input uppercase" type="text" id="From" maxlength="3">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">To</label>
+        <input class="input uppercase" type="text" id="To" maxlength="3">
+      </div>
+
+      <!-- LOAD button -->
+      <div class="span-12">
+        <div class="load-row-below">
+          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
+            <div class="k">LOAD</div>
+            <div class="v" style="background:#111827;">OPEN</div>
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
+</div>
+
+
+<!-- HORAIRES -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">HORAIRES</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
+
+  <div class="card-content">
+    <div class="grid-auto">
+
+      <!-- Arrivée -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SIBT</label>
+              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+
+            <div style="min-width:160px;">
+              <label class="label">AIBT</label>
+              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Départ -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SOBT</label>
+              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+
+            <div style="min-width:160px;">
+              <label class="label">AOBT</label>
+              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
   <!-- TIMING -->
   <div class="card mb-5">
@@ -1893,49 +1900,6 @@ function updateInfoStrip(){
   set('kvPark', v('Parking') || '--', '--');
 }
 
-function updateDashboard(){
-  const txt = (id, v, def='—')=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.textContent = (v && String(v).trim()) ? String(v).trim() : def;
-  };
-
-  const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
-
-  // Vol + route (dep/arr depuis akMeta via bandeau existant)
-  const arrVol = (document.getElementById('kvArrVol')?.textContent || '').trim();
-  const depVol = (document.getElementById('kvDepVol')?.textContent || '').trim();
-  const from   = (document.getElementById('kvFrom')?.textContent || '').trim();
-  const to     = (document.getElementById('kvTo')?.textContent || '').trim();
-
-  txt('dVol',   (arrVol && depVol) ? `${arrVol} → ${depVol}` : (depVol || arrVol || '—'));
-  txt('dRoute', (from && to) ? `${from} → ${to}` : '—');
-
-  // Chips
-  const dateRaw = document.getElementById('Date')?.value || '';
-  let dateFR = '—';
-  if(dateRaw && /^\d{4}-\d{2}-\d{2}$/.test(dateRaw)){
-    const [y,m,d] = dateRaw.split('-');
-    dateFR = `${d}/${m}/${y}`;
-  }
-
-  txt('dDate',  dateFR);
-  txt('dPark',  v('Parking') || (document.getElementById('kvPark')?.textContent || '').trim() || '—');
-  txt('dImmat', v('Immat') || '—');
-  txt('dType',  v('TypeAvion') || '—');
-  txt('dBC',    (document.getElementById('kvBC')?.textContent || '').trim() || '—');
-
-  // Times
-  txt('dSIBT', v('SIBT') || '--:--', '--:--');
-  txt('dAIBT', v('AIBT') || '--:--', '--:--');
-  txt('dSOBT', v('SOBT') || '--:--', '--:--');
-  txt('dAOBT', v('AOBT') || '--:--', '--:--');
-
-  // TOBT / CD (déjà calculés dans tes timers)
-  txt('dTOBT', (document.getElementById('timer-tobt')?.textContent || '--:--'), '--:--');
-  txt('dCD',   (document.getElementById('timer-cd')?.textContent || '--:--'), '--:--');
-}
-
 /* date défaut */
 function setDefaultDateToTodayIfEmpty(){
   const d = document.getElementById('Date');
@@ -2332,7 +2296,6 @@ function updateAllCalculations() {
   updateHeaderOffset();
 
   updateInfoStrip();
-  updateDashboard();
 }
 
 /* TIMERS HLE/H-15 */
