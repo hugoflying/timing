@@ -272,6 +272,18 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-3{ grid-column: span 3; }
 }
 
+  @media (min-width: 600px) and (max-width: 900px){
+  :root{
+    --gap: 10px;
+    --padCard: 10px;
+    --labelSize: .72rem;
+    --inputH: 38px;
+  }
+
+  .timer-chip{ padding: 8px 12px; }
+  .timer-chip .v{ padding: 5px 8px; }
+}
+
 /* "Rows" ultra compactes pour infos clés */
 .kv-strip{
   display:grid;
