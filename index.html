@@ -729,7 +729,20 @@ body.modal-open{
   overscroll-behavior: none;
   touch-action: none;
 }
-  
+
+/* ===== petit layout PAX "X + Y" ===== */
+.pax-split{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.pax-split .pax-plus{
+  font-weight: 900;
+  opacity: .8;
+  user-select:none;
+}
+.pax-split .input{ width:100%; }
 </style>
 </head>
 
@@ -747,7 +760,6 @@ body.modal-open{
 
     <div class="lm-seg">
       <button id="ldmTabArr" class="button is-small is-active" type="button" onclick="ldmSwitch('arr')">ARR</button>
-      <button id="ldmTabExp" class="button is-small" type="button" onclick="ldmSwitch('exp')">EXP</button>
       <button id="ldmTabFinal" class="button is-small" type="button" onclick="ldmSwitch('final')">FINAL</button>
     </div>
 
@@ -756,58 +768,37 @@ body.modal-open{
 
   <div class="ldm-body">
 
-    <!-- ===== LOAD ARRIVEE ===== -->
+    <!-- ===== LOAD (ARR + EXP regroupés) ===== -->
     <section class="ldm-card ldm-arr" id="ldmArr">
       <div class="ldm-card-hdr">
-        <div class="ldm-card-title">ARRIVÉE</div>
-        <div class="ldm-card-sub">LOAD ARR</div>
+        <div class="ldm-card-title">LOAD</div>
+        <div class="ldm-card-sub">ARR + EXP</div>
       </div>
 
       <div class="ldm-grid">
-        <div class="field ldm-f"><label class="label">PAX</label><input class="input ldm-in" id="LoadPAX" maxlength="4" oninput="digitsOnly(this)"></div>
-        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="LoadBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+        <!-- PAX : main + infants -->
+        <div class="field ldm-span-2">
+          <label class="label">PAX</label>
+          <div class="pax-split">
+            <input class="input ldm-in" id="LoadPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <span class="pax-plus">+</span>
+            <input class="input ldm-in" id="LoadPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+          </div>
+        </div>
 
-        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="LoadPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
-        <div class="field ldm-f"><label class="label">—</label><input class="input ldm-in" value="" disabled></div>
+        <div class="field ldm-f">
+          <label class="label">BAGS</label>
+          <input class="input ldm-in" id="LoadBAGS" maxlength="4" oninput="digitsOnly(this)">
+        </div>
 
-        <div class="ldm-row-4">
-          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="LoadH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="LoadH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="LoadH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
-          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="LoadH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')"></div>
+        <div class="field ldm-f">
+          <label class="label">POIDS</label>
+          <input class="input ldm-in" id="LoadPOIDS" maxlength="4" oninput="digitsOnly(this)">
         </div>
 
         <div class="field ldm-span-2">
           <label class="label">SI</label>
           <textarea class="textarea si-uppercase ldm-ta" id="LoadSI"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== LOAD EXPECTED ===== -->
-    <section class="ldm-card ldm-exp" id="ldmExp" style="display:none;">
-      <div class="ldm-card-hdr">
-        <div class="ldm-card-title">EXPECTED</div>
-        <div class="ldm-card-sub">LOAD EXP</div>
-      </div>
-
-      <div class="ldm-grid">
-        <div class="field ldm-f"><label class="label">PAX</label><input class="input ldm-in" id="ExpPAX" maxlength="4" oninput="digitsOnly(this)"></div>
-        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="ExpBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-
-        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="ExpPOIDS" maxlength="4" oninput="digitsOnly(this)"></div>
-        <div class="field ldm-f"><label class="label">—</label><input class="input ldm-in" value="" disabled></div>
-
-        <div class="ldm-row-4">
-          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="ExpH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="ExpH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="ExpH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="ExpH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('exp')"></div>
-        </div>
-
-        <div class="field ldm-span-2">
-          <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="ExpSI"></textarea>
         </div>
       </div>
     </section>
@@ -820,15 +811,20 @@ body.modal-open{
       </div>
 
       <div class="ldm-grid">
+
+        <!-- ligne 1 -->
         <div class="field ldm-f"><label class="label">MALE</label><input class="input ldm-in" id="FinalMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
         <div class="field ldm-f"><label class="label">FEMALE</label><input class="input ldm-in" id="FinalFEMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
 
+        <!-- ligne 2 -->
         <div class="field ldm-f"><label class="label">ADULT</label><input class="input ldm-in" id="FinalADULT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
         <div class="field ldm-f"><label class="label">CHILD</label><input class="input ldm-in" id="FinalCHILD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
 
+        <!-- ligne 3 -->
         <div class="field ldm-f"><label class="label">INFANT</label><input class="input ldm-in" id="FinalINFANT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
         <div class="field ldm-f"><label class="label">TOB</label><input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly></div>
 
+        <!-- ligne 4 -->
         <div class="ldm-row-4">
           <div class="field ldm-f"><label class="label">OA</label><input class="input ldm-in" id="FinalOA" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
           <div class="field ldm-f"><label class="label">OB</label><input class="input ldm-in" id="FinalOB" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
@@ -836,11 +832,14 @@ body.modal-open{
           <div class="field ldm-f"><label class="label">OD</label><input class="input ldm-in" id="FinalOD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
         </div>
 
+        <!-- ligne 5 -->
         <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="FinalBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
         <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="FinalPOIDS" readonly></div>
 
+        <!-- ligne 6 -->
         <div class="field ldm-span-2"><label class="label">GB / ITG</label><input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
 
+        <!-- ligne 7 -->
         <div class="ldm-row-4">
           <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="FinalH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
           <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="FinalH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
@@ -848,6 +847,7 @@ body.modal-open{
           <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="FinalH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
         </div>
 
+        <!-- ligne 8 -->
         <div class="field ldm-span-2">
           <label class="label">SI</label>
           <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
@@ -1355,21 +1355,16 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g,''); }
 
 /* ===== H1–H4 vs BAGS (ARR / EXP / FINAL) ===== */
 function updateHBagsValidity(mode){
-  const map = {
-    arr:   { bags:'LoadBAGS',  h:['LoadH1','LoadH2','LoadH3','LoadH4'] },
-    exp:   { bags:'ExpBAGS',   h:['ExpH1','ExpH2','ExpH3','ExpH4'] },
-    final: { bags:'FinalBAGS', h:['FinalH1','FinalH2','FinalH3','FinalH4'] },
-  };
-  const cfg = map[mode];
-  if(!cfg) return;
+  if(mode !== 'final') return;
 
-  const bagsEl = document.getElementById(cfg.bags);
+  const bagsEl = document.getElementById('FinalBAGS');
   if(!bagsEl) return;
 
   const bags = parseInt(bagsEl.value || '0', 10);
-  let sum = 0;
+  const ids = ['FinalH1','FinalH2','FinalH3','FinalH4'];
 
-  cfg.h.forEach(id=>{
+  let sum = 0;
+  ids.forEach(id=>{
     const el = document.getElementById(id);
     if(el) sum += parseInt(el.value || '0', 10);
   });
@@ -1652,32 +1647,26 @@ function ldmSwitch(mode){
   _ldmMode = mode;
 
   const sArr   = document.getElementById('ldmArr');
-  const sExp   = document.getElementById('ldmExp');
   const sFinal = document.getElementById('ldmFinal');
 
   const tArr   = document.getElementById('ldmTabArr');
-  const tExp   = document.getElementById('ldmTabExp');
   const tFinal = document.getElementById('ldmTabFinal');
 
   if(sArr)   sArr.style.display   = (mode==='arr')   ? '' : 'none';
-  if(sExp)   sExp.style.display   = (mode==='exp')   ? '' : 'none';
   if(sFinal) sFinal.style.display = (mode==='final') ? '' : 'none';
 
   if(tArr)   tArr.classList.toggle('is-active', mode==='arr');
-  if(tExp)   tExp.classList.toggle('is-active', mode==='exp');
   if(tFinal) tFinal.classList.toggle('is-active', mode==='final');
 
   const hint = document.getElementById('ldmHint');
   if(hint){
-    hint.textContent =
-      (mode==='arr') ? 'ARRIVÉE' :
-      (mode==='exp') ? 'EXPECTED' :
-      'FINAL';
+    hint.textContent = (mode==='arr') ? 'LOAD' : 'FINAL';
   }
 
   if(mode==='final') updateFinalTOB();
   updateHeaderOffset();
 }
+
 
 /* compat anciens boutons (optionnel) */
 function toggleLoadArr(){ openLDM('arr'); }
@@ -1773,7 +1762,6 @@ function initForm(){
       switchTab(tabs[0]);
     }
   }else{
-    // Aucune fiche par défaut
     currentTabId = null;
     stopCountdown();
   }
@@ -1799,8 +1787,11 @@ function initForm(){
 
   [
     'AIBT','SOBT','SIBT','AOBT','CTOT','ArrPNT','ArrPNC','TypeAvion',
-    'LoadPAX','LoadBAGS','LoadPOIDS',
-    'ExpPAX','ExpBAGS','ExpPOIDS',
+
+    // LOAD (ARR+EXP fusionné)
+    'LoadPAX_MAIN','LoadPAX_INF','LoadBAGS','LoadPOIDS',
+
+    // FINAL
     'FinalMALE','FinalFEMALE','FinalADULT','FinalCHILD','FinalINFANT',
     'FinalOA','FinalOB','FinalOC','FinalOD',
     'FinalBAGS','FinalPOIDS','FinalGB'
@@ -1814,8 +1805,7 @@ function initForm(){
   });
 
   [
-    'LoadBAGS','LoadH1','LoadH2','LoadH3','LoadH4',
-    'ExpBAGS','ExpH1','ExpH2','ExpH3','ExpH4',
+    // H-bags seulement pour FINAL
     'FinalBAGS','FinalH1','FinalH2','FinalH3','FinalH4',
     'FinalGB'
   ].forEach(id=>{
@@ -2285,7 +2275,6 @@ function updateAllCalculations() {
   updateLIDVisibility();
 
   updateHBagsValidity('arr');
-  updateHBagsValidity('exp');
   updateHBagsValidity('final');
 
   updateArrExpWeightIfNeeded();
@@ -3495,7 +3484,6 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOIfEmptyOrAK('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
     const si = akBuildSI(f, true);
-    setIfEmptyOrAK('ExpSI', si);
     setIfEmptyOrAK('FinalSI', si);
 
     const prevArr = findLinkedArrForDep(f);
@@ -3506,10 +3494,8 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmptyOrAK('AIBT', prevArr.aibt);
 
-      // ⚠️ plus de champ BorderControl dans INFO VOL -> on ne set rien ici
-
-      if(prevArr?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(prevArr.bags));
-      if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(prevArr.paxNb));
+      if(prevArr?.bags  != null) setIfEmptyOrAK('LoadBAGS',     String(prevArr.bags));
+      if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX_MAIN', String(prevArr.paxNb));
 
       setIfEmptyOrAK('LoadSI', akBuildSI(prevArr, false));
     }else{
@@ -3523,10 +3509,8 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOAK('SIBT', f.sibt || f.eibt);
     setTimeFromISOAK('AIBT', f.aibt);
 
-    // ⚠️ plus de champ BorderControl dans INFO VOL -> on ne set rien ici
-
-    if(f?.bags != null) setIfEmptyOrAK('LoadPOIDS', String(f.bags));
-    if(f?.paxNb != null) setIfEmptyOrAK('LoadPAX', String(f.paxNb));
+    if(f?.bags  != null) setIfEmptyOrAK('LoadBAGS',     String(f.bags));
+    if(f?.paxNb != null) setIfEmptyOrAK('LoadPAX_MAIN', String(f.paxNb));
 
     setIfEmptyOrAK('LoadSI', akBuildSI(f, false));
 
@@ -3539,7 +3523,6 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('CTOT', nextDep.ctot);
 
       const siDep = akBuildSI(nextDep, true);
-      setIfEmptyOrAK('ExpSI', siDep);
       setIfEmptyOrAK('FinalSI', siDep);
     }else{
       setValAK('To', HOME_IATA);
