@@ -281,12 +281,18 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-4{ grid-column: span 4; }
   .span-6{ grid-column: span 6; }
 
-  /* Bandeau essentiel : 2 cartes sur 1 ligne (tablette) */
+  /* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE ===== */
+.kv-strip{
+  display: grid;
+  grid-template-columns: 1fr; /* mobile */
+  gap: var(--gap);
+}
+
+@media (min-width: 600px){
   .kv-strip{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 1fr; /* tablette + */
   }
+}
 
   /* Réduction globale (c’est ça qui manque chez toi) */
   .card-content{ padding: var(--padCard) !important; }
@@ -308,7 +314,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
   padding-bottom: 0;
   display: flex;
   align-items: center;
-  font-weight: 800; /* <-- celle dont tu parles */
+  font-weight: 800; 
 }
 
 /* "Rows" ultra compactes pour infos clés */
