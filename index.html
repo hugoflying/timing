@@ -281,32 +281,49 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-4{ grid-column: span 4; }
   .span-6{ grid-column: span 6; }
 
-  /* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE ===== */
+/* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE (base) ===== */
 .kv-strip{
   display: grid;
   grid-template-columns: 1fr; /* mobile */
   gap: var(--gap);
 }
-
 @media (min-width: 600px){
   .kv-strip{
     grid-template-columns: 1fr 1fr; /* tablette + */
   }
 }
 
-  /* Réduction globale (c’est ça qui manque chez toi) */
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+
+  /* grid spans tablette */
+  .span-2{ grid-column: span 2; }
+  .span-3{ grid-column: span 3; }
+  .span-4{ grid-column: span 4; }
+  .span-6{ grid-column: span 6; }
+
+  /* Réduction globale */
   .card-content{ padding: var(--padCard) !important; }
 
+  /* Bandeaux essentiels */
   .kv-card{ padding: 8px 10px; }
-  .kv-title{ font-size: .70rem; }
-  .kv-value{ font-size: 1rem; }
+  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
+  .kv-value{ font-size: 1rem; font-weight: 800; }
 
+  /* Timers chips */
   .timer-chip{ min-width: 124px; padding: 8px 12px; }
   .timer-chip .k{ font-size: .75rem; }
   .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
 }
 
-/* Aligner visuellement select comme input */
+/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
 .select.is-fullwidth select{
   height: var(--inputH);
   line-height: calc(var(--inputH) - 2px);
@@ -314,7 +331,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
   padding-bottom: 0;
   display: flex;
   align-items: center;
-  font-weight: 800; 
+  font-weight: 800;
 }
 
 /* "Rows" ultra compactes pour infos clés */
