@@ -267,9 +267,10 @@ textarea.si-uppercase{ text-transform: uppercase; }
 }
   /* ===== TABLET PORTRAIT (ex: 600px) ===== */
 @media (min-width: 600px){
-  .span-6{ grid-column: span 6; }
-  .span-4{ grid-column: span 4; }
+  .span-2{ grid-column: span 2; }
   .span-3{ grid-column: span 3; }
+  .span-4{ grid-column: span 4; }
+  .span-6{ grid-column: span 6; }
 }
 
 @media (min-width: 600px) and (max-width: 900px){
@@ -914,15 +915,46 @@ body.modal-open{
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
 
-      <!-- Date + Salle arrivée -->
-      <div class="field span-6">
+      <!-- Date + Salle arrivée + Parking + Immat + Type avion (même ligne dès >=600px via span-2/span-3) -->
+      <div class="field span-2">
         <label class="label">Date</label>
         <input class="input" type="date" id="Date">
       </div>
 
-      <div class="field span-6">
+      <div class="field span-2">
         <label class="label">Salle arrivée</label>
         <input class="input uppercase" type="text" id="BorderControl">
+      </div>
+
+      <div class="field span-2">
+        <label class="label">Parking</label>
+        <div class="select is-fullwidth">
+          <select id="Parking">
+            <option value="">--</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Immat</label>
+        <input class="input uppercase" type="text" id="Immat" maxlength="6">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Type avion</label>
+        <div class="select is-fullwidth">
+          <select id="TypeAvion">
+            <option value="">--</option>
+            <option>A319</option><option>A320</option><option>A321</option>
+            <option>A20N</option><option>A21N</option><option>A21NY</option>
+            <option>B734</option><option>B737</option><option>B738</option>
+            <option>B38M</option><option>BCS3</option>
+            <option>Autre</option>
+          </select>
+        </div>
       </div>
 
       <!-- Cie / N° -->
@@ -954,39 +986,6 @@ body.modal-open{
         <input class="input uppercase" type="text" id="To" maxlength="3">
       </div>
 
-      <!-- Immat / Type avion -->
-      <div class="field span-6">
-        <label class="label">Immat</label>
-        <input class="input uppercase" type="text" id="Immat" maxlength="6">
-      </div>
-
-      <div class="field span-6">
-        <label class="label">Type avion</label>
-        <div class="select is-fullwidth">
-          <select id="TypeAvion">
-            <option value="">--</option>
-            <option>A319</option><option>A320</option><option>A321</option>
-            <option>A20N</option><option>A21N</option><option>A21NY</option>
-            <option>B734</option><option>B737</option><option>B738</option>
-            <option>B38M</option><option>BCS3</option>
-            <option>Autre</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Parking -->
-      <div class="field span-6">
-        <label class="label">Parking</label>
-        <div class="select is-fullwidth">
-          <select id="Parking">
-            <option value="">--</option>
-            <option>1</option><option>2</option><option>3</option><option>4</option>
-            <option>5</option><option>6</option><option>7</option><option>8</option>
-            <option>9</option><option>10</option><option>11</option><option>12</option>
-          </select>
-        </div>
-      </div>
-
       <!-- LOAD button -->
       <div class="span-12">
         <div class="load-row-below">
@@ -1000,6 +999,7 @@ body.modal-open{
     </div>
   </div>
 </div>
+
 
 <!-- HORAIRES -->
 <div class="card mb-5">
