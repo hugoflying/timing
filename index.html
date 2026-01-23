@@ -285,6 +285,15 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .timer-chip .v{ padding: 5px 8px; }
 }
 
+/* ===== BANDEAU ESSENTIEL : 2 cartes sur une ligne tablette+ ===== */
+@media (min-width: 600px){
+  .kv-strip{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
 /* "Rows" ultra compactes pour infos clés */
 .kv-strip{
   display:grid;
