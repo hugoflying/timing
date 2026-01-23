@@ -768,38 +768,78 @@ body.modal-open{
 
   <div class="ldm-body">
 
-    <!-- ===== LOAD (ARR + EXP regroupés) ===== -->
+    <!-- ===== LOAD (ARR + PREVI en 2 sections) ===== -->
     <section class="ldm-card ldm-arr" id="ldmArr">
       <div class="ldm-card-hdr">
         <div class="ldm-card-title">LOAD</div>
-        <div class="ldm-card-sub">ARR + EXP</div>
+        <div class="ldm-card-sub">ARR + PREVI</div>
       </div>
 
       <div class="ldm-grid">
-        <!-- PAX : main + infants -->
+
+        <!-- ===== SECTION ARR ===== -->
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; opacity:.9; text-transform:uppercase;">
+          ARR
+        </div>
+
+        <!-- PAX ARR : main + infants -->
         <div class="field ldm-span-2">
           <label class="label">PAX</label>
           <div class="pax-split">
-            <input class="input ldm-in" id="LoadPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
             <span class="pax-plus">+</span>
-            <input class="input ldm-in" id="LoadPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+            <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
           </div>
         </div>
 
         <div class="field ldm-f">
           <label class="label">BAGS</label>
-          <input class="input ldm-in" id="LoadBAGS" maxlength="4" oninput="digitsOnly(this)">
+          <input class="input ldm-in" id="ArrBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
         </div>
 
         <div class="field ldm-f">
           <label class="label">POIDS</label>
-          <input class="input ldm-in" id="LoadPOIDS" maxlength="4" oninput="digitsOnly(this)">
+          <input class="input ldm-in" id="ArrPOIDS" maxlength="4" oninput="digitsOnly(this)">
         </div>
 
         <div class="field ldm-span-2">
           <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="LoadSI"></textarea>
+          <textarea class="textarea si-uppercase ldm-ta" id="ArrSI"></textarea>
         </div>
+
+        <!-- séparateur -->
+        <div class="ldm-span-2" style="height:1px; background:rgba(0,0,0,.08); margin:2px 0;"></div>
+
+        <!-- ===== SECTION PREVI ===== -->
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; opacity:.9; text-transform:uppercase;">
+          PREVI
+        </div>
+
+        <!-- PAX PREVI : main + infants -->
+        <div class="field ldm-span-2">
+          <label class="label">PAX</label>
+          <div class="pax-split">
+            <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <span class="pax-plus">+</span>
+            <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+          </div>
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">BAGS</label>
+          <input class="input ldm-in" id="PreviBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('previ')">
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">POIDS</label>
+          <input class="input ldm-in" id="PreviPOIDS" maxlength="4" oninput="digitsOnly(this)">
+        </div>
+
+        <div class="field ldm-span-2">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase ldm-ta" id="PreviSI"></textarea>
+        </div>
+
       </div>
     </section>
 
