@@ -1788,28 +1788,18 @@ function refreshUIForTabs(){
 
 /* INIT */
 function initForm(){
+  // 1) Créer d’abord tout le DOM dynamique (sinon loadTabData() ne peut pas restaurer)
+  generateTimingFields();
+
+  // 2) UI tabs
   renderTabs();
   refreshUIForTabs();
 
-  const lastTab = localStorage.getItem('lastTabId') || '';
-  const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
-  const tabs = Array.isArray(tabsLS) ? tabsLS : [];
-
-  if(tabs.length > 0){
-    if(lastTab && tabs.includes(lastTab)){
-      switchTab(lastTab);
-    }else{
-      switchTab(tabs[0]);
-    }
-  }else{
-    currentTabId = null;
-    stopCountdown();
-  }
-
-  generateTimingFields();
+  // 3) Autosave + unload
   attachAutoSave();
   window.addEventListener('beforeunload', saveCurrentTabData);
 
+  // 4) Listeners (inchangé)
   document.getElementById('Parking')?.addEventListener('change', updateTabLabelInstant);
   document.getElementById('Cie')?.addEventListener('change', ()=>{
     updateTabLabelInstant();
@@ -1820,11 +1810,13 @@ function initForm(){
 
   setupUppercaseInputs(['NVol','From','To','Immat','BorderControl']);
 
+  // 5) Modes persistés (inchangé)
   const storedDark = (localStorage.getItem('modeDark')||'0') === '1';
   const storedUTC  = (localStorage.getItem('modeUTC')||'0') === '1';
   setDarkMode(storedDark, true);
   setTimeModeUTC(storedUTC, true);
 
+  // 6) Listeners "input" globaux (inchangé)
   [
     'AIBT','SOBT','SIBT','AOBT','CTOT','ArrPNT','ArrPNC','TypeAvion',
 
@@ -1854,6 +1846,7 @@ function initForm(){
     el.addEventListener('input', updateAllCalculations);
   });
 
+  // 7) Drag scroll timeline (inchangé)
   const scroller = document.getElementById('timelineScroll');
   if(scroller){
     let isDown=false, startX=0, startLeft=0;
@@ -1873,6 +1866,23 @@ function initForm(){
     });
   }
 
+  // 8) Sélection onglet APRÈS que le DOM soit prêt
+  const lastTab = String(localStorage.getItem('lastTabId') || '');
+  const tabsLS  = JSON.parse(localStorage.getItem('flightTabs') || '[]');
+  const tabs = Array.isArray(tabsLS) ? tabsLS.map(String) : [];
+
+  if(tabs.length > 0){
+    if(lastTab && tabs.includes(lastTab)){
+      switchTab(lastTab);
+    }else{
+      switchTab(tabs[0]);
+    }
+  }else{
+    currentTabId = null;
+    stopCountdown();
+  }
+
+  // 9) Final init (inchangé)
   setDefaultDateToTodayIfEmpty();
 
   updateHeaderOffset();
