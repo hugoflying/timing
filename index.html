@@ -799,8 +799,12 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
   grid-template-columns: 1fr;
   gap: 14px;
 }
+
+@media (min-width:600px){
+  .ui-flight{ grid-template-columns: 1fr 1fr; align-items:center; }
+}
 @media (min-width: 769px){
-  .ui-flight{ grid-template-columns: 1fr auto 1fr; align-items:center; }
+  .ui-flight{ grid-template-columns: 1fr 1fr; align-items:center; }
 }
 
 .ui-airport{
@@ -925,6 +929,27 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
   margin-top: 4px;
   font-weight: 1000;
   font-size: .95rem;
+}
+
+
+/* ===== Header responsive compact ===== */
+@media (max-width: 900px){
+  .ui-box{ padding: 14px 14px 10px; }
+  .ui-grid{ gap: 12px; }
+  .ui-airport{ font-size: 2rem; }
+  .ui-flightno{ font-size: .9rem; padding: 6px 10px; }
+  .ui-status{ font-size: .85rem; padding: 6px 10px; }
+  .ui-timegrid{ gap: 10px 18px; }
+  .ui-timegrid .k{ font-size: .75rem; }
+  .ui-timegrid .v{ font-size: 1rem; }
+  .ui-meta{ padding-top: 10px; margin-top: 10px; gap: 14px; }
+  .ui-meta .k{ font-size: .75rem; }
+  .ui-meta .v{ font-size: .95rem; }
+}
+@media (max-width: 600px){
+  .ui-flight{ grid-template-columns: 1fr; }
+  .ui-flight > *{ justify-self: stretch; text-align: left; }
+  .ui-right{ text-align: left; }
 }
 
 </style>
@@ -1157,24 +1182,7 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
     </div>
 
     <!-- MIDDLE -->
-    <div class="ui-mid">
-      <div class="k" style="color:var(--muted); font-weight:900; letter-spacing:.10em; text-transform:uppercase;">CD</div>
-      <div style="font-weight:1000; font-size:1.05rem;" id="uiCD">--:--</div>
-      <div class="ui-arrow">→</div>
-    </div>
-
-    <!-- RIGHT -->
-    <div style="text-align:right;">
-      <div class="ui-airport" id="uiToBig">---</div>
-      <div class="ui-timegrid" style="justify-items:end;">
-        <div class="k">SOBT</div><div class="v" id="uiSOBT">--:--</div>
-        <div class="k">AOBT</div><div class="v" id="uiAOBT">--:--</div>
-        <div class="k">TOBT</div><div class="v" id="uiTOBT">--:--</div>
-        <div class="k">CTOT</div><div class="v" id="uiCTOT">--:--</div>
-      </div>
-    </div>
-
-  </div>
+</div>
 
   <!-- META ROW -->
   <div class="ui-meta-row" style="
@@ -4231,14 +4239,10 @@ function updateUIHeaderV3(){
   setTxt('uiSIBT', t('SIBT'));
   setTxt('uiAIBT', t('AIBT'));
   setTxt('uiSOBT', t('SOBT'));
-  setTxt('uiAOBT', t('AOBT'));
-  setTxt('uiCTOT', t('CTOT'));
-
-  // computed timers
-  setTxt('uiTOBT', document.getElementById('timer-tobt')?.textContent || '--:--');
-  setTxt('uiCD',   document.getElementById('timer-cd')?.textContent   || '--:--');
-  
-  // meta row
+  setTxt('uiAOBT', t('AOBT')); 
+// computed timers
+  setTxt('uiTOBT', document.getElementById('timer-tobt')?.textContent || '--:--'); 
+// meta row
   setTxt('uiImmat',   (document.getElementById('Immat')?.value || '----').toUpperCase());
   setTxt('uiType',    document.getElementById('TypeAvion')?.value || '----');
   setTxt('uiParking', document.getElementById('Parking')?.value || '----');
