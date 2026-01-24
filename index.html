@@ -118,12 +118,13 @@ body.no-tab .timer-row{ display:none !important; }
 
 /* ===== ESSENTIAL BAR (FIXED) ===== */
 #essential-bar{
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* ✅ 2 cartes côte à côte */
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+  width: 100%;
+}
+@media (max-width: 520px){
+  #essential-bar{ grid-template-columns: 1fr; }
 }
 
 .essential-card{
@@ -989,39 +990,6 @@ body.modal-open{
 
   <div class="card-content">
 
-    <!-- Bandeau ESSENTIEL -->
-    <div class="kv-strip mb-4">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
-          <div class="kv-value">
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
 
@@ -1104,7 +1072,6 @@ body.modal-open{
     </div>
   </div>
 </div>
-
 
 <!-- HORAIRES -->
 <div class="card mb-5">
@@ -1347,8 +1314,13 @@ function unlockScroll(){
 function updateHeaderOffset(){
   const header = document.getElementById('fixedHeader');
   if(!header) return;
-  const h = Math.ceil(header.getBoundingClientRect().height);
-  document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const h = Math.ceil(header.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
+    });
+  });
 }
 
 /* Vars */
