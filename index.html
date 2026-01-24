@@ -743,6 +743,177 @@ body.modal-open{
   user-select:none;
 }
 .pax-split .input{ width:100%; }
+
+/* ===== UI v3 (look screenshots) ===== */
+:root{
+  --ui-surface: #ffffff;
+  --ui-soft: #f3f6ff;
+  --ui-border: rgba(17,24,39,.08);
+  --ui-radius-lg: 20px;
+  --ui-radius-md: 14px;
+  --ui-accent: #3b82f6;
+  --ui-accent2: #7c3aed;
+}
+
+html.dark, body.dark{
+  --ui-surface: #151922;
+  --ui-soft: rgba(59,130,246,.10);
+  --ui-border: rgba(229,231,235,.10);
+}
+
+/* cards "soft" */
+.ui-card{
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-lg);
+  box-shadow: 0 18px 36px rgba(0,0,0,.06);
+}
+html.dark .ui-card{ box-shadow: 0 18px 36px rgba(0,0,0,.35); }
+
+.ui-pad{ padding: 16px; }
+@media (min-width: 769px){ .ui-pad{ padding: 18px; } }
+
+.ui-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--ui-soft);
+  border: 1px solid var(--ui-border);
+  font-weight: 900;
+}
+
+.ui-status{
+  font-weight: 900;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(34,197,94,.12);
+  color: #16a34a;
+  border: 1px solid rgba(34,197,94,.20);
+}
+html.dark .ui-status{ background: rgba(34,197,94,.16); }
+
+.ui-flight{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 769px){
+  .ui-flight{ grid-template-columns: 1fr auto 1fr; align-items:center; }
+}
+
+.ui-airport{
+  font-size: 1.8rem;
+  font-weight: 1000;
+  letter-spacing: .02em;
+}
+.ui-timegrid{
+  margin-top: 8px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  font-weight: 900;
+}
+.ui-timegrid .k{ color: var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+.ui-timegrid .v{ font-size: .95rem; }
+
+.ui-mid{
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  gap: 8px;
+  min-width: 180px;
+}
+.ui-arrow{
+  opacity:.6;
+  font-weight:900;
+}
+
+/* "Etapes clés" cards */
+.ui-steps{
+  margin-top: 14px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 769px){
+  .ui-steps{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+.ui-step{
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border);
+  background: color-mix(in srgb, var(--ui-surface) 88%, var(--ui-accent) 12%);
+  padding: 12px 14px;
+}
+.ui-step .k{ color: var(--muted); font-weight: 900; text-transform:uppercase; letter-spacing:.10em; font-size:.72rem; }
+.ui-step .v{ margin-top: 6px; font-weight: 1000; font-size: 1.25rem; }
+
+/* Segmented control (Timing) */
+.ui-seg{
+  display:flex;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-surface) 88%, #000 12%);
+  border: 1px solid var(--ui-border);
+  padding: 6px;
+  gap: 6px;
+}
+.ui-seg .ui-seg-btn{
+  flex:1 1 auto;
+  border-radius: 999px;
+  border: 0;
+  height: 40px;
+  font-weight: 1000;
+  background: transparent;
+  color: var(--text);
+}
+.ui-seg .ui-seg-btn.is-active{
+  background: var(--ui-accent);
+  color:#fff;
+}
+
+/* Modal look */
+.ui-modal-backdrop{
+  position:fixed; inset:0;
+  background: rgba(0,0,0,.35);
+  z-index: 7000;
+  display:none;
+}
+.ui-modal{
+  position:fixed; inset:0;
+  z-index: 7100;
+  display:none;
+  align-items:center; justify-content:center;
+  padding: 14px;
+}
+.ui-modal .ui-modal-box{
+  width: min(560px, 100%);
+  border-radius: 26px;
+  overflow:hidden;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  box-shadow: 0 30px 70px rgba(0,0,0,.25);
+}
+.ui-modal-h{
+  padding: 16px 18px;
+  font-weight: 1000;
+  font-size: 1.15rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+.ui-modal-b{ padding: 16px 18px; }
+.ui-modal-actions{ padding: 14px 18px 18px; }
+
+/* bouton gradient "Enregistrer" */
+.ui-btn-save{
+  width: 100%;
+  border-radius: 14px;
+  height: 48px;
+  font-weight: 1000;
+  border: 0;
+  color:#fff;
+  background: linear-gradient(90deg, var(--ui-accent), var(--ui-accent2));
+}
+
 </style>
 </head>
 
@@ -943,6 +1114,67 @@ body.modal-open{
 </div>
 
 <div class="app-wrap">
+
+  <!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
+<div class="ui-card ui-pad mb-5">
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+    <div class="ui-pill">
+      <span id="uiFlightLabel">—</span>
+    </div>
+
+    <div class="ui-status" id="uiStatus">• À L’HEURE</div>
+
+    <button class="button is-light is-small" type="button" onclick="openInfoModal()">
+      ✎ Modifier
+    </button>
+  </div>
+
+  <div class="ui-flight" style="margin-top:12px;">
+    <!-- LEFT -->
+    <div>
+      <div class="ui-airport" id="uiFromBig">---</div>
+      <div class="ui-timegrid">
+        <div class="k">SIBT</div><div class="v" id="uiSIBT">--:--</div>
+        <div class="k">AIBT</div><div class="v" id="uiAIBT">--:--</div>
+      </div>
+    </div>
+
+    <!-- MID -->
+    <div class="ui-mid">
+      <div class="k" style="color:var(--muted); font-weight:900; letter-spacing:.10em; text-transform:uppercase;">CD</div>
+      <div style="font-weight:1000; font-size:1.05rem;" id="uiCD">--:--</div>
+      <div class="ui-arrow">→</div>
+    </div>
+
+    <!-- RIGHT -->
+    <div style="text-align:right;">
+      <div class="ui-airport" id="uiToBig">---</div>
+      <div class="ui-timegrid" style="justify-items:end;">
+        <div class="k">SOBT</div><div class="v" id="uiSOBT">--:--</div>
+        <div class="k">AOBT</div><div class="v" id="uiAOBT">--:--</div>
+        <div class="k">TOBT</div><div class="v" id="uiTOBT">--:--</div>
+        <div class="k">CTOT</div><div class="v" id="uiCTOT">--:--</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-steps">
+    <div class="ui-step">
+      <div class="k">HLE</div>
+      <div class="v" id="uiHLE">--:--</div>
+    </div>
+    <div class="ui-step">
+      <div class="k">H-15</div>
+      <div class="v" id="uiH15">--:--</div>
+    </div>
+    <div class="ui-step" style="border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.10);">
+      <div class="k">LID</div>
+      <div class="v" id="uiLID">--:--</div>
+    </div>
+  </div>
+
+</div>
 
 <!-- INFO VOL -->
 <div class="card mb-5">
@@ -2130,6 +2362,7 @@ function deleteTab(id){
   updateInfoStrip();
 }
 
+  
 function clearFormFields(){
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
@@ -2335,6 +2568,7 @@ function updateAllCalculations() {
   updateHeaderOffset();
 
   updateInfoStrip();
+  updateUIHeaderV3();
 }
 
 /* TIMERS HLE/H-15 */
@@ -3839,6 +4073,122 @@ function clearAutoSave() {
     localStorage.clear();
     location.reload();
   }
+}
+
+function openInfoModal(){
+  // clone options (Cie / Type / Parking) une fois
+  const copyOptions = (srcId, dstId)=>{
+    const s = document.getElementById(srcId);
+    const d = document.getElementById(dstId);
+    if(!s || !d) return;
+    if(d.options.length) return;
+    d.innerHTML = s.innerHTML;
+  };
+  copyOptions('Cie','mCie');
+  copyOptions('TypeAvion','mTypeAvion');
+  copyOptions('Parking','mParking');
+
+  // push values
+  const map = [
+    ['Date','mDate'],['Cie','mCie'],['NVol','mNVol'],['From','mFrom'],['To','mTo'],
+    ['SIBT','mSIBT'],['AIBT','mAIBT'],['SOBT','mSOBT'],['AOBT','mAOBT'],
+    ['Immat','mImmat'],['TypeAvion','mTypeAvion'],['Parking','mParking'],
+    ['CTOT','mCTOT']
+  ];
+  map.forEach(([a,b])=>{
+    const A=document.getElementById(a), B=document.getElementById(b);
+    if(A && B) B.value = A.value || '';
+  });
+
+  // BC vient du storage (akMeta.bc) -> on le montre modifiable en texte
+  let bcMeta = '';
+  try{
+    if(currentTabId){
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      bcMeta = (data?.akMeta?.bc || '').toUpperCase().trim();
+    }
+  }catch(e){}
+  document.getElementById('mBC').value = bcMeta;
+
+  // TOBT affiché (calculé)
+  const tobtTxt = document.getElementById('timer-tobt')?.textContent || '--:--';
+  document.getElementById('mTOBT').value = (tobtTxt.includes(':') ? tobtTxt : '');
+
+  lockScroll();
+  document.getElementById('infoBackdrop').style.display = '';
+  document.getElementById('infoModal').style.display = 'flex';
+}
+
+function closeInfoModal(){
+  unlockScroll();
+  document.getElementById('infoModal').style.display = 'none';
+  document.getElementById('infoBackdrop').style.display = 'none';
+}
+
+function saveInfoModal(){
+  const map = [
+    ['mDate','Date'],['mCie','Cie'],['mNVol','NVol'],['mFrom','From'],['mTo','To'],
+    ['mSIBT','SIBT'],['mAIBT','AIBT'],['mSOBT','SOBT'],['mAOBT','AOBT'],
+    ['mImmat','Immat'],['mTypeAvion','TypeAvion'],['mParking','Parking'],
+    ['mCTOT','CTOT']
+  ];
+
+  map.forEach(([a,b])=>{
+    const A=document.getElementById(a), B=document.getElementById(b);
+    if(A && B){
+      B.value = A.value || '';
+      B.dispatchEvent(new Event('input',{bubbles:true}));
+      B.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+  });
+
+  // Sauve BC dans akMeta (pour ton bandeau)
+  const bc = (document.getElementById('mBC')?.value || '').toUpperCase().trim();
+  if(currentTabId){
+    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+    data.akMeta = data.akMeta || {};
+    data.akMeta.bc = bc;
+    localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
+  }
+
+  updateAllCalculations();
+  saveCurrentTabData();
+  closeInfoModal();
+  showPopup("Infos vol mises à jour", "#16a34a", 1400);
+}
+
+/* ===== UI header sync ===== */
+function updateUIHeaderV3(){
+  const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
+  const t = (id)=> (document.getElementById(id)?.value || '--:--') || '--:--';
+
+  // label vol (priorité akMeta)
+  let depFF = '', arrFF = '';
+  try{
+    if(currentTabId){
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      depFF = (data?.akMeta?.depFF || '').toUpperCase().trim();
+      arrFF = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+    }
+  }catch(e){}
+  const fallback = `${v('Cie')}${v('NVol')}`.trim();
+  document.getElementById('uiFlightLabel').textContent = (depFF || arrFF || fallback || 'VOL');
+
+  document.getElementById('uiFromBig').textContent = v('From') || '---';
+  document.getElementById('uiToBig').textContent   = v('To')   || '---';
+
+  document.getElementById('uiSIBT').textContent = t('SIBT');
+  document.getElementById('uiAIBT').textContent = t('AIBT');
+  document.getElementById('uiSOBT').textContent = t('SOBT');
+  document.getElementById('uiAOBT').textContent = t('AOBT');
+
+  document.getElementById('uiTOBT').textContent = document.getElementById('timer-tobt')?.textContent || '--:--';
+  document.getElementById('uiCTOT').textContent = t('CTOT');
+
+  document.getElementById('uiCD').textContent  = document.getElementById('timer-cd')?.textContent || '--:--';
+  document.getElementById('uiHLE').textContent = document.getElementById('timer-h40')?.textContent || '--:--';
+  document.getElementById('uiH15').textContent = document.getElementById('timer-h15')?.textContent || '--:--';
+  document.getElementById('uiLID').textContent = document.getElementById('timer-h8')?.textContent  || '--:--';
 }
 </script>
 
