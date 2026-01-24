@@ -1115,7 +1115,7 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
 
 <div class="app-wrap">
 
-  <!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
+ <!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
 <div class="ui-card ui-pad mb-5">
 
   <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
@@ -4076,6 +4076,12 @@ function clearAutoSave() {
 }
 
 function openInfoModal(){
+  // sécurité : si pas d'onglet -> rien
+  if(!currentTabId){
+    showPopup("Crée ou sélectionne un vol d'abord", "#ef4444", 1600);
+    return;
+  }
+
   // clone options (Cie / Type / Parking) une fois
   const copyOptions = (srcId, dstId)=>{
     const s = document.getElementById(srcId);
@@ -4088,31 +4094,25 @@ function openInfoModal(){
   copyOptions('TypeAvion','mTypeAvion');
   copyOptions('Parking','mParking');
 
-  // push values
+  // push valeurs depuis les vrais champs
   const map = [
     ['Date','mDate'],['Cie','mCie'],['NVol','mNVol'],['From','mFrom'],['To','mTo'],
     ['SIBT','mSIBT'],['AIBT','mAIBT'],['SOBT','mSOBT'],['AOBT','mAOBT'],
-    ['Immat','mImmat'],['TypeAvion','mTypeAvion'],['Parking','mParking'],
-    ['CTOT','mCTOT']
+    ['CTOT','mCTOT'],['Immat','mImmat'],['TypeAvion','mTypeAvion'],['Parking','mParking']
   ];
-  map.forEach(([a,b])=>{
-    const A=document.getElementById(a), B=document.getElementById(b);
+  map.forEach(([src,dst])=>{
+    const A=document.getElementById(src), B=document.getElementById(dst);
     if(A && B) B.value = A.value || '';
   });
 
-  // BC vient du storage (akMeta.bc) -> on le montre modifiable en texte
+  // Salle arrivée (BC) : depuis akMeta.bc
   let bcMeta = '';
   try{
-    if(currentTabId){
-      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-      bcMeta = (data?.akMeta?.bc || '').toUpperCase().trim();
-    }
+    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+    bcMeta = (data?.akMeta?.bc || '').toUpperCase().trim();
   }catch(e){}
-  document.getElementById('mBC').value = bcMeta;
-
-  // TOBT affiché (calculé)
-  const tobtTxt = document.getElementById('timer-tobt')?.textContent || '--:--';
-  document.getElementById('mTOBT').value = (tobtTxt.includes(':') ? tobtTxt : '');
+  const mBC = document.getElementById('mBC');
+  if(mBC) mBC.value = bcMeta;
 
   lockScroll();
   document.getElementById('infoBackdrop').style.display = '';
@@ -4126,36 +4126,42 @@ function closeInfoModal(){
 }
 
 function saveInfoModal(){
+  if(!currentTabId) return;
+
+  // pull valeurs vers les vrais champs
   const map = [
     ['mDate','Date'],['mCie','Cie'],['mNVol','NVol'],['mFrom','From'],['mTo','To'],
     ['mSIBT','SIBT'],['mAIBT','AIBT'],['mSOBT','SOBT'],['mAOBT','AOBT'],
-    ['mImmat','Immat'],['mTypeAvion','TypeAvion'],['mParking','Parking'],
-    ['mCTOT','CTOT']
+    ['mCTOT','CTOT'],['mImmat','Immat'],['mTypeAvion','TypeAvion'],['mParking','Parking']
   ];
 
-  map.forEach(([a,b])=>{
-    const A=document.getElementById(a), B=document.getElementById(b);
-    if(A && B){
-      B.value = A.value || '';
-      B.dispatchEvent(new Event('input',{bubbles:true}));
-      B.dispatchEvent(new Event('change',{bubbles:true}));
-    }
+  map.forEach(([src,dst])=>{
+    const A=document.getElementById(src), B=document.getElementById(dst);
+    if(!A || !B) return;
+    B.value = A.value || '';
+    B.dispatchEvent(new Event('input',{bubbles:true}));
+    B.dispatchEvent(new Event('change',{bubbles:true}));
   });
 
-  // Sauve BC dans akMeta (pour ton bandeau)
+  // sauve Salle Arr (BC) dans akMeta
   const bc = (document.getElementById('mBC')?.value || '').toUpperCase().trim();
-  if(currentTabId){
-    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-    data.akMeta = data.akMeta || {};
-    data.akMeta.bc = bc;
-    localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
-  }
+  const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+  data.akMeta = data.akMeta || {};
+  data.akMeta.bc = bc;
+  localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
 
   updateAllCalculations();
   saveCurrentTabData();
   closeInfoModal();
   showPopup("Infos vol mises à jour", "#16a34a", 1400);
 }
+
+// ESC ferme le modal
+document.addEventListener('keydown', (e)=>{
+  const modal = document.getElementById('infoModal');
+  if(!modal || modal.style.display === 'none') return;
+  if(e.key === 'Escape') closeInfoModal();
+});
 
 /* ===== UI header sync ===== */
 function updateUIHeaderV3(){
@@ -4247,6 +4253,100 @@ function updateUIHeaderV3(){
   </div>
 </div>
 
+<!-- ===== MODAL INFOS VOL ===== -->
+<div id="infoBackdrop" class="ui-modal-backdrop" onclick="closeInfoModal()"></div>
+
+<div id="infoModal" class="ui-modal" role="dialog" aria-modal="true">
+  <div class="ui-modal-box">
+    <div class="ui-modal-h">Modifier les informations vol</div>
+
+    <div class="ui-modal-b">
+      <div class="grid-auto">
+
+        <div class="field span-6">
+          <label class="label">Date</label>
+          <input class="input" type="date" id="mDate">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Compagnie</label>
+          <div class="select is-fullwidth">
+            <select id="mCie"></select>
+          </div>
+        </div>
+
+        <div class="field span-12">
+          <label class="label">N° vol</label>
+          <input class="input uppercase" type="text" id="mNVol">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">From</label>
+          <input class="input uppercase" type="text" id="mFrom" maxlength="3">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">To</label>
+          <input class="input uppercase" type="text" id="mTo" maxlength="3">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">SIBT</label>
+          <input class="input" type="time" id="mSIBT">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">AIBT</label>
+          <input class="input" type="time" id="mAIBT">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">SOBT</label>
+          <input class="input" type="time" id="mSOBT">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">AOBT</label>
+          <input class="input" type="time" id="mAOBT">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">CTOT</label>
+          <input class="input" type="time" id="mCTOT">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Immat</label>
+          <input class="input uppercase" type="text" id="mImmat" maxlength="6">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Type</label>
+          <div class="select is-fullwidth">
+            <select id="mTypeAvion"></select>
+          </div>
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Parking</label>
+          <div class="select is-fullwidth">
+            <select id="mParking"></select>
+          </div>
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Salle arr</label>
+          <input class="input uppercase" type="text" id="mBC" maxlength="4">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ui-modal-actions">
+      <button class="ui-btn-save" type="button" onclick="saveInfoModal()">💾 ENREGISTRER</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
