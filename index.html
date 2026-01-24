@@ -914,6 +914,19 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
   background: linear-gradient(90deg, var(--ui-accent), var(--ui-accent2));
 }
 
+.ui-meta-row .k{
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+.ui-meta-row .v{
+  margin-top: 4px;
+  font-weight: 1000;
+  font-size: .95rem;
+}
+
 </style>
 </head>
 
@@ -1115,22 +1128,25 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
 
 <div class="app-wrap">
 
- <!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
+<!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
 <div class="ui-card ui-pad mb-5">
 
+  <!-- TOP BAR -->
   <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
     <div class="ui-pill">
-      <span id="uiFlightLabel">—</span>
+      <span id="uiFlightLabel">VOL</span>
     </div>
 
     <div class="ui-status" id="uiStatus">• À L’HEURE</div>
 
     <button class="button is-light is-small" type="button" onclick="openInfoModal()">
-      ✎ Modifier
+      ✎ MODIFIER
     </button>
   </div>
 
-  <div class="ui-flight" style="margin-top:12px;">
+  <!-- MAIN FLIGHT LINE -->
+  <div class="ui-flight" style="margin-top:14px;">
+
     <!-- LEFT -->
     <div>
       <div class="ui-airport" id="uiFromBig">---</div>
@@ -1140,7 +1156,7 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
       </div>
     </div>
 
-    <!-- MID -->
+    <!-- MIDDLE -->
     <div class="ui-mid">
       <div class="k" style="color:var(--muted); font-weight:900; letter-spacing:.10em; text-transform:uppercase;">CD</div>
       <div style="font-weight:1000; font-size:1.05rem;" id="uiCD">--:--</div>
@@ -1157,21 +1173,62 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
         <div class="k">CTOT</div><div class="v" id="uiCTOT">--:--</div>
       </div>
     </div>
+
   </div>
 
+  <!-- STEPS -->
   <div class="ui-steps">
     <div class="ui-step">
       <div class="k">HLE</div>
       <div class="v" id="uiHLE">--:--</div>
     </div>
+
     <div class="ui-step">
       <div class="k">H-15</div>
       <div class="v" id="uiH15">--:--</div>
     </div>
+
     <div class="ui-step" style="border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.10);">
       <div class="k">LID</div>
       <div class="v" id="uiLID">--:--</div>
     </div>
+  </div>
+
+  <!-- META ROW -->
+  <div class="ui-meta-row" style="
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid var(--ui-border);
+    display:grid;
+    grid-template-columns: repeat(5, minmax(0,1fr));
+    gap:12px;
+  ">
+
+    <div>
+      <div class="k">IMMAT</div>
+      <div class="v" id="uiImmat">----</div>
+    </div>
+
+    <div>
+      <div class="k">TYPE</div>
+      <div class="v" id="uiType">----</div>
+    </div>
+
+    <div>
+      <div class="k">PARKING</div>
+      <div class="v" id="uiParking">----</div>
+    </div>
+
+    <div>
+      <div class="k">SALLE ARR</div>
+      <div class="v" id="uiBC">----</div>
+    </div>
+
+    <div>
+      <div class="k">DATE</div>
+      <div class="v" id="uiDate">----</div>
+    </div>
+
   </div>
 
 </div>
@@ -4164,37 +4221,59 @@ document.addEventListener('keydown', (e)=>{
 });
 
 /* ===== UI header sync ===== */
+<script>
+/* ===== UI header sync ===== */
 function updateUIHeaderV3(){
   const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
   const t = (id)=> (document.getElementById(id)?.value || '--:--') || '--:--';
+  const setTxt = (id, txt)=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = txt;
+  };
 
   // label vol (priorité akMeta)
-  let depFF = '', arrFF = '';
+  let depFF = '', arrFF = '', bcMeta = '';
   try{
     if(currentTabId){
       const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-      depFF = (data?.akMeta?.depFF || '').toUpperCase().trim();
-      arrFF = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+      depFF  = (data?.akMeta?.depFF || '').toUpperCase().trim();
+      arrFF  = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+      bcMeta = (data?.akMeta?.bc    || '').toUpperCase().trim();
     }
   }catch(e){}
+
   const fallback = `${v('Cie')}${v('NVol')}`.trim();
-  document.getElementById('uiFlightLabel').textContent = (depFF || arrFF || fallback || 'VOL');
+  setTxt('uiFlightLabel', depFF || arrFF || fallback || 'VOL');
 
-  document.getElementById('uiFromBig').textContent = v('From') || '---';
-  document.getElementById('uiToBig').textContent   = v('To')   || '---';
+  // airports
+  setTxt('uiFromBig', v('From') || '---');
+  setTxt('uiToBig',   v('To')   || '---');
 
-  document.getElementById('uiSIBT').textContent = t('SIBT');
-  document.getElementById('uiAIBT').textContent = t('AIBT');
-  document.getElementById('uiSOBT').textContent = t('SOBT');
-  document.getElementById('uiAOBT').textContent = t('AOBT');
+  // times
+  setTxt('uiSIBT', t('SIBT'));
+  setTxt('uiAIBT', t('AIBT'));
+  setTxt('uiSOBT', t('SOBT'));
+  setTxt('uiAOBT', t('AOBT'));
+  setTxt('uiCTOT', t('CTOT'));
 
-  document.getElementById('uiTOBT').textContent = document.getElementById('timer-tobt')?.textContent || '--:--';
-  document.getElementById('uiCTOT').textContent = t('CTOT');
+  // computed timers
+  setTxt('uiTOBT', document.getElementById('timer-tobt')?.textContent || '--:--');
+  setTxt('uiCD',   document.getElementById('timer-cd')?.textContent   || '--:--');
+  setTxt('uiHLE',  document.getElementById('timer-h40')?.textContent  || '--:--');
+  setTxt('uiH15',  document.getElementById('timer-h15')?.textContent  || '--:--');
+  setTxt('uiLID',  document.getElementById('timer-h8')?.textContent   || '--:--');
 
-  document.getElementById('uiCD').textContent  = document.getElementById('timer-cd')?.textContent || '--:--';
-  document.getElementById('uiHLE').textContent = document.getElementById('timer-h40')?.textContent || '--:--';
-  document.getElementById('uiH15').textContent = document.getElementById('timer-h15')?.textContent || '--:--';
-  document.getElementById('uiLID').textContent = document.getElementById('timer-h8')?.textContent  || '--:--';
+  // meta row
+  setTxt('uiImmat',   (document.getElementById('Immat')?.value || '----').toUpperCase());
+  setTxt('uiType',    document.getElementById('TypeAvion')?.value || '----');
+  setTxt('uiParking', document.getElementById('Parking')?.value || '----');
+  setTxt('uiBC',      bcMeta || '----');
+
+  const d = document.getElementById('Date')?.value;
+  setTxt(
+    'uiDate',
+    d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '----'
+  );
 }
 </script>
 
@@ -4216,9 +4295,7 @@ function updateUIHeaderV3(){
 
     <span class="tag is-light" id="akStatus">—</span>
 
-    <button class="button is-small is-light" type="button"
-            style="margin-left:auto"
-            onclick="closeAKPicker()">
+    <button class="button is-small is-light" type="button" style="margin-left:auto" onclick="closeAKPicker()">
       Fermer
     </button>
   </div>
