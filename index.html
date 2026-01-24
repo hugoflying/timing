@@ -743,215 +743,6 @@ body.modal-open{
   user-select:none;
 }
 .pax-split .input{ width:100%; }
-
-/* ===== UI v3 (look screenshots) ===== */
-:root{
-  --ui-surface: #ffffff;
-  --ui-soft: #f3f6ff;
-  --ui-border: rgba(17,24,39,.08);
-  --ui-radius-lg: 20px;
-  --ui-radius-md: 14px;
-  --ui-accent: #3b82f6;
-  --ui-accent2: #7c3aed;
-}
-
-html.dark, body.dark{
-  --ui-surface: #151922;
-  --ui-soft: rgba(59,130,246,.10);
-  --ui-border: rgba(229,231,235,.10);
-}
-
-/* cards "soft" */
-.ui-card{
-  background: var(--ui-surface);
-  border: 1px solid var(--ui-border);
-  border-radius: var(--ui-radius-lg);
-  box-shadow: 0 18px 36px rgba(0,0,0,.06);
-}
-html.dark .ui-card{ box-shadow: 0 18px 36px rgba(0,0,0,.35); }
-
-.ui-pad{ padding: 16px; }
-@media (min-width: 769px){ .ui-pad{ padding: 18px; } }
-
-.ui-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--ui-soft);
-  border: 1px solid var(--ui-border);
-  font-weight: 900;
-}
-
-.ui-status{
-  font-weight: 900;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(34,197,94,.12);
-  color: #16a34a;
-  border: 1px solid rgba(34,197,94,.20);
-}
-html.dark .ui-status{ background: rgba(34,197,94,.16); }
-
-.ui-flight{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-@media (min-width:600px){
-  .ui-flight{ grid-template-columns: 1fr 1fr; align-items:center; }
-}
-@media (min-width: 769px){
-  .ui-flight{ grid-template-columns: 1fr 1fr; align-items:center; }
-}
-
-.ui-airport{
-  font-size: 1.8rem;
-  font-weight: 1000;
-  letter-spacing: .02em;
-}
-.ui-timegrid{
-  margin-top: 8px;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px 10px;
-  font-weight: 900;
-}
-.ui-timegrid .k{ color: var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
-.ui-timegrid .v{ font-size: .95rem; }
-
-.ui-mid{
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  gap: 8px;
-  min-width: 180px;
-}
-.ui-arrow{
-  opacity:.6;
-  font-weight:900;
-}
-
-/* "Etapes clés" cards */
-.ui-steps{
-  margin-top: 14px;
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-@media (min-width: 769px){
-  .ui-steps{ grid-template-columns: repeat(3, minmax(0,1fr)); }
-}
-.ui-step{
-  border-radius: var(--ui-radius-md);
-  border: 1px solid var(--ui-border);
-  background: color-mix(in srgb, var(--ui-surface) 88%, var(--ui-accent) 12%);
-  padding: 12px 14px;
-}
-.ui-step .k{ color: var(--muted); font-weight: 900; text-transform:uppercase; letter-spacing:.10em; font-size:.72rem; }
-.ui-step .v{ margin-top: 6px; font-weight: 1000; font-size: 1.25rem; }
-
-/* Segmented control (Timing) */
-.ui-seg{
-  display:flex;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--ui-surface) 88%, #000 12%);
-  border: 1px solid var(--ui-border);
-  padding: 6px;
-  gap: 6px;
-}
-.ui-seg .ui-seg-btn{
-  flex:1 1 auto;
-  border-radius: 999px;
-  border: 0;
-  height: 40px;
-  font-weight: 1000;
-  background: transparent;
-  color: var(--text);
-}
-.ui-seg .ui-seg-btn.is-active{
-  background: var(--ui-accent);
-  color:#fff;
-}
-
-/* Modal look */
-.ui-modal-backdrop{
-  position:fixed; inset:0;
-  background: rgba(0,0,0,.35);
-  z-index: 7000;
-  display:none;
-}
-.ui-modal{
-  position:fixed; inset:0;
-  z-index: 7100;
-  display:none;
-  align-items:center; justify-content:center;
-  padding: 14px;
-}
-.ui-modal .ui-modal-box{
-  width: min(560px, 100%);
-  border-radius: 26px;
-  overflow:hidden;
-  background: var(--ui-surface);
-  border: 1px solid var(--ui-border);
-  box-shadow: 0 30px 70px rgba(0,0,0,.25);
-}
-.ui-modal-h{
-  padding: 16px 18px;
-  font-weight: 1000;
-  font-size: 1.15rem;
-  border-bottom: 1px solid var(--ui-border);
-}
-.ui-modal-b{ padding: 16px 18px; }
-.ui-modal-actions{ padding: 14px 18px 18px; }
-
-/* bouton gradient "Enregistrer" */
-.ui-btn-save{
-  width: 100%;
-  border-radius: 14px;
-  height: 48px;
-  font-weight: 1000;
-  border: 0;
-  color:#fff;
-  background: linear-gradient(90deg, var(--ui-accent), var(--ui-accent2));
-}
-
-.ui-meta-row .k{
-  color: var(--muted);
-  font-size: .72rem;
-  font-weight: 900;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-}
-.ui-meta-row .v{
-  margin-top: 4px;
-  font-weight: 1000;
-  font-size: .95rem;
-}
-
-
-/* ===== Header responsive compact ===== */
-@media (max-width: 900px){
-  .ui-box{ padding: 14px 14px 10px; }
-  .ui-grid{ gap: 12px; }
-  .ui-airport{ font-size: 2rem; }
-  .ui-flightno{ font-size: .9rem; padding: 6px 10px; }
-  .ui-status{ font-size: .85rem; padding: 6px 10px; }
-  .ui-timegrid{ gap: 10px 18px; }
-  .ui-timegrid .k{ font-size: .75rem; }
-  .ui-timegrid .v{ font-size: 1rem; }
-  .ui-meta{ padding-top: 10px; margin-top: 10px; gap: 14px; }
-  .ui-meta .k{ font-size: .75rem; }
-  .ui-meta .v{ font-size: .95rem; }
-}
-@media (max-width: 600px){
-  .ui-flight{ grid-template-columns: 1fr; }
-  .ui-flight > *{ justify-self: stretch; text-align: left; }
-  .ui-right{ text-align: left; }
-}
-
 </style>
 </head>
 
@@ -1152,76 +943,6 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
 </div>
 
 <div class="app-wrap">
-
-<!-- ===== HEADER FICHE VOL (visuel v3) ===== -->
-<div class="ui-card ui-pad mb-5">
-
-  <!-- TOP BAR -->
-  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
-    <div class="ui-pill">
-      <span id="uiFlightLabel">VOL</span>
-    </div>
-
-    <div class="ui-status" id="uiStatus">• À L’HEURE</div>
-
-    <button class="button is-light is-small" type="button" onclick="openInfoModal()">
-      ✎ MODIFIER
-    </button>
-  </div>
-
-  <!-- MAIN FLIGHT LINE -->
-  <div class="ui-flight" style="margin-top:14px;">
-
-    <!-- LEFT -->
-    <div>
-      <div class="ui-airport" id="uiFromBig">---</div>
-      <div class="ui-timegrid">
-        <div class="k">SIBT</div><div class="v" id="uiSIBT">--:--</div>
-        <div class="k">AIBT</div><div class="v" id="uiAIBT">--:--</div>
-      </div>
-    </div>
-
-    <!-- MIDDLE -->
-</div>
-
-  <!-- META ROW -->
-  <div class="ui-meta-row" style="
-    margin-top:14px;
-    padding-top:12px;
-    border-top:1px solid var(--ui-border);
-    display:grid;
-    grid-template-columns: repeat(5, minmax(0,1fr));
-    gap:12px;
-  ">
-
-    <div>
-      <div class="k">IMMAT</div>
-      <div class="v" id="uiImmat">----</div>
-    </div>
-
-    <div>
-      <div class="k">TYPE</div>
-      <div class="v" id="uiType">----</div>
-    </div>
-
-    <div>
-      <div class="k">PARKING</div>
-      <div class="v" id="uiParking">----</div>
-    </div>
-
-    <div>
-      <div class="k">SALLE ARR</div>
-      <div class="v" id="uiBC">----</div>
-    </div>
-
-    <div>
-      <div class="k">DATE</div>
-      <div class="v" id="uiDate">----</div>
-    </div>
-
-  </div>
-
-</div>
 
 <!-- INFO VOL -->
 <div class="card mb-5">
@@ -2275,8 +1996,7 @@ function renderTabs(){
     const nvol = (data.NVol || '').toUpperCase();
     const to   = (data.To   || '').toUpperCase();
 
-    const left = `${cie}${nvol}`.trim();
-
+    let left = `${cie}${nvol}`.trim();
     let label =
       left || to
         ? (to ? `${left} | ${to}`.trim() : left)
@@ -2285,14 +2005,14 @@ function renderTabs(){
     const wrap = document.createElement('span');
     wrap.className = 'tab-wrap';
 
-    // bouton onglet
+    // bouton onglet (switch)
     const btn = document.createElement('button');
     btn.className = `button ${id === currentTabId ? 'is-link' : 'is-light'}`;
-    btn.textContent = label;
+    btn.textContent = label || 'VOL';
     btn.onclick = ()=> switchTab(id);
     btn.ondblclick = ()=> deleteTab(id);
 
-    // bouton refresh AK
+    // bouton refresh ↻ (sans switch)
     const r = document.createElement('button');
     r.className = 'button is-light tab-refresh';
     r.type = 'button';
@@ -2310,6 +2030,7 @@ function renderTabs(){
       }
     };
 
+    // optionnel : griser si pas de akMeta
     if(!data.akMeta){
       r.disabled = true;
       r.title = "Pas de vol AK associé";
@@ -2409,7 +2130,6 @@ function deleteTab(id){
   updateInfoStrip();
 }
 
-  
 function clearFormFields(){
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
@@ -2449,6 +2169,8 @@ function saveCurrentTabData(){
   data.timer_h40=document.getElementById('timer-h40')?.textContent || '--:--';
   data.timer_h15=document.getElementById('timer-h15')?.textContent || '--:--';
   data.timer_h8=document.getElementById('timer-h8')?.textContent || '--:--';
+  data.timer_tobt=document.getElementById('timer-tobt')?.textContent || '--:--';
+  data.timer_cd=document.getElementById('timer-cd')?.textContent || '--:--';
 
   data.timingPanel = localStorage.getItem('timingPanel') || 'dep';
 
@@ -2613,7 +2335,6 @@ function updateAllCalculations() {
   updateHeaderOffset();
 
   updateInfoStrip();
-  updateUIHeaderV3();
 }
 
 /* TIMERS HLE/H-15 */
@@ -4119,141 +3840,6 @@ function clearAutoSave() {
     location.reload();
   }
 }
-
-function openInfoModal(){
-  // sécurité : si pas d'onglet -> rien
-  if(!currentTabId){
-    showPopup("Crée ou sélectionne un vol d'abord", "#ef4444", 1600);
-    return;
-  }
-
-  // clone options (Cie / Type / Parking) une fois
-  const copyOptions = (srcId, dstId)=>{
-    const s = document.getElementById(srcId);
-    const d = document.getElementById(dstId);
-    if(!s || !d) return;
-    if(d.options.length) return;
-    d.innerHTML = s.innerHTML;
-  };
-  copyOptions('Cie','mCie');
-  copyOptions('TypeAvion','mTypeAvion');
-  copyOptions('Parking','mParking');
-
-  // push valeurs depuis les vrais champs
-  const map = [
-    ['Date','mDate'],['Cie','mCie'],['NVol','mNVol'],['From','mFrom'],['To','mTo'],
-    ['SIBT','mSIBT'],['AIBT','mAIBT'],['SOBT','mSOBT'],['AOBT','mAOBT'],
-    ['CTOT','mCTOT'],['Immat','mImmat'],['TypeAvion','mTypeAvion'],['Parking','mParking']
-  ];
-  map.forEach(([src,dst])=>{
-    const A=document.getElementById(src), B=document.getElementById(dst);
-    if(A && B) B.value = A.value || '';
-  });
-
-  // Salle arrivée (BC) : depuis akMeta.bc
-  let bcMeta = '';
-  try{
-    const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-    bcMeta = (data?.akMeta?.bc || '').toUpperCase().trim();
-  }catch(e){}
-  const mBC = document.getElementById('mBC');
-  if(mBC) mBC.value = bcMeta;
-
-  lockScroll();
-  document.getElementById('infoBackdrop').style.display = '';
-  document.getElementById('infoModal').style.display = 'flex';
-}
-
-function closeInfoModal(){
-  unlockScroll();
-  document.getElementById('infoModal').style.display = 'none';
-  document.getElementById('infoBackdrop').style.display = 'none';
-}
-
-function saveInfoModal(){
-  if(!currentTabId) return;
-
-  // pull valeurs vers les vrais champs
-  const map = [
-    ['mDate','Date'],['mCie','Cie'],['mNVol','NVol'],['mFrom','From'],['mTo','To'],
-    ['mSIBT','SIBT'],['mAIBT','AIBT'],['mSOBT','SOBT'],['mAOBT','AOBT'],
-    ['mCTOT','CTOT'],['mImmat','Immat'],['mTypeAvion','TypeAvion'],['mParking','Parking']
-  ];
-
-  map.forEach(([src,dst])=>{
-    const A=document.getElementById(src), B=document.getElementById(dst);
-    if(!A || !B) return;
-    B.value = A.value || '';
-    B.dispatchEvent(new Event('input',{bubbles:true}));
-    B.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-
-  // sauve Salle Arr (BC) dans akMeta
-  const bc = (document.getElementById('mBC')?.value || '').toUpperCase().trim();
-  const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-  data.akMeta = data.akMeta || {};
-  data.akMeta.bc = bc;
-  localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
-
-  updateAllCalculations();
-  saveCurrentTabData();
-  closeInfoModal();
-  showPopup("Infos vol mises à jour", "#16a34a", 1400);
-}
-
-// ESC ferme le modal
-document.addEventListener('keydown', (e)=>{
-  const modal = document.getElementById('infoModal');
-  if(!modal || modal.style.display === 'none') return;
-  if(e.key === 'Escape') closeInfoModal();
-});
-
-/* ===== UI header sync ===== */
-function updateUIHeaderV3(){
-  const v = (id)=> (document.getElementById(id)?.value || '').toUpperCase().trim();
-  const t = (id)=> (document.getElementById(id)?.value || '--:--') || '--:--';
-  const setTxt = (id, txt)=>{
-    const el = document.getElementById(id);
-    if(el) el.textContent = txt;
-  };
-
-  // label vol (priorité akMeta)
-  let depFF = '', arrFF = '', bcMeta = '';
-  try{
-    if(currentTabId){
-      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
-      depFF  = (data?.akMeta?.depFF || '').toUpperCase().trim();
-      arrFF  = (data?.akMeta?.arrFF || '').toUpperCase().trim();
-      bcMeta = (data?.akMeta?.bc    || '').toUpperCase().trim();
-    }
-  }catch(e){}
-
-  const fallback = `${v('Cie')}${v('NVol')}`.trim();
-  setTxt('uiFlightLabel', depFF || arrFF || fallback || 'VOL');
-
-  // airports
-  setTxt('uiFromBig', v('From') || '---');
-  setTxt('uiToBig',   v('To')   || '---');
-
-  // times
-  setTxt('uiSIBT', t('SIBT'));
-  setTxt('uiAIBT', t('AIBT'));
-  setTxt('uiSOBT', t('SOBT'));
-  setTxt('uiAOBT', t('AOBT')); 
-// computed timers
-  setTxt('uiTOBT', document.getElementById('timer-tobt')?.textContent || '--:--'); 
-// meta row
-  setTxt('uiImmat',   (document.getElementById('Immat')?.value || '----').toUpperCase());
-  setTxt('uiType',    document.getElementById('TypeAvion')?.value || '----');
-  setTxt('uiParking', document.getElementById('Parking')?.value || '----');
-  setTxt('uiBC',      bcMeta || '----');
-
-  const d = document.getElementById('Date')?.value;
-  setTxt(
-    'uiDate',
-    d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '----'
-  );
-}
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
@@ -4274,7 +3860,9 @@ function updateUIHeaderV3(){
 
     <span class="tag is-light" id="akStatus">—</span>
 
-    <button class="button is-small is-light" type="button" style="margin-left:auto" onclick="closeAKPicker()">
+    <button class="button is-small is-light" type="button"
+            style="margin-left:auto"
+            onclick="closeAKPicker()">
       Fermer
     </button>
   </div>
@@ -4309,100 +3897,6 @@ function updateUIHeaderV3(){
   </div>
 </div>
 
-<!-- ===== MODAL INFOS VOL ===== -->
-<div id="infoBackdrop" class="ui-modal-backdrop" onclick="closeInfoModal()"></div>
-
-<div id="infoModal" class="ui-modal" role="dialog" aria-modal="true">
-  <div class="ui-modal-box">
-    <div class="ui-modal-h">Modifier les informations vol</div>
-
-    <div class="ui-modal-b">
-      <div class="grid-auto">
-
-        <div class="field span-6">
-          <label class="label">Date</label>
-          <input class="input" type="date" id="mDate">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">Compagnie</label>
-          <div class="select is-fullwidth">
-            <select id="mCie"></select>
-          </div>
-        </div>
-
-        <div class="field span-12">
-          <label class="label">N° vol</label>
-          <input class="input uppercase" type="text" id="mNVol">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">From</label>
-          <input class="input uppercase" type="text" id="mFrom" maxlength="3">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">To</label>
-          <input class="input uppercase" type="text" id="mTo" maxlength="3">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">SIBT</label>
-          <input class="input" type="time" id="mSIBT">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">AIBT</label>
-          <input class="input" type="time" id="mAIBT">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">SOBT</label>
-          <input class="input" type="time" id="mSOBT">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">AOBT</label>
-          <input class="input" type="time" id="mAOBT">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">CTOT</label>
-          <input class="input" type="time" id="mCTOT">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">Immat</label>
-          <input class="input uppercase" type="text" id="mImmat" maxlength="6">
-        </div>
-
-        <div class="field span-6">
-          <label class="label">Type</label>
-          <div class="select is-fullwidth">
-            <select id="mTypeAvion"></select>
-          </div>
-        </div>
-
-        <div class="field span-6">
-          <label class="label">Parking</label>
-          <div class="select is-fullwidth">
-            <select id="mParking"></select>
-          </div>
-        </div>
-
-        <div class="field span-6">
-          <label class="label">Salle arr</label>
-          <input class="input uppercase" type="text" id="mBC" maxlength="4">
-        </div>
-
-      </div>
-    </div>
-
-    <div class="ui-modal-actions">
-      <button class="ui-btn-save" type="button" onclick="saveInfoModal()">💾 ENREGISTRER</button>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
