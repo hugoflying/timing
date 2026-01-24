@@ -1176,24 +1176,6 @@ html.dark .ui-status{ background: rgba(34,197,94,.16); }
 
   </div>
 
-  <!-- STEPS -->
-  <div class="ui-steps">
-    <div class="ui-step">
-      <div class="k">HLE</div>
-      <div class="v" id="uiHLE">--:--</div>
-    </div>
-
-    <div class="ui-step">
-      <div class="k">H-15</div>
-      <div class="v" id="uiH15">--:--</div>
-    </div>
-
-    <div class="ui-step" style="border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.10);">
-      <div class="k">LID</div>
-      <div class="v" id="uiLID">--:--</div>
-    </div>
-  </div>
-
   <!-- META ROW -->
   <div class="ui-meta-row" style="
     margin-top:14px;
@@ -2285,7 +2267,8 @@ function renderTabs(){
     const nvol = (data.NVol || '').toUpperCase();
     const to   = (data.To   || '').toUpperCase();
 
-    let left = `${cie}${nvol}`.trim();
+    const left = `${cie}${nvol}`.trim();
+
     let label =
       left || to
         ? (to ? `${left} | ${to}`.trim() : left)
@@ -2294,14 +2277,14 @@ function renderTabs(){
     const wrap = document.createElement('span');
     wrap.className = 'tab-wrap';
 
-    // bouton onglet (switch)
+    // bouton onglet
     const btn = document.createElement('button');
     btn.className = `button ${id === currentTabId ? 'is-link' : 'is-light'}`;
-    btn.textContent = label || 'VOL';
+    btn.textContent = label;
     btn.onclick = ()=> switchTab(id);
     btn.ondblclick = ()=> deleteTab(id);
 
-    // bouton refresh ↻ (sans switch)
+    // bouton refresh AK
     const r = document.createElement('button');
     r.className = 'button is-light tab-refresh';
     r.type = 'button';
@@ -2319,7 +2302,6 @@ function renderTabs(){
       }
     };
 
-    // optionnel : griser si pas de akMeta
     if(!data.akMeta){
       r.disabled = true;
       r.title = "Pas de vol AK associé";
@@ -2459,8 +2441,6 @@ function saveCurrentTabData(){
   data.timer_h40=document.getElementById('timer-h40')?.textContent || '--:--';
   data.timer_h15=document.getElementById('timer-h15')?.textContent || '--:--';
   data.timer_h8=document.getElementById('timer-h8')?.textContent || '--:--';
-  data.timer_tobt=document.getElementById('timer-tobt')?.textContent || '--:--';
-  data.timer_cd=document.getElementById('timer-cd')?.textContent || '--:--';
 
   data.timingPanel = localStorage.getItem('timingPanel') || 'dep';
 
@@ -4257,10 +4237,7 @@ function updateUIHeaderV3(){
   // computed timers
   setTxt('uiTOBT', document.getElementById('timer-tobt')?.textContent || '--:--');
   setTxt('uiCD',   document.getElementById('timer-cd')?.textContent   || '--:--');
-  setTxt('uiHLE',  document.getElementById('timer-h40')?.textContent  || '--:--');
-  setTxt('uiH15',  document.getElementById('timer-h15')?.textContent  || '--:--');
-  setTxt('uiLID',  document.getElementById('timer-h8')?.textContent   || '--:--');
-
+  
   // meta row
   setTxt('uiImmat',   (document.getElementById('Immat')?.value || '----').toUpperCase());
   setTxt('uiType',    document.getElementById('TypeAvion')?.value || '----');
