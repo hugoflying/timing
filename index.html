@@ -3,1106 +3,1134 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SUIVI VOL</title>
+<title>SUIVI PERFORMANCE</title>
 
+<!-- Bulma -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
 
 <style>
-* { box-sizing: border-box; }
+:root{
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --shadow: 0 10px 28px rgba(0,0,0,.08);
+  --shadow2: 0 6px 18px rgba(0,0,0,.10);
+  --radius: 14px;
 
-:root {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --field-bg: #ffffff;
+  --field-text: #111827;
+  --field-border: rgba(17,24,39,.18);
+  --field-placeholder: rgba(107,114,128,.95);
 
-  --accent-blue: #3b82f6;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-  --accent-orange: #f59e0b;
-  --accent-purple: #8b5cf6;
+  --fixed-header-h: 140px;
 
-  --border-light: #e2e8f0;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-
-  --space-xs: 8px;
-  --space-sm: 12px;
-  --space-md: 16px;
-  --space-lg: 24px;
-
-  --tabsbar-height: 48px;
-  --header-height: 240px;
+  --gap: 10px;
+  --padCard: 12px;
+  --labelSize: .78rem;
+  --inputH: 42px;
 }
 
-html.dark {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --border-light: #334155;
+@media (min-width: 769px){
+  :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  font-size: 15px;
-  line-height: 1.5;
+body{ background: var(--bg); color: var(--text); margin: 0; }
+html, body{ min-height: 100%; background: var(--bg) !important; }
+
+html.dark, body.dark{
+  --bg: #0f1115;
+  --card: #151922;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --shadow: 0 10px 28px rgba(0,0,0,.45);
+  --shadow2: 0 6px 18px rgba(0,0,0,.50);
+
+  --field-bg: #0f172a;
+  --field-text: #e5e7eb;
+  --field-border: rgba(229,231,235,.16);
+  --field-placeholder: rgba(156,163,175,.95);
 }
 
-/* ===============================================
-   TABS SYSTEM
-   =============================================== */
-.tabs-bar {
+/* ===== FIXED HEADER ===== */
+.fixed-header{
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--tabsbar-height);
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
-  z-index: 102;
-  overflow-x: auto;
-  scrollbar-width: none;
+  inset: 0 0 auto 0;
+  z-index: 3000;
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(0,0,0,.08);
 }
-.tabs-bar::-webkit-scrollbar { display: none; }
+html.dark .fixed-header{ border-bottom-color: rgba(255,255,255,.08); }
 
-.tabs-container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  min-width: min-content;
-}
-
-.tab-item {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-  user-select: none;
-}
-
-.tab-item.active {
-  background: var(--accent-blue);
-  color: white;
-  border-color: var(--accent-blue);
-}
-
-.tab-close {
-  background: none;
-  border: none;
-  color: currentColor;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0;
-  opacity: 0.65;
-  transition: opacity 0.15s;
-  line-height: 1;
-}
-.tab-close:hover { opacity: 1; }
-
-.tab-add {
-  flex: 0 0 auto;
-  background: var(--accent-green);
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 700;
-  color: white;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.tab-add:hover { background: #059669; transform: translateY(-1px); }
-
-/* ===============================================
-   FIXED HEADER
-   =============================================== */
-.fixed-header {
-  position: fixed;
-  top: var(--tabsbar-height);
-  left: 0;
-  right: 0;
-  background: var(--bg-secondary);
-  border-bottom: 2px solid var(--border-light);
-  z-index: 101;
-  box-shadow: var(--shadow-md);
-}
-
-.header-container {
-  max-width: 600px;
+.fixed-header-inner{
+  max-width: 1120px;
   margin: 0 auto;
+  padding: 10px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-wrap{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
+}
+
+/* rien afficher tant qu'il n'y a pas d'onglet */
+.app-wrap{ display:none; }
+body.has-tab .app-wrap{ display:block; }
+body.no-tab .timer-row{ display:none !important; }
+
+/* Topbar */
+.topbar-inner{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Tabs row */
+.tabs-row{ display:flex; justify-content:center; }
+.tabs-chip{
+  width: 100%;
+  max-width: 1120px;
+  border-radius: 999px;
   padding: 10px 14px;
-  cursor: pointer;
-}
-.header-container:hover { background: rgba(59, 130, 246, 0.02); }
-
-.flight-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent-blue);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.3px;
-  margin-bottom: 8px;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 10px;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.status-badge.ontime { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-.status-badge.delayed { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
-
-.countdown-display {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--text-secondary);
-  letter-spacing: 0.3px;
-  margin-bottom: 3px;
-}
-.countdown-display #countdownValue {
-  font-size: 12px;
-  font-weight: 900;
-  color: var(--accent-blue);
-  font-variant-numeric: tabular-nums;
-}
-
-.route-container {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: var(--space-sm);
-  align-items: start;
-  margin-bottom: var(--space-sm);
-}
-
-.route-side { display: flex; flex-direction: column; gap: 2px; }
-.route-side.left { align-items: flex-start; }
-.route-side.right { align-items: flex-end; }
-
-.airport-code {
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  color: var(--text-primary);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.flight-time {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  line-height: 1.2;
-}
-
-.flight-time .label {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  font-weight: 800;
-  min-width: 38px;
-  text-align: left;
-}
-
-.flight-time .value {
-  font-size: 14px;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  color: var(--accent-blue);
-}
-
-.route-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding-top: 4px;
-}
-
-.route-arrow { color: var(--text-muted); font-size: 20px; font-weight: 300; }
-
-.header-meta {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-light);
-}
-
-.meta-item { display: flex; flex-direction: column; gap: 2px; }
-.meta-label {
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  font-weight: 800;
-  line-height: 1;
-}
-.meta-value {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.flight-time .editable-time {
-  color: var(--accent-purple);
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  transition: background 0.15s;
-}
-.flight-time .editable-time:hover { background: rgba(139, 92, 246, 0.1); }
-
-.edit-hint {
-  font-size: 9px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-top: 6px;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.header-container:hover .edit-hint { opacity: 1; }
-
-/* ===============================================
-   MAIN CONTENT
-   =============================================== */
-.app-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: var(--space-md);
-  padding-top: calc(var(--header-height) + var(--tabsbar-height) + var(--space-md));
-  padding-bottom: 88px;
-}
-
-.section-title {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  font-weight: 900;
-  margin-bottom: var(--space-md);
-}
-
-/* ===============================================
-   STATUS CARDS
-   =============================================== */
-.status-section,
-.timing-section,
-.form-section {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ✅ fix responsive: 3 colonnes -> 2 -> 1 */
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
-}
-@media (max-width: 520px) {
-  .status-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 360px) {
-  .status-grid { grid-template-columns: 1fr; }
-}
-
-.status-card {
-  background: var(--bg-primary);
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: var(--space-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.status-card.active {
-  border-color: var(--accent-green);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-}
-
-.status-card.warning {
-  border-color: var(--accent-orange);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
-}
-
-.status-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  font-weight: 900;
-}
-
-.status-time {
-  font-size: 18px;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.5px;
-  color: var(--text-primary);
-}
-
-.status-card.active .status-time { color: var(--accent-green); }
-.status-card.warning .status-time { color: var(--accent-orange); }
-
-/* ===============================================
-   TIMING
-   =============================================== */
-.tabs.is-toggle {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--space-md);
-}
-
-.tabs.is-toggle ul {
-  display: flex;
-  gap: 6px;
-  list-style: none;
-  margin: 0;
-  padding: 6px;
-  background: var(--bg-primary);
-  border-radius: var(--radius-md);
-}
-
-.tabs.is-toggle li { flex: 1; }
-
-.tabs.is-toggle li a {
-  display: block;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.15s;
-  text-align: center;
-  cursor: pointer;
-}
-
-.tabs.is-toggle li.is-active a {
-  background: var(--accent-blue);
-  color: white;
-}
-
-.grid-auto {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--space-md);
-}
-
-.span-12 { grid-column: span 12; }
-.span-6 { grid-column: span 6; }
-
-@media (max-width: 600px) {
-  .span-6 { grid-column: span 12; }
-}
-
-/* Timing fields */
-.field { display: flex; flex-direction: column; gap: 6px; margin: 0; }
-.field .label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  font-weight: 900;
-  margin: 0;
-}
-.field .control { position: relative; }
-.field .input {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  font-size: 16px;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-  text-align: center;
-  outline: none;
-  transition: all 0.2s;
-  width: 100%;
-}
-.field .input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.btn-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
-  margin-top: 6px;
-}
-.btn-actions .button {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 8px;
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-actions .button:hover {
-  background: var(--accent-blue);
-  color: white;
-  border-color: var(--accent-blue);
-  transform: translateY(-1px);
-}
-.btn-actions .button.is-link {
-  background: var(--accent-blue);
-  color: white;
-  border-color: var(--accent-blue);
-}
-.btn-actions .button.is-link:hover {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-
-/* Cards */
-.card { background: var(--bg-primary); border-radius: var(--radius-md); margin-bottom: var(--space-md); }
-.card:last-child { margin-bottom: 0; }
-.card-content { padding: var(--space-md); }
-.mb-4 { margin-bottom: var(--space-md); }
-
-/* ===============================================
-   FORM SECTION
-   =============================================== */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-}
-.form-grid.single { grid-template-columns: 1fr; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group.full { grid-column: 1 / -1; }
-
-.form-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  font-weight: 900;
-}
-
-.form-input,
-.form-select {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text-primary);
-  outline: none;
-  transition: all 0.2s;
-}
-
-.form-input:focus,
-.form-select:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.form-input.uppercase,
-.form-textarea.uppercase { text-transform: uppercase; }
-
-.form-textarea {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-  outline: none;
-  min-height: 100px;
-  resize: vertical;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-.form-textarea:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* ===============================================
-   LOAD BUTTON
-   =============================================== */
-.load-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 16px;
-  color: white;
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: var(--shadow-md);
-  width: 100%;
-}
-.load-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-/* ===============================================
-   ACTION BUTTONS
-   =============================================== */
-.actions-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border-light);
-  padding: var(--space-sm);
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-  z-index: 99;
-}
-
-.actions-grid {
-  max-width: 600px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--space-xs);
-}
-
-.action-btn {
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 14px 12px;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-transform: uppercase;
-}
-.action-btn.validate { background: var(--accent-green); color: white; }
-.action-btn.save { background: var(--accent-blue); color: white; }
-.action-btn.reset { background: var(--bg-primary); color: var(--accent-red); border: 1px solid var(--border-light); }
-.action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-
-/* ===============================================
-   MODALS
-   =============================================== */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  display: none;
-}
-.modal-backdrop.active { display: block; }
-
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 201;
-  display: none;
-  overflow-y: auto;
-  padding: var(--space-md);
-}
-.modal.active { display: block; }
-
-/* ✅ fix iOS/Android: centrer propre + éviter le “scroll derrière” */
-.modal-content {
-  max-width: 600px;
-  margin: var(--space-lg) auto;
-  background: var(--bg-primary);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden; /* évite les débordements sur header/tabs arrondis */
-}
-
-.modal-header {
-  padding: var(--space-md);
-  border-bottom: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-}
-.modal-title { font-size: 18px; font-weight: 900; color: var(--text-primary); }
-
-.modal-close {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.modal-tabs {
-  display: flex;
-  gap: var(--space-xs);
-  padding: var(--space-sm);
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
-}
-.modal-tab {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 10px;
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.modal-tab.active { background: var(--accent-blue); color: white; }
-
-.modal-body {
-  padding: var(--space-md);
-  overflow-x: hidden;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  scrollbar-width: thin;
 }
-
-.modal-section {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-.modal-section-title {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
+.tabs-chip .button{
+  border-radius: 999px;
+  flex: 0 0 auto;
   font-weight: 900;
-  margin-bottom: var(--space-md);
 }
 
-.pax-input-group { display: flex; align-items: center; gap: var(--space-sm); }
-.pax-plus { font-size: 18px; font-weight: 900; color: var(--text-muted); }
+/* bouton refresh collé à chaque onglet */
+.tab-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex: 0 0 auto;
+}
+.tab-refresh{
+  border-radius: 999px !important;
+  padding: 0 10px !important;
+  height: 36px;
+  min-width: 36px;
+  font-weight: 900;
+}
+.tab-refresh.is-loading{ pointer-events:none; opacity:.7; }
 
-.modal-grid-4 {
+/* Timers chips */
+.timer-row{
+  display:flex;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.timer-chip{
+  min-width: 140px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap:10px;
+  color: var(--text);
+}
+.timer-chip .k{ font-weight: 900; color: var(--text); }
+.timer-chip .v{
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background:#ef4444;
+  color:#fff;
+  min-width: 70px;
+  text-align:center;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#timer-tobt{ background:#16a34a !important; }
+#timer-h8{ background:#facc15 !important; color:#fff !important; }
+#timer-cd{ background:#93c5fd !important; color:#111 !important; }
+#timer-cd.cd-over{ background:#fee2e2 !important; color:#ef4444 !important; }
+
+/* CTOT éditable */
+.ctot-pill{
+  width: auto;
+  min-width: 70px;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background:#334155 !important;
+  color:#fff !important;
+  font-weight: 900 !important;
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
+  text-align:center;
+  height: auto;
+  line-height: 1.2;
+  font-size: 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ctot-pill::-webkit-datetime-edit{ color:#fff; }
+.ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
+
+/* Bulma tweaks */
+.card{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--card);
+  color: var(--text);
+}
+.card-header{
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  background: color-mix(in srgb, var(--card) 85%, #3b82f6 15%);
+}
+body.dark .card-header{
+  background: color-mix(in srgb, var(--card) 80%, #60a5fa 20%);
+}
+.card-header-title{ font-weight: 900; color: var(--text) !important; }
+.section-collapse{ cursor: pointer; user-select: none; }
+.collapsed-body{ display: none; }
+
+.card-content{ padding: var(--padCard) !important; }
+
+/* Inputs */
+.input, .select select, .textarea{
+  border-radius: 12px;
+  background: var(--field-bg) !important;
+  color: var(--field-text) !important;
+  border-color: var(--field-border) !important;
+  height: var(--inputH);
+  font-weight: 800;
+}
+.textarea{ min-height: 110px; height: auto; }
+.input.uppercase{ text-transform: uppercase; }
+textarea.si-uppercase{ text-transform: uppercase; }
+
+.input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
+
+.field .label{
+  font-weight: 900;
+  color: var(--text) !important;
+  font-size: var(--labelSize) !important;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  opacity: .9;
+}
+
+/* FORCE couleur TOB */
+#FinalTOB.is-invalid{ color:#ef4444 !important; }
+#FinalTOB.is-valid{ color: var(--field-text) !important; }
+
+/* Buttons */
+.btn-actions{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+.btn-actions .button{ border-radius: 12px; font-weight: 900; height: 40px; }
+
+/* Grilles responsive simples */
+.grid-auto{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.span-12{ grid-column: span 12; }
+.span-6{  grid-column: span 12; }
+.span-4{  grid-column: span 6; }
+.span-3{  grid-column: span 6; }
+@media (min-width: 769px){
+  .span-6{ grid-column: span 6; }
+  .span-4{ grid-column: span 4; }
+  .span-3{ grid-column: span 3; }
+}
+/* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE (base) ===== */
+.kv-strip{
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-sm);
+  grid-template-columns: 1fr; /* mobile */
+  gap: var(--gap);
 }
-@media (max-width: 600px) {
-  .modal-grid-4 { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 600px){
+  .kv-strip{
+    grid-template-columns: 1fr 1fr; /* tablette + */
+  }
 }
 
-/* ===============================================
-   COLLAPSIBLE
-   =============================================== */
-.collapsible-header {
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+
+  /* grid spans tablette */
+  .span-2{ grid-column: span 2; }
+  .span-3{ grid-column: span 3; }
+  .span-4{ grid-column: span 4; }
+  .span-6{ grid-column: span 6; }
+
+  /* Réduction globale */
+  .card-content{ padding: var(--padCard) !important; }
+
+  /* Bandeaux essentiels */
+  .kv-card{ padding: 8px 10px; }
+  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
+  .kv-value{ font-size: 1rem; font-weight: 800; }
+
+  /* Timers chips */
+  .timer-chip{ min-width: 124px; padding: 8px 12px; }
+  .timer-chip .k{ font-size: .75rem; }
+  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
+}
+
+/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
+.select.is-fullwidth select{
+  height: var(--inputH);
+  line-height: calc(var(--inputH) - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-md);
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s;
+  font-weight: 800;
 }
-.collapsible-header:hover { box-shadow: var(--shadow-md); }
 
-.collapsible-title {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-primary);
+/* "Rows" ultra compactes pour infos clés */
+.kv-strip{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+@media (min-width: 769px){
+  .kv-strip{ grid-template-columns: 1fr 1fr; }
+}
+.kv-card{
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+body.dark .kv-card{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.kv-left{ display:flex; flex-direction:column; gap:2px; }
+.kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
+.kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
+
+/* Popup toast */
+#popup{
+  position: fixed;
+  top: calc(var(--fixed-header-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 16px;
+  border-radius: 12px;
+  color:#fff;
+  z-index: 4000;
+  box-shadow: var(--shadow);
+}
+
+/* Toggle switch */
+.toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  cursor:pointer;
+  user-select:none;
+  font-weight: 900;
+  color: var(--text);
+}
+.toggle input{ position:absolute; opacity:0; pointer-events:none; }
+.toggle .track{
+  width: 44px; height: 26px; border-radius: 999px;
+  background: rgba(148,163,184,.55);
+  position: relative; flex: 0 0 auto;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.toggle .thumb{
+  width: 22px; height: 22px; border-radius: 999px;
+  background: #fff; position:absolute; top: 2px; left: 2px;
+  transition: transform .18s ease, background .18s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+}
+.toggle input:checked + .track{
+  background: color-mix(in srgb, #3b82f6 70%, #22c55e 30%);
+}
+.toggle input:checked + .track .thumb{ transform: translateX(18px); }
+
+/* ===== AK picker (FULLSCREEN POPUP) ===== */
+#akPopover{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
+  width: auto;
+  transform: none;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  z-index: 4700;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  display: none;
+  overflow: auto;
+
+  flex-direction: column;
+}
+body.dark #akPopover{ border-color: rgba(255,255,255,.10); }
+
+#akBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 4600;
+  display: none;
+}
+
+#akPopover .ak-header{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--card);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark #akPopover .ak-header{ border-bottom-color: rgba(255,255,255,.10); }
+
+#akList{ flex: 1 1 auto; overflow-y: auto; }
+
+/* ===== TIMELINE ===== */
+.timeline-track {
+  position: absolute; left:6%; right:6%;
+  height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
+}
+body.dark .timeline-track{ background:#2e2e2e; }
+
+.timeline-tick { position: absolute; width: 1px; background:rgba(0,0,0,0.08); }
+body.dark .timeline-tick { background:#3e444b; }
+
+.timeline-tick-label {
+  position: absolute; transform: translateX(-50%);
+  font-size: 14px; font-weight: 800; color:#111827;
+}
+body.dark .timeline-tick-label { color:#cfd4da; }
+
+.tl-event, .tl-range { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height:1; z-index: 1; }
+.tl-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+  margin: 0 auto 4px;
+}
+.tl-label {
+  padding: 4px 10px; border-radius: 999px;
+  background: #f1f3f5; color:#111; font-size: 14px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.07);
   font-weight: 900;
 }
+body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
 
-.collapsible-icon {
-  font-size: 20px;
-  color: var(--text-muted);
-  transition: transform 0.2s;
+.tl--std  { --c:#64748b; }
+.tl--tobt { --c:#16a34a; }
+.tl--ctot { --c:#334155; }
+.tl--ops  { --c:#2563eb; }
+.tl--turn { --c:#ef4444; }
+.tl-event .tl-dot { background: var(--c); }
+
+.tl-range{
+  height: 16px;
+  background: color-mix(in srgb, var(--c) 42%, transparent);
+  border: 2px solid var(--c);
+  border-radius: 999px;
+  z-index: 2;
 }
-.collapsible-header.collapsed .collapsible-icon { transform: rotate(-90deg); }
+.tl-range-label{
+  position:absolute; top: -22px; left:50%; transform: translateX(-50%);
+  font-size: 13px; background: rgba(255,255,255,.92);
+  padding: 2px 8px; border-radius: 10px; font-weight: 900;
+  color: #111;
+}
+body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
 
-.collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-.collapsible-content.expanded { max-height: 2200px; }
+.timeline-toolbar{
+  display:flex; align-items:center; gap:8px; margin: 4px 0 10px;
+  flex-wrap: wrap;
+}
+.timeline-scroll{
+  overflow-x:auto; overflow-y:hidden;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+body.dark .timeline-scroll{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.timeline-canvas{ position:relative; min-width:600px; width:100%; }
 
-/* ===============================================
-   RESPONSIVE
-   =============================================== */
-@media (max-width: 480px) {
-  :root { --header-height: 260px; }
-  .airport-code { font-size: 20px; }
-  .flight-time .value { font-size: 12px; }
-  .status-time { font-size: 16px; }
-  .header-meta { gap: 6px; }
-  .meta-value { font-size: 10px; }
+/* DL error */
+.dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
+
+/* ===== SETTINGS (gear) bottom menu ===== */
+#settingsBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 4800;
+  display: none;
 }
 
-/* ===============================================
-   DARK MODE
-   =============================================== */
-html.dark .modal-content { background: var(--bg-secondary); }
-html.dark .status-card,
-html.dark .form-input,
-html.dark .form-select,
-html.dark .form-textarea,
-html.dark .field .input,
-html.dark .btn-actions .button,
-html.dark .card { background: var(--bg-primary); }
-html.dark .action-btn.reset { background: var(--bg-primary); }
+#settingsFab{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 4900;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: var(--shadow2);
+}
+
+#settingsMenu{
+  position: fixed;
+  right: 14px;
+  bottom: 74px;
+  z-index: 4901;
+  width: min(320px, calc(100vw - 28px));
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.08);
+  padding: 12px;
+  display: none;
+}
+body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
+
+#settingsMenu .settings-title{ font-weight: 900; margin-bottom: 10px; }
+#settingsMenu .settings-row{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== RESPONSIVE tweaks ===== */
+@media (max-width: 768px){
+  .timer-chip{ min-width: 128px; }
+  .timeline-canvas{ min-width: 720px; }
+}
+@media (max-width: 420px){
+  .timer-chip{ min-width: 120px; padding: 9px 12px; }
+  .timer-chip .v{ min-width: 64px; }
+  .ctot-pill{ min-width: 64px; }
+}
+@media (max-width: 480px){
+  .timer-row{ gap: 6px; }
+  .timer-chip{ min-width: 96px; padding: 6px 8px; gap: 6px; }
+  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
+  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
+  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
+}
+
+/* ===== LDM modal (neutre, sans pastilles couleur) ===== */
+#ldmBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.40);
+  z-index: 4400;
+  display: none;
+}
+
+#ldmModal{
+  position: fixed;
+  inset: calc(var(--fixed-header-h) + 10px) 10px 10px 10px;
+  z-index: 4500;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.10);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.dark #ldmModal{ border-color: rgba(255,255,255,.10); }
+
+.ldm-header{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+body.dark .ldm-header{ border-bottom-color: rgba(255,255,255,.10); }
+
+.ldm-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex: 1 1 auto;
+}
+.ldm-title strong{ font-weight: 900; font-size: 1.05rem; }
+
+#ldmHint{
+  font-weight: 900;
+  border-radius: 999px;
+}
+
+/* segment buttons */
+.lm-seg{
+  display:inline-flex;
+  gap:6px;
+  background: color-mix(in srgb, var(--card) 86%, #000 14%);
+  padding: 6px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.lm-seg .button{
+  border-radius: 999px !important;
+  font-weight: 900;
+  height: 34px;
+}
+.lm-seg .button.is-active{
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+.ldm-body{
+  padding: 12px;
+  overflow: auto;
+}
+
+/* cartes neutres (ARR/EXP/FINAL = même style) */
+.ldm-card{
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card) 92%, #000 8%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+
+/* header carte neutre */
+.ldm-card-hdr{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card) 88%, #000 12%);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
+
+/* on SUPPRIME l’indicateur couleur */
+.ldm-dot{ display:none !important; }
+
+.ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
+.ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
+
+/* grille 2 colonnes simple */
+.ldm-grid{
+  padding: 10px 12px 12px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+.ldm-span-2{ grid-column: span 2; }
+
+.ldm-in{
+  height: 38px !important;
+  padding: 6px 10px !important;
+  font-weight: 900 !important;
+  text-align: center;
+  letter-spacing: .02em;
+}
+.ldm-ta{
+  min-height: 90px !important;
+  height: auto !important;
+  font-weight: 800;
+}
+
+/* ===== ligne H1..H4 / OA..OD : plus de pastilles ===== */
+.ldm-row-4{
+  grid-column: span 2;
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* champ compact sans "badge" */
+.ldm-row-4 .field{
+  margin: 0 !important;
+}
+.ldm-row-4 .field .label{
+  margin: 0 0 6px !important;
+  padding: 0 !important;
+  display:block;
+  min-width: auto;
+  height: auto;
+  border-radius: 0;
+  font-size: var(--labelSize) !important;
+  font-weight: 900 !important;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text) !important;
+  opacity: .9;
+}
+.ldm-row-4 .field .label::before{ display:none !important; content:none !important; }
+
+@media (max-width: 520px){
+  #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
+  .ldm-row-4{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ldm-in{ height: 36px !important; padding: 6px 8px !important; }
+  .ldm-ta{ min-height: 86px !important; }
+}
+
+html.modal-open,
+body.modal-open{
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+/* ===== petit layout PAX "X + Y" ===== */
+.pax-split{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.pax-split .pax-plus{
+  font-weight: 900;
+  opacity: .8;
+  user-select:none;
+}
+.pax-split .input{ width:100%; }
 </style>
 </head>
 
-<body>
+<body onload="initForm()">
 
-<!-- ===============================================
-     TABS BAR
-     =============================================== -->
-<div class="tabs-bar" id="tabsBar">
-  <div class="tabs-container" id="tabsContainer">
-    <div class="tab-item active" data-tab="1">
-      <span>FR 4521 → 4522</span>
-      <button class="tab-close" type="button" data-close-tab="1" aria-label="Fermer l’onglet">×</button>
+<!-- ===== LDM (FULLSCREEN) ===== -->
+<div id="ldmBackdrop" onclick="closeLDM()" style="display:none;"></div>
+
+<div id="ldmModal" role="dialog" aria-modal="true" style="display:none;">
+  <div class="ldm-header">
+    <div class="ldm-title">
+      <strong>LOAD</strong>
+      <span id="ldmHint" class="tag is-light">ARRIVÉE</span>
     </div>
-    <div class="tab-item" data-tab="2">
-      <span>W6 3145 → 3146</span>
-      <button class="tab-close" type="button" data-close-tab="2" aria-label="Fermer l’onglet">×</button>
+
+    <div class="lm-seg">
+      <button id="ldmTabArr" class="button is-small is-active" type="button" onclick="ldmSwitch('arr')">ARR</button>
+      <button id="ldmTabFinal" class="button is-small" type="button" onclick="ldmSwitch('final')">FINAL</button>
     </div>
-    <button class="tab-add" type="button" id="tabAddBtn">+ Nouveau vol</button>
+
+    <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
+  </div>
+
+  <div class="ldm-body">
+
+    <!-- ===== LOAD (ARR + PREVI en 2 sections) ===== -->
+    <section class="ldm-card ldm-arr" id="ldmArr">
+      <div class="ldm-card-hdr">
+        <div class="ldm-card-title">LOAD</div>
+        <div class="ldm-card-sub">ARR + PREVI</div>
+      </div>
+
+      <div class="ldm-grid">
+
+        <!-- ===== SECTION ARR ===== -->
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; opacity:.9; text-transform:uppercase;">
+          ARR
+        </div>
+
+        <!-- PAX ARR : main + infants -->
+        <div class="field ldm-span-2">
+          <label class="label">PAX</label>
+          <div class="pax-split">
+            <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <span class="pax-plus">+</span>
+            <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+          </div>
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">BAGS</label>
+          <input class="input ldm-in" id="ArrBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('arr')">
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">POIDS</label>
+          <input class="input ldm-in" id="ArrPOIDS" maxlength="4" oninput="digitsOnly(this)">
+        </div>
+
+        <div class="field ldm-span-2">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase ldm-ta" id="ArrSI"></textarea>
+        </div>
+
+        <!-- séparateur -->
+        <div class="ldm-span-2" style="height:1px; background:rgba(0,0,0,.08); margin:2px 0;"></div>
+
+        <!-- ===== SECTION PREVI ===== -->
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; opacity:.9; text-transform:uppercase;">
+          PREVI
+        </div>
+
+        <!-- PAX PREVI : main + infants -->
+        <div class="field ldm-span-2">
+          <label class="label">PAX</label>
+          <div class="pax-split">
+            <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <span class="pax-plus">+</span>
+            <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+          </div>
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">BAGS</label>
+          <input class="input ldm-in" id="PreviBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('previ')">
+        </div>
+
+        <div class="field ldm-f">
+          <label class="label">POIDS</label>
+          <input class="input ldm-in" id="PreviPOIDS" maxlength="4" oninput="digitsOnly(this)">
+        </div>
+
+        <div class="field ldm-span-2">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase ldm-ta" id="PreviSI"></textarea>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== LOAD FINAL ===== -->
+    <section class="ldm-card ldm-final" id="ldmFinal" style="display:none;">
+      <div class="ldm-card-hdr">
+        <div class="ldm-card-title">FINAL</div>
+        <div class="ldm-card-sub">LOAD FINAL</div>
+      </div>
+
+      <div class="ldm-grid">
+
+        <!-- ligne 1 -->
+        <div class="field ldm-f"><label class="label">MALE</label><input class="input ldm-in" id="FinalMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">FEMALE</label><input class="input ldm-in" id="FinalFEMALE" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+
+        <!-- ligne 2 -->
+        <div class="field ldm-f"><label class="label">ADULT</label><input class="input ldm-in" id="FinalADULT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">CHILD</label><input class="input ldm-in" id="FinalCHILD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+
+        <!-- ligne 3 -->
+        <div class="field ldm-f"><label class="label">INFANT</label><input class="input ldm-in" id="FinalINFANT" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        <div class="field ldm-f"><label class="label">TOB</label><input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly></div>
+
+        <!-- ligne 4 -->
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">OA</label><input class="input ldm-in" id="FinalOA" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OB</label><input class="input ldm-in" id="FinalOB" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OC</label><input class="input ldm-in" id="FinalOC" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+          <div class="field ldm-f"><label class="label">OD</label><input class="input ldm-in" id="FinalOD" maxlength="4" oninput="digitsOnly(this); updateFinalTOB()"></div>
+        </div>
+
+        <!-- ligne 5 -->
+        <div class="field ldm-f"><label class="label">BAGS</label><input class="input ldm-in" id="FinalBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()"></div>
+        <div class="field ldm-f"><label class="label">POIDS</label><input class="input ldm-in" id="FinalPOIDS" readonly></div>
+
+        <!-- ligne 6 -->
+        <div class="field ldm-span-2"><label class="label">GB / ITG</label><input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this); updateFinalWeightIfNeeded()"></div>
+
+        <!-- ligne 7 -->
+        <div class="ldm-row-4">
+          <div class="field ldm-f"><label class="label">H1</label><input class="input ldm-in" id="FinalH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H2</label><input class="input ldm-in" id="FinalH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H3</label><input class="input ldm-in" id="FinalH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+          <div class="field ldm-f"><label class="label">H4</label><input class="input ldm-in" id="FinalH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')"></div>
+        </div>
+
+        <!-- ligne 8 -->
+        <div class="field ldm-span-2">
+          <label class="label">SI</label>
+          <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
-<!-- ===============================================
-     FIXED HEADER
-     =============================================== -->
+<!-- ===== FIXED HEADER ===== -->
 <div class="fixed-header" id="fixedHeader">
-  <div class="header-container" id="headerClickArea" role="button" tabindex="0">
-    <div class="flight-badge">
-      <span id="headerCie">FR</span>
-      <span id="headerNum">4521 → 4522</span>
+  <div class="fixed-header-inner">
+
+   <div class="topbar-inner"></div>
+
+    <div class="tabs-row">
+      <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <div class="route-container">
-      <div class="route-side left">
-        <div class="airport-code" id="headerFrom">ORY</div>
-        <div class="flight-time"><span class="label">SIBT</span><span class="value" id="headerSIBT">14:15</span></div>
-        <div class="flight-time"><span class="label">AIBT</span><span class="value" id="headerAIBT">14:18</span></div>
+    <div class="timer-row">
+      <div class="timer-chip">
+        <div class="k">HLE</div>
+        <div id="timer-h40" class="v">--:--</div>
+      </div>
+      <div class="timer-chip">
+        <div class="k">H-15</div>
+        <div id="timer-h15" class="v">--:--</div>
       </div>
 
-      <div class="route-center">
-        <div class="status-badge ontime" id="statusBadge">● À l'heure</div>
-        <div class="countdown-display" id="countdownDisplay">CD: <span id="countdownValue">--:--</span></div>
-        <div class="route-arrow">→</div>
+      <div id="lidBlock" class="timer-chip" style="display:none;">
+        <div class="k">LID</div>
+        <div id="timer-h8" class="v">--:--</div>
       </div>
 
-      <div class="route-side right">
-        <div class="airport-code" id="headerTo">PMI</div>
-        <div class="flight-time"><span class="label">SOBT</span><span class="value" id="headerSOBT">15:30</span></div>
-        <div class="flight-time"><span class="label">AOBT</span><span class="value" id="headerAOBT">15:33</span></div>
-        <div class="flight-time"><span class="label">TOBT</span><span class="value" id="headerTOBT">15:30</span></div>
-        <div class="flight-time"><span class="label">CTOT</span><span class="value editable-time" id="headerCTOT">15:45</span></div>
+      <div class="timer-chip">
+        <div class="k">TOBT</div>
+        <div id="timer-tobt" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CTOT</div>
+        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CD</div>
+        <div id="timer-cd" class="v">--:--</div>
       </div>
     </div>
 
-    <div class="header-meta">
-      <div class="meta-item"><div class="meta-label">Immat</div><div class="meta-value" id="headerImmat">F-HBXL</div></div>
-      <div class="meta-item"><div class="meta-label">Type</div><div class="meta-value" id="headerType">B738</div></div>
-      <div class="meta-item"><div class="meta-label">Parking</div><div class="meta-value" id="headerParking">5</div></div>
-      <div class="meta-item"><div class="meta-label">Salle Arr</div><div class="meta-value" id="headerSalle">A12</div></div>
-      <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" id="headerDate">24 JAN</div></div>
-    </div>
-
-    <div class="edit-hint">✏️ Cliquer pour éditer</div>
   </div>
 </div>
 
-<!-- ===============================================
-     MAIN CONTENT
-     =============================================== -->
-<div class="app-container">
+<div class="app-wrap">
 
-  <div class="status-section">
-    <div class="section-title">Étapes clés</div>
-    <div class="status-grid">
-      <div class="status-card">
-        <div class="status-label">HLE</div>
-        <div class="status-time" id="statusHLE">14:30</div>
-      </div>
-      <div class="status-card">
-        <div class="status-label">H-15</div>
-        <div class="status-time" id="statusH15">15:15</div>
-      </div>
-      <div class="status-card warning">
-        <div class="status-label">LID</div>
-        <div class="status-time" id="statusLID">15:22</div>
-      </div>
-    </div>
-  </div>
+<!-- INFO VOL -->
+<div class="card mb-5">
+  <header class="card-header">
+    <p class="card-header-title">INFO VOL</p>
+  </header>
 
-  <div class="timing-section">
-    <div class="section-title">Timing</div>
-    <div id="timing-grid"></div>
-  </div>
+  <div class="card-content">
 
-  <div class="form-section">
-    <button class="load-button" type="button" id="openLoadBtn">📋 Ouvrir LOAD</button>
-  </div>
-
-  <div class="collapsible-header collapsed" data-collapsible="retards">
-    <div class="collapsible-title">Retards</div>
-    <div class="collapsible-icon">⌄</div>
-  </div>
-  <div class="collapsible-content" data-collapsible-content="retards">
-    <div class="form-section" style="margin-top: calc(var(--space-md) * -1);">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">DL Code 1</label><input type="text" class="form-input" id="DLcode1" placeholder="32"></div>
-        <div class="form-group"><label class="form-label">Durée 1 (min)</label><input type="number" class="form-input" id="DLduree1" min="0" placeholder="15"></div>
-        <div class="form-group"><label class="form-label">DL Code 2</label><input type="text" class="form-input" id="DLcode2"></div>
-        <div class="form-group"><label class="form-label">Durée 2 (min)</label><input type="number" class="form-input" id="DLduree2" min="0"></div>
-        <div class="form-group"><label class="form-label">DL Code 3</label><input type="text" class="form-input" id="DLcode3"></div>
-        <div class="form-group"><label class="form-label">Durée 3 (min)</label><input type="number" class="form-input" id="DLduree3" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="collapsible-header collapsed" data-collapsible="faits">
-    <div class="collapsible-title">Faits saillants</div>
-    <div class="collapsible-icon">⌄</div>
-  </div>
-  <div class="collapsible-content" data-collapsible-content="faits">
-    <div class="form-section" style="margin-top: calc(var(--space-md) * -1);">
-      <div class="form-grid single">
-        <div class="form-group">
-          <textarea class="form-textarea uppercase" id="FaitsSaillants" placeholder="Notez ici les faits saillants du vol..."></textarea>
+    <!-- Bandeau ESSENTIEL -->
+    <div class="kv-strip mb-4">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ===============================================
-     MODAL EDIT HEADER
-     =============================================== -->
-<div class="modal-backdrop" id="modalEditBackdrop"></div>
-<div class="modal" id="modalEditHeader" aria-hidden="true">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">Modifier les informations vol</div>
-      <button class="modal-close" type="button" id="closeEditBtn">Fermer</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="modal-section">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-input" id="EditDate" value="2026-01-24">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Compagnie</label>
-            <select class="form-select" id="EditCie">
-              <option selected>FR</option><option>RK</option><option>W4</option><option>W6</option>
-              <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">N° Vol</label>
-            <input type="text" class="form-input uppercase" id="EditNVol" value="4521 → 4522">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">From</label>
-            <input type="text" class="form-input uppercase" id="EditFrom" maxlength="3" value="ORY">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">To</label>
-            <input type="text" class="form-input uppercase" id="EditTo" maxlength="3" value="PMI">
-          </div>
-
-          <div class="form-group"><label class="form-label">SIBT</label><input type="time" class="form-input" id="EditSIBT" value="14:15"></div>
-          <div class="form-group"><label class="form-label">AIBT</label><input type="time" class="form-input" id="EditAIBT" value="14:18"></div>
-          <div class="form-group"><label class="form-label">SOBT</label><input type="time" class="form-input" id="EditSOBT" value="15:30"></div>
-          <div class="form-group"><label class="form-label">AOBT</label><input type="time" class="form-input" id="EditAOBT" value="15:33"></div>
-
-          <div class="form-group"><label class="form-label">Immat</label><input type="text" class="form-input uppercase" id="EditImmat" maxlength="6" value="F-HBXL"></div>
-
-          <div class="form-group">
-            <label class="form-label">Type</label>
-            <select class="form-select" id="EditType">
-              <option>A319</option><option>A320</option><option>A321</option>
-              <option>A20N</option><option>A21N</option><option>A21NY</option>
-              <option>B734</option><option>B737</option><option selected>B738</option>
-              <option>B38M</option><option>BCS3</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Parking</label>
-            <select class="form-select" id="EditParking">
-              <option>1</option><option>2</option><option>3</option><option>4</option>
-              <option selected>5</option><option>6</option><option>7</option><option>8</option>
-              <option>9</option><option>10</option><option>11</option><option>12</option>
-            </select>
-          </div>
-
-          <div class="form-group"><label class="form-label">Salle Arr</label><input type="text" class="form-input uppercase" id="EditSalle" value="A12"></div>
-          <div class="form-group"><label class="form-label">TOBT</label><input type="time" class="form-input" id="EditTOBT" value="15:30"></div>
-          <div class="form-group"><label class="form-label">CTOT</label><input type="time" class="form-input" id="EditCTOT" value="15:45"></div>
-
-          <div class="form-group full">
-            <button class="load-button" type="button" id="saveEditBtn">💾 Enregistrer</button>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
         </div>
       </div>
+
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Type</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Salle arr. / Parking</div>
+          <div class="kv-value">
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DÉTAILS (éditables) -->
+    <div id="infoVolDetails" class="grid-auto">
+
+      <!-- Date + Parking + Immat + Type avion -->
+      <div class="field span-3">
+        <label class="label">Date</label>
+        <input class="input" type="date" id="Date">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Parking</label>
+        <div class="select is-fullwidth">
+          <select id="Parking">
+            <option value="">--</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Immat</label>
+        <input class="input uppercase" type="text" id="Immat" maxlength="6">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">Type avion</label>
+        <div class="select is-fullwidth">
+          <select id="TypeAvion">
+            <option value="">--</option>
+            <option>A319</option><option>A320</option><option>A321</option>
+            <option>A20N</option><option>A21N</option><option>A21NY</option>
+            <option>B734</option><option>B737</option><option>B738</option>
+            <option>B38M</option><option>BCS3</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cie / N° -->
+      <div class="field span-3">
+        <label class="label">Cie</label>
+        <div class="select is-fullwidth">
+          <select id="Cie">
+            <option value="">--</option>
+            <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+            <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+            <option>V7</option><option>Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field span-3">
+        <label class="label">N°</label>
+        <input class="input uppercase" type="text" id="NVol">
+      </div>
+
+      <!-- From / To -->
+      <div class="field span-3">
+        <label class="label">From</label>
+        <input class="input uppercase" type="text" id="From" maxlength="3">
+      </div>
+
+      <div class="field span-3">
+        <label class="label">To</label>
+        <input class="input uppercase" type="text" id="To" maxlength="3">
+      </div>
+
+      <!-- LOAD button -->
+      <div class="span-12">
+        <div class="load-row-below">
+          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
+            <div class="k">LOAD</div>
+            <div class="v" style="background:#111827;">OPEN</div>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- ===============================================
-     MODAL LOAD
-     =============================================== -->
-<div class="modal-backdrop" id="modalLoadBackdrop"></div>
-<div class="modal" id="modalLoad" aria-hidden="true">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">LOAD</div>
-      <button class="modal-close" type="button" id="closeLoadBtn">Fermer</button>
-    </div>
 
-    <div class="modal-tabs">
-      <button class="modal-tab active" type="button" id="tabArr" data-load-tab="arr">ARR</button>
-      <button class="modal-tab" type="button" id="tabFinal" data-load-tab="final">FINAL</button>
-    </div>
+<!-- HORAIRES -->
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">HORAIRES</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
 
-    <div class="modal-body">
-      <div id="contentArr">
-        <div class="modal-section">
-          <div class="modal-section-title">Arrivée</div>
-          <div class="form-grid">
-            <div class="form-group full">
-              <label class="form-label">PAX (Adultes + Enfants)</label>
-              <div class="pax-input-group">
-                <input type="text" class="form-input has-text-centered" id="ArrPAX_MAIN" maxlength="4" placeholder="150">
-                <span class="pax-plus">+</span>
-                <input type="text" class="form-input has-text-centered" id="ArrPAX_INF" maxlength="3" placeholder="5">
+  <div class="card-content">
+    <div class="grid-auto">
+
+      <!-- Arrivée -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SIBT</label>
+              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
               </div>
             </div>
-            <div class="form-group"><label class="form-label">BAGS</label><input type="text" class="form-input has-text-centered" id="ArrBAGS" maxlength="4" placeholder="120"></div>
-            <div class="form-group"><label class="form-label">POIDS (kg)</label><input type="text" class="form-input has-text-centered" id="ArrPOIDS" maxlength="4" placeholder="2400"></div>
-            <div class="form-group full"><label class="form-label">SI</label><textarea class="form-textarea uppercase" id="ArrSI" placeholder="Informations spéciales..."></textarea></div>
-          </div>
-        </div>
 
-        <div class="modal-section">
-          <div class="modal-section-title">Prévisionnel</div>
-          <div class="form-grid">
-            <div class="form-group full">
-              <label class="form-label">PAX (Adultes + Enfants)</label>
-              <div class="pax-input-group">
-                <input type="text" class="form-input has-text-centered" id="PreviPAX_MAIN" maxlength="4" placeholder="155">
-                <span class="pax-plus">+</span>
-                <input type="text" class="form-input has-text-centered" id="PreviPAX_INF" maxlength="3" placeholder="6">
+            <div style="min-width:160px;">
+              <label class="label">AIBT</label>
+              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
               </div>
             </div>
-            <div class="form-group"><label class="form-label">BAGS</label><input type="text" class="form-input has-text-centered" id="PreviBAGS" maxlength="4" placeholder="130"></div>
-            <div class="form-group"><label class="form-label">POIDS (kg)</label><input type="text" class="form-input has-text-centered" id="PreviPOIDS" maxlength="4" placeholder="2600"></div>
-            <div class="form-group full"><label class="form-label">SI</label><textarea class="form-textarea uppercase" id="PreviSI" placeholder="Informations spéciales..."></textarea></div>
           </div>
         </div>
       </div>
 
-      <div id="contentFinal" style="display:none;">
-        <div class="modal-section">
-          <div class="modal-section-title">Load Final</div>
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label">MALE</label><input type="text" class="form-input has-text-centered" id="FinalMALE" maxlength="4" placeholder="75"></div>
-            <div class="form-group"><label class="form-label">FEMALE</label><input type="text" class="form-input has-text-centered" id="FinalFEMALE" maxlength="4" placeholder="80"></div>
-            <div class="form-group"><label class="form-label">ADULT</label><input type="text" class="form-input has-text-centered" id="FinalADULT" maxlength="4" placeholder="150"></div>
-            <div class="form-group"><label class="form-label">CHILD</label><input type="text" class="form-input has-text-centered" id="FinalCHILD" maxlength="4" placeholder="5"></div>
-            <div class="form-group"><label class="form-label">INFANT</label><input type="text" class="form-input has-text-centered" id="FinalINFANT" maxlength="4" placeholder="3"></div>
-            <div class="form-group"><label class="form-label">TOB</label><input type="text" class="form-input has-text-centered" id="FinalTOB" readonly placeholder="158"></div>
-
-            <div class="form-group full">
-              <label class="form-label">OVERCOST</label>
-              <div class="modal-grid-4">
-                <input type="text" class="form-input has-text-centered" id="FinalOA" maxlength="4" placeholder="OA">
-                <input type="text" class="form-input has-text-centered" id="FinalOB" maxlength="4" placeholder="OB">
-                <input type="text" class="form-input has-text-centered" id="FinalOC" maxlength="4" placeholder="OC">
-                <input type="text" class="form-input has-text-centered" id="FinalOD" maxlength="4" placeholder="OD">
+      <!-- Départ -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SOBT</label>
+              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
               </div>
             </div>
 
-            <div class="form-group"><label class="form-label">BAGS</label><input type="text" class="form-input has-text-centered" id="FinalBAGS" maxlength="4" placeholder="135"></div>
-            <div class="form-group"><label class="form-label">POIDS (kg)</label><input type="text" class="form-input has-text-centered" id="FinalPOIDS" readonly placeholder="2700"></div>
-
-            <div class="form-group full"><label class="form-label">GB / ITG</label><input type="text" class="form-input has-text-centered" id="FinalGB" maxlength="4" placeholder="50"></div>
-
-            <div class="form-group full">
-              <label class="form-label">HOLD BAGS</label>
-              <div class="modal-grid-4">
-                <input type="text" class="form-input has-text-centered" id="FinalH1" maxlength="4" placeholder="H1">
-                <input type="text" class="form-input has-text-centered" id="FinalH2" maxlength="4" placeholder="H2">
-                <input type="text" class="form-input has-text-centered" id="FinalH3" maxlength="4" placeholder="H3">
-                <input type="text" class="form-input has-text-centered" id="FinalH4" maxlength="4" placeholder="H4">
+            <div style="min-width:160px;">
+              <label class="label">AOBT</label>
+              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
               </div>
             </div>
-
-            <div class="form-group full"><label class="form-label">SI</label><textarea class="form-textarea uppercase" id="FinalSI" placeholder="Informations spéciales..."></textarea></div>
           </div>
         </div>
       </div>
@@ -1111,14 +1139,128 @@ html.dark .action-btn.reset { background: var(--bg-primary); }
   </div>
 </div>
 
-<!-- ===============================================
-     ACTIONS BAR
-     =============================================== -->
-<div class="actions-bar">
-  <div class="actions-grid">
-    <button class="action-btn validate" type="button">✓ Valider</button>
-    <button class="action-btn save" type="button">💾 Sauver</button>
-    <button class="action-btn reset" type="button">🔄 Reset</button>
+  <!-- TIMING -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMING</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div id="timing-grid"></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">TIMELINE</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="timeline-toolbar">
+        <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
+        <span class="tag is-light" id="timelineZoomLabel">100%</span>
+        <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
+        <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
+      </div>
+
+      <div class="timeline-scroll" id="timelineScroll">
+        <div id="timelineCanvas" class="timeline-canvas"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETARDS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">RETARDS (Départ)</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 1</label>
+            <div class="control"><input class="input" type="text" id="DLcode1"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 1 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 2</label>
+            <div class="control"><input class="input" type="text" id="DLcode2"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 2 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+          </div>
+        </div>
+
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 3</label>
+            <div class="control"><input class="input" type="text" id="DLcode3"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 3 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAITS SAILLANTS -->
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">FAITS SAILLANTS</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
+    </div>
+  </div>
+
+  <div class="buttons is-centered">
+    <button class="button is-success is-medium" id="validate" onclick="openRZAModal()">VALIDER</button>
+    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
+    <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
+  </div>
+
+</div>
+
+  <!-- ===== RZA MODAL ===== -->
+<div id="rzaBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:6000;"></div>
+
+<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:6100; align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(420px, 100%);">
+    <header class="card-header">
+      <p class="card-header-title">RZA requis</p>
+    </header>
+    <div class="card-content">
+      <div class="field">
+        <label class="label">RZA en charge du vol :</label>
+        <div class="control">
+          <input id="rzaModalInput" class="input uppercase" type="text" maxlength="3" autocomplete="off" spellcheck="false">
+        </div>
+        <p class="help" id="rzaHelp" style="display:none; color:#ef4444; font-weight:800;">2 ou 3 lettres uniquement.</p>
+      </div>
+
+      <div class="buttons is-right">
+        <button class="button is-light" type="button" onclick="closeRZAModal(false)">Annuler</button>
+        <button class="button is-link" type="button" onclick="submitRZAModal()">Valider</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1755,47 +1897,44 @@ function initForm(){
 }
 
 function updateInfoStrip(){
-  const v = (id) => (document.getElementById(id)?.value || '').toUpperCase().trim();
-  const set = (id, txt, def='—') => {
+  const v = id => (document.getElementById(id)?.value || '').toUpperCase().trim();
+  const set = (id, txt, def='----') => {
     const el = document.getElementById(id);
     if(!el) return;
-    const t = (txt ?? '').toString().trim();
-    el.textContent = t ? t : def;
+    el.textContent = (txt && String(txt).trim()) ? String(txt).trim() : def;
   };
 
-  // --- récup tab data (akMeta + champs) depuis le nouveau système ---
-  let data = {};
+  // ----- vols ARR/DEP + BC depuis akMeta (prioritaire) -----
+  let arrFF = '';
+  let depFF = '';
+  let bcMeta = '';
+
   try{
     if(currentTabId){
-      data = JSON.parse(localStorage.getItem('tab-'+String(currentTabId)) || '{}') || {};
+      const data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
+      arrFF  = (data?.akMeta?.arrFF || '').toUpperCase().trim();
+      depFF  = (data?.akMeta?.depFF || '').toUpperCase().trim();
+      bcMeta = (data?.akMeta?.bc    || '').toUpperCase().trim();
     }
-  }catch(e){ data = {}; }
+  }catch(e){}
 
-  const ak = (data.akMeta || {});
-
-  // ----- vols ARR/DEP + BC depuis akMeta (prioritaire) -----
-  let arrFF  = (ak.arrFF || '').toUpperCase().trim();
-  let depFF  = (ak.depFF || '').toUpperCase().trim();
-  let bcMeta = (ak.bc    || '').toUpperCase().trim();
-
-  // fallback DEP : CIE + N°
+  // fallback manuel : DEP = CIE+N°
   if(!depFF){
     const cie  = v('Cie');
-    const nvol = v('NVol').replace(/\s+/g,''); // évite espaces (ex "4521 → 4522")
+    const nvol = v('NVol');
     if(cie || nvol) depFF = `${cie}${nvol}`.trim();
   }
 
-  // Fallback ARR si pas fourni : on affiche "—"
-  set('kvArrVol', arrFF, '—');
-  set('kvDepVol', depFF, '—');
+  set('kvArrVol', arrFF || '—', '—');
+  set('kvDepVol', depFF || '—', '—');
 
-  set('kvFrom',  v('From')  || '---', '---');
-  set('kvTo',    v('To')    || '---', '---');
+  set('kvFrom', v('From') || '---', '---');
+  set('kvTo',   v('To')   || '---', '---');
 
-  set('kvImmat', v('Immat')     || '------', '------');
-  set('kvType',  v('TypeAvion') || '----',   '----');
+  set('kvImmat', v('Immat') || '------', '------');
+  set('kvType',  v('TypeAvion') || '----', '----');
 
-  // BC : plus de champ BorderControl -> akMeta.bc uniquement
+  // Salle arrivée : plus de champ BorderControl -> on prend akMeta.bc
   set('kvBC', bcMeta || '--', '--');
 
   set('kvPark', v('Parking') || '--', '--');
@@ -1804,9 +1943,7 @@ function updateInfoStrip(){
 /* date défaut */
 function setDefaultDateToTodayIfEmpty(){
   const d = document.getElementById('Date');
-  if(d && !d.value){
-    d.value = new Date().toISOString().slice(0,10);
-  }
+  if(d && !d.value){ d.valueAsDate = new Date(); }
 }
 
 /* uppercase */
@@ -1828,25 +1965,26 @@ function attachAutoSave(){
       saveCurrentTabData();
       renderTimeline();
       updateHeaderOffset();
-      updateInfoStrip();   // ✅ strip toujours à jour
     }, 300);
   };
   document.addEventListener('input', handler, true);
   document.addEventListener('change', handler, true);
 }
 
-/* Tabs (NOUVELLE UI: tabs-bar / tabsContainer) */
+/* Tabs */
 function renderTabs(){
-  const container = document.getElementById('tabsContainer');
-  if(!container) return;
+  const tabBar = document.getElementById('tab-bar');
+  if(!tabBar) return;
 
-  // garde le bouton + s'il existe
-  const addBtn = document.getElementById('tabAddBtn');
-
-  // purge tous les onglets (sauf bouton +)
-  Array.from(container.querySelectorAll('.tab-item')).forEach(n=>n.remove());
-  // on ré-attache le bouton + à la fin
-  if(addBtn) container.appendChild(addBtn);
+  tabBar.innerHTML = `
+    <button class="button is-success is-light" type="button" onclick="createNewTab()">
+      + Ajouter vol
+    </button>
+    <button class="button is-link is-light" type="button"
+            onclick="createNewTab(); openAKPicker();">
+      + Liste vols
+    </button>
+  `;
 
   let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   if(!Array.isArray(tabs)) tabs = [];
@@ -1854,48 +1992,55 @@ function renderTabs(){
   tabs.forEach((id)=>{
     const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}');
 
-    const cie  = (data.Cie  || '').toUpperCase().trim();
-    const nvol = (data.NVol || '').toUpperCase().trim();
-    const to   = (data.To   || '').toUpperCase().trim();
+    const cie  = (data.Cie  || '').toUpperCase();
+    const nvol = (data.NVol || '').toUpperCase();
+    const to   = (data.To   || '').toUpperCase();
 
-    const left = `${cie}${nvol}`.trim();
-    const label =
-      (left || to) ? (to ? `${left} → ${to}`.trim() : left) : 'VOL';
+    let left = `${cie}${nvol}`.trim();
+    let label =
+      left || to
+        ? (to ? `${left} | ${to}`.trim() : left)
+        : 'VOL';
 
-    const tab = document.createElement('div');
-    tab.className = `tab-item ${String(id) === String(currentTabId) ? 'active' : ''}`;
-    tab.dataset.tab = String(id);
+    const wrap = document.createElement('span');
+    wrap.className = 'tab-wrap';
 
-    const span = document.createElement('span');
-    span.textContent = label || 'VOL';
+    // bouton onglet (switch)
+    const btn = document.createElement('button');
+    btn.className = `button ${id === currentTabId ? 'is-link' : 'is-light'}`;
+    btn.textContent = label || 'VOL';
+    btn.onclick = ()=> switchTab(id);
+    btn.ondblclick = ()=> deleteTab(id);
 
-    const close = document.createElement('button');
-    close.className = 'tab-close';
-    close.type = 'button';
-    close.dataset.closeTab = String(id);
-    close.setAttribute('aria-label', 'Fermer l’onglet');
-    close.textContent = '×';
-
-    tab.appendChild(span);
-    tab.appendChild(close);
-
-    // click onglet
-    tab.addEventListener('click', (e)=>{
-      // si click sur la croix -> delete
-      if(e.target === close) return;
-      switchTab(String(id));
-    });
-
-    // delete via croix
-    close.addEventListener('click', (e)=>{
+    // bouton refresh ↻ (sans switch)
+    const r = document.createElement('button');
+    r.className = 'button is-light tab-refresh';
+    r.type = 'button';
+    r.title = 'Rafraîchir depuis AK';
+    r.innerHTML = '↻';
+    r.onclick = async (e)=>{
       e.preventDefault();
       e.stopPropagation();
-      deleteTab(String(id));
-    });
 
-    // insertion avant le bouton +
-    if(addBtn) container.insertBefore(tab, addBtn);
-    else container.appendChild(tab);
+      r.classList.add('is-loading');
+      try{
+        await refreshAKTab(id);
+      }finally{
+        r.classList.remove('is-loading');
+      }
+    };
+
+    // optionnel : griser si pas de akMeta
+    if(!data.akMeta){
+      r.disabled = true;
+      r.title = "Pas de vol AK associé";
+      r.style.opacity = '0.45';
+      r.style.cursor = 'not-allowed';
+    }
+
+    wrap.appendChild(btn);
+    wrap.appendChild(r);
+    tabBar.appendChild(wrap);
   });
 
   updateHeaderOffset();
@@ -1904,6 +2049,7 @@ function renderTabs(){
 function createNewTab(){
   const id = String(Date.now());
 
+  // ajoute l'onglet dans la liste
   let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   if(!Array.isArray(tabs)) tabs = [];
   if(!tabs.includes(id)) tabs.push(id);
@@ -1912,10 +2058,10 @@ function createNewTab(){
   currentTabId = id;
   localStorage.setItem('lastTabId', id);
 
-  clearFormFields();
-
-  // snapshot initial (ne touche pas aux modals si elles ont des ids)
-  const data = JSON.parse(localStorage.getItem('tab-'+id) || '{}') || {};
+  clearFormFields();            // reset champs
+  
+  // snapshot initial
+  const data = {};
   document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
     data[el.id] = (el.type === 'checkbox') ? (el.checked ? '1' : '0') : (el.value || '');
@@ -1948,7 +2094,6 @@ function switchTab(id){
   renderTabs();
   refreshUIForTabs();
   renderTimeline();
-  updateInfoStrip();
 }
 
 function deleteTab(id){
@@ -1986,10 +2131,7 @@ function deleteTab(id){
 }
 
 function clearFormFields(){
-  // ✅ évite de vider les champs des MODALS (EditDate, EditCie, etc.)
-  const scope = document.querySelector('.app-container') || document;
-
-  scope.querySelectorAll('input, select, textarea').forEach(el=>{
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
 
     if(el.type === 'checkbox'){
@@ -1999,47 +2141,42 @@ function clearFormFields(){
     }
   });
 
-  // date du jour auto sur le champ principal "Date"
+  // date du jour auto
   const d = document.getElementById('Date');
   if(d){
-    d.value = new Date().toISOString().slice(0,10);
+    const today = new Date().toISOString().slice(0,10);
+    d.value = today;
   }
 
   updateAllCalculations();
   updateTabLabelInstant();
 }
-
 function saveCurrentTabData(){
   if(!currentTabId) return;
 
   // ✅ on part des données existantes pour ne pas perdre akMeta
-  let data = {};
-  try{
-    data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}') || {};
-  }catch(e){ data = {}; }
+  let data = JSON.parse(localStorage.getItem('tab-'+currentTabId) || '{}');
 
-  // ✅ ne sauvegarde que les champs "principaux" (app) pour éviter collisions avec modals
-  const scope = document.querySelector('.app-container') || document;
-
-  scope.querySelectorAll('input, select, textarea').forEach(el=>{
+  document.querySelectorAll('input, select, textarea').forEach(el=>{
     if(!el.id) return;
-    if(el.type==='checkbox') data[el.id] = el.checked ? '1':'0';
-    else data[el.id] = el.value;
+    if(el.type==='checkbox') data[el.id]=el.checked ? '1':'0';
+    else data[el.id]=el.value;
   });
 
-  data.modeDark = document.documentElement.classList.contains('dark') ? '1' : '0';
-  data.modeUTC  = isUTC ? '1' : '0';
+  data.modeDark=document.body.classList.contains('dark')?'1':'0';
+  data.modeUTC=isUTC?'1':'0';
 
-  data.timer_h40  = document.getElementById('timer-h40')?.textContent || '--:--';
-  data.timer_h15  = document.getElementById('timer-h15')?.textContent || '--:--';
-  data.timer_h8   = document.getElementById('timer-h8')?.textContent  || '--:--';
-  data.timer_tobt = document.getElementById('timer-tobt')?.textContent || '--:--';
-  data.timer_cd   = document.getElementById('timer-cd')?.textContent || '--:--';
+  data.timer_h40=document.getElementById('timer-h40')?.textContent || '--:--';
+  data.timer_h15=document.getElementById('timer-h15')?.textContent || '--:--';
+  data.timer_h8=document.getElementById('timer-h8')?.textContent || '--:--';
+  data.timer_tobt=document.getElementById('timer-tobt')?.textContent || '--:--';
+  data.timer_cd=document.getElementById('timer-cd')?.textContent || '--:--';
 
   data.timingPanel = localStorage.getItem('timingPanel') || 'dep';
 
-  localStorage.setItem('tab-'+currentTabId, JSON.stringify(data));
-  localStorage.setItem('lastTabId', currentTabId);
+  localStorage.setItem('tab-'+currentTabId,JSON.stringify(data));
+  localStorage.setItem('lastTabId',currentTabId);
+  renderTabs();
 }
 
 function loadTabData(id){
@@ -2050,11 +2187,9 @@ function loadTabData(id){
 
   const data = JSON.parse(raw);
 
-  // recharge champs (dans l'app uniquement)
-  const scope = document.querySelector('.app-container') || document;
-
+  // recharge champs
   for(const k in data){
-    const el = scope.querySelector('#'+CSS.escape(k));
+    const el = document.getElementById(k);
     if(!el) continue;
 
     if(el.type === 'checkbox'){
@@ -2064,19 +2199,12 @@ function loadTabData(id){
     }
   }
 
-  // restore panel timing
-  if(data.timingPanel) localStorage.setItem('timingPanel', data.timingPanel);
-
   updateAllCalculations();
   updateHeaderOffset();
   updateInfoStrip();
 }
 
-function updateTabLabelInstant(){
-  // évite boucle renderTabs -> save -> render
-  saveCurrentTabData();
-  renderTabs();
-}
+function updateTabLabelInstant(){ saveCurrentTabData(); renderTabs(); }
 
 /* TIMING FIELDS – ARR / DEP (responsive pro) */
 function generateTimingFields(){
@@ -2088,7 +2216,7 @@ function generateTimingFields(){
       <div class="field">
         <label class="label">${label}</label>
         <div class="control">
-          <input class="input" type="time" id="${id}">
+          <input class="input" type="time" id="${id}" onchange="updateAllCalculations()">
         </div>
         <div class="btn-actions">
           <button class="button is-dark is-light" type="button"
@@ -2101,6 +2229,7 @@ function generateTimingFields(){
       </div>
     </div>`;
 
+  /* ===== ARRIVÉE ===== */
   const arrNoHeader = `
     <div class="card mb-4">
       <div class="card-content">
@@ -2114,6 +2243,7 @@ function generateTimingFields(){
       </div>
     </div>`;
 
+  /* ===== DÉPART ===== */
   const depNoHeader = `
     <div class="card">
       <div class="card-content">
@@ -2125,6 +2255,7 @@ function generateTimingFields(){
           ${fieldHTML('ArriveeLift','Arrivée lift')}
           ${fieldHTML('DepartLift','Départ lift')}
 
+          <!-- Départ Avitair + Arrivée INAD sur la même ligne -->
           <div class="span-12">
             <div class="grid-auto">
               <div class="span-6">
@@ -2157,12 +2288,6 @@ function generateTimingFields(){
 
   const saved = localStorage.getItem('timingPanel') || 'dep';
   switchTimingPanel(saved);
-
-  // ✅ listeners (au lieu du onchange inline)
-  container.querySelectorAll('input[type="time"]').forEach(inp=>{
-    inp.addEventListener('input', updateAllCalculations);
-    inp.addEventListener('change', updateAllCalculations);
-  });
 }
 
 function switchTimingPanel(mode){
@@ -2182,7 +2307,7 @@ function switchTimingPanel(mode){
 
 /* LID visible FR/RK */
 function updateLIDVisibility(){
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const lid = document.getElementById('lidBlock');
   if(!lid) return;
   lid.style.display = (cie === 'FR' || cie === 'RK') ? '' : 'none';
@@ -2199,6 +2324,7 @@ function updateAllCalculations() {
   updateLID();
   updateLIDVisibility();
 
+  updateHBagsValidity('arr');
   updateHBagsValidity('final');
 
   updateArrExpWeightIfNeeded();
@@ -2207,36 +2333,26 @@ function updateAllCalculations() {
   ensureCountdownRunning();
   renderTimeline();
   updateHeaderOffset();
+
   updateInfoStrip();
 }
 
 /* TIMERS HLE/H-15 */
 function updateTimers() {
   const sobt = document.getElementById('SOBT')?.value || '';
-  const h40El = document.getElementById('timer-h40');
-  const h15El = document.getElementById('timer-h15');
-
-  if (!sobt || !h40El || !h15El) {
-    if(h40El) h40El.textContent = '--:--';
-    if(h15El) h15El.textContent = '--:--';
+  if (!sobt) {
+    ['timer-h40', 'timer-h15', 'timer-h8'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.textContent = '--:--';
+    });
     return;
   }
-
   const [hh, mm] = sobt.split(':').map(Number);
-  if(Number.isNaN(hh) || Number.isNaN(mm)){
-    h40El.textContent = '--:--';
-    h15El.textContent = '--:--';
-    return;
-  }
-
-  const base = new Date();
-  base.setHours(hh, mm, 0, 0);
-
+  const base = new Date(); base.setHours(hh, mm, 0, 0);
   const h40 = new Date(base.getTime() - 40 * 60000);
   const h15 = new Date(base.getTime() - 15 * 60000);
-
-  h40El.textContent = `${String(h40.getHours()).padStart(2,'0')}:${String(h40.getMinutes()).padStart(2,'0')}`;
-  h15El.textContent = `${String(h15.getHours()).padStart(2,'0')}:${String(h15.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('timer-h40').textContent = `${String(h40.getHours()).padStart(2, '0')}:${String(h40.getMinutes()).padStart(2, '0')}`;
+  document.getElementById('timer-h15').textContent = `${String(h15.getHours()).padStart(2, '0')}:${String(h15.getMinutes()).padStart(2, '0')}`;
 }
 
 /* LID = TOBT - 8 */
@@ -2252,29 +2368,35 @@ function updateSOBTDefault() {
   const sobtEl = document.getElementById('SOBT');
   if(!sobtEl) return;
 
+  // Si SOBT déjà remplie (ex : import Keeper), on ne touche pas
   if ((sobtEl.value || '').trim() !== '') return;
 
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
-  if(cie === "FR" || cie === "RK") return;
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
+
+  // FR / RK : SOBT vient de Keeper
+  if(cie === "FR" || cie === "RK"){
+    return;
+  }
 
   const sibt = document.getElementById('SIBT')?.value || '';
+  const arrPNT = document.getElementById('ArrPNT')?.value || '';
+  const arrPNC = document.getElementById('ArrPNC')?.value || '';
   if (!sibt) return;
   if (!(cie === "W4" || cie === "W6")) return;
 
-  const [sH, sM] = sibt.split(':').map(Number);
-  if(Number.isNaN(sH) || Number.isNaN(sM)) return;
+  let [sH, sM] = sibt.split(':').map(Number);
+  const base = new Date(); base.setHours(sH, sM);
 
-  const base = new Date();
-  base.setHours(sH, sM, 0, 0);
-
-  const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
-  const add = (type === 'A321' || type === 'A21N' || type === 'A21NY') ? 35 : 30;
-
+  const add = (document.getElementById('TypeAvion')?.value === 'A321') ? 35 : 30;
   const sobtCalc = new Date(base.getTime() + add * 60000);
-  sobtEl.value = `${String(sobtCalc.getHours()).padStart(2,'0')}:${String(sobtCalc.getMinutes()).padStart(2,'0')}`;
+
+  sobtEl.value =
+    `${String(sobtCalc.getHours()).padStart(2,'0')}:${String(sobtCalc.getMinutes()).padStart(2,'0')}`;
 }
 
-/* TOBT + règle CTOT (LOGIQUE FINALE – robuste minuit) */
+/* TOBT + règle CTOT */
+/* TOBT + règle CTOT (NOUVELLE LOGIQUE) */
+/* TOBT + règle CTOT (LOGIQUE FINALE) */
 function updateTOBT() {
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
@@ -2344,7 +2466,7 @@ function updateTOBT() {
     // ===== W4 / W6 : TOBT = AIBT + 30/35 selon type
     else if (cie === 'W4' || cie === 'W6') {
       const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
-      const turn = (type === 'A321' || type === 'A21N' || type === 'A21NY') ? 35 : 30;
+      const turn = (type === 'A321' || type === 'A21N' || type === 'A21NY') ? 35 : 30; // A320/A20N => 30, défaut => 30
       TOBT_raw_ext = AIBT_ext + turn;
     }
 
@@ -2355,8 +2477,9 @@ function updateTOBT() {
     }
   }
 
-  // Raw minutes 0..1439 (utile LID + affichage)
-  window._tobtRawMins = ((TOBT_raw_ext % 1440) + 1440) % 1440;
+  // Raw minutes 0..1439
+  let TOBT_raw = ((TOBT_raw_ext % 1440) + 1440) % 1440;
+  window._tobtRawMins = TOBT_raw;
 
   // ===== RÈGLE CTOT : si CTOT > TOBT + 15 => TOBT = CTOT - 15
   let TOBT_adj_ext = TOBT_raw_ext;
@@ -2374,86 +2497,69 @@ function updateTOBT() {
     }
   }
 
-  window._tobtAdjMins = ((TOBT_adj_ext % 1440) + 1440) % 1440;
-  outEl.textContent = fmtHHMM(window._tobtAdjMins);
+  let TOBT_adj = ((TOBT_adj_ext % 1440) + 1440) % 1440;
+  window._tobtAdjMins = TOBT_adj;
+
+  outEl.textContent = fmtHHMM(TOBT_adj);
 }
 
-/* DL CODES (robuste minuit + safe null) */
+/* DL CODES */
 function updateDLCode() {
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie').value||'').toUpperCase();
   const sibttxt = document.getElementById('SIBT')?.value || '';
   const aibttxt = document.getElementById('AIBT')?.value || '';
+  if (!sibttxt || !aibttxt) return;
 
-  const codeEl = document.getElementById('DLcode1');
-  const durEl  = document.getElementById('DLduree1');
-  if(!codeEl || !durEl) return;
+  const [sH, sM] = sibttxt.split(':').map(Number);
+  const [aH, aM] = aibttxt.split(':').map(Number);
+  const SIBT = new Date(); SIBT.setHours(sH, sM);
+  const AIBT = new Date(); AIBT.setHours(aH, aM);
 
-  const SIBT = parseHHMM(sibttxt);
-  const AIBT = parseHHMM(aibttxt);
-  if(SIBT == null || AIBT == null){
-    codeEl.value = '';
-    durEl.value  = '';
-    return;
-  }
-
-  // diff robuste minuit (AIBT - SIBT) ramené dans [-720..+720]
-  let diff = AIBT - SIBT;
-  if(diff > 720) diff -= 1440;
-  if(diff < -720) diff += 1440;
-
-  if (diff > 0) {
-    if (cie === 'FR' || cie === 'RK') codeEl.value = '93';
-    else if (cie === 'W4' || cie === 'W6') codeEl.value = '93A';
-    else codeEl.value = '';
-
-    durEl.value = String(Math.round(diff));
+  if (AIBT > SIBT) {
+    if (cie === 'FR' || cie === 'RK') document.getElementById('DLcode1').value = '93';
+    else if (cie === 'W4' || cie === 'W6') document.getElementById('DLcode1').value = '93A';
+    else document.getElementById('DLcode1').value = '';
+    document.getElementById('DLduree1').value = Math.round((AIBT - SIBT) / 60000) || '';
   } else {
-    codeEl.value = '';
-    durEl.value  = '';
+    document.getElementById('DLcode1').value = '';
+    document.getElementById('DLduree1').value = '';
   }
 }
 
 /* DL redistribution */
 function dldChanged(index){ lastDLChanged = index; redistributeDL(); }
-
 function totalDelayMinutes(){
   const so = document.getElementById('SOBT')?.value || '';
   const ao = document.getElementById('AOBT')?.value || '';
   if(!so || !ao) return null;
-
   const s = parseHHMM(so);
   const a = parseHHMM(ao);
   if (s==null || a==null) return null;
-
-  // total dans [0..1439] (gère minuit)
   let total = a - s;
   if (total < 0) total += 1440;
   return total;
 }
-
 function redistributeDL(){
   const total = totalDelayMinutes();
-
   const f1 = document.getElementById('DLduree1');
   const f2 = document.getElementById('DLduree2');
   const f3 = document.getElementById('DLduree3');
   if(!f1 || !f2 || !f3) return;
 
-  let d1 = parseInt(f1.value,10); d1 = isNaN(d1) ? 0 : d1;
-  let d2 = parseInt(f2.value,10); d2 = isNaN(d2) ? 0 : d2;
-  let d3 = parseInt(f3.value,10); d3 = isNaN(d3) ? 0 : d3;
+  let d1 = parseInt(f1.value)||0;
+  let d2 = parseInt(f2.value)||0;
+  let d3 = parseInt(f3.value)||0;
 
-  if(total == null){
-    clearDLBorders();
-    return;
-  }
+  if(total==null){ clearDLBorders(); return; }
 
   d1 = Math.max(0, Math.min(d1, total));
 
   if(lastDLChanged === 1){
-    const remain = Math.max(0, total - d1);
-    d2 = Math.max(0, Math.min(d2, remain));
-    d3 = Math.max(0, total - d1 - d2);
+    let remain = total - d1;
+    d2 = Math.min(remain, Math.max(0, d2));
+    d2 = Math.min(remain, d2 + (remain - d2));
+    remain = total - d1 - d2;
+    d3 = Math.max(0, remain);
   } else if (lastDLChanged === 2){
     const maxD2 = Math.max(0, total - d1);
     d2 = Math.max(0, Math.min(d2, maxD2));
@@ -2463,31 +2569,26 @@ function redistributeDL(){
     d3 = Math.max(0, Math.min(d3, maxD3));
   }
 
-  f1.value = d1 ? String(d1) : '';
-  f2.value = d2 ? String(d2) : '';
-  f3.value = d3 ? String(d3) : '';
+  f1.value = d1 || '';
+  f2.value = d2 || '';
+  f3.value = d3 || '';
 
   const sum = d1 + d2 + d3;
   if (sum > total) markLastFilledDLError();
   else clearDLBorders();
 }
-
 function markLastFilledDLError(){
   clearDLBorders();
   const f1 = document.getElementById('DLduree1');
   const f2 = document.getElementById('DLduree2');
   const f3 = document.getElementById('DLduree3');
-  if(!f1 || !f2 || !f3) return;
-
-  const d1 = parseInt(f1.value,10) || 0;
-  const d2 = parseInt(f2.value,10) || 0;
-  const d3 = parseInt(f3.value,10) || 0;
-
+  const d1 = parseInt(f1.value)||0;
+  const d2 = parseInt(f2.value)||0;
+  const d3 = parseInt(f3.value)||0;
   if (d3 > 0) f3.classList.add('dl-error');
   else if (d2 > 0) f2.classList.add('dl-error');
   else if (d1 > 0) f1.classList.add('dl-error');
 }
-
 function clearDLBorders(){
   ['DLduree1','DLduree2','DLduree3'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2497,20 +2598,21 @@ function clearDLBorders(){
 
 /* Utils time */
 function setNow(fieldId) {
-  const el = document.getElementById(fieldId);
-  if(!el) return;
   const now = new Date();
   const hh = isUTC ? now.getUTCHours() : now.getHours();
   const mm = isUTC ? now.getUTCMinutes() : now.getMinutes();
-  el.value = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  document.getElementById(fieldId).value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
 }
-
 function adjustTime(fieldId, delta) {
   const input = document.getElementById(fieldId);
   if (!input || !input.value) return;
-  const t = parseHHMM(input.value);
-  if(t == null) return;
-  input.value = fmtHHMM(t + delta);
+  let [hh, mm] = input.value.split(':').map(Number);
+  let total = hh * 60 + mm + delta;
+  if (total < 0) total += 1440;
+  if (total >= 1440) total -= 1440;
+  hh = Math.floor(total / 60);
+  mm = total % 60;
+  input.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
 }
 
 /* Switches */
