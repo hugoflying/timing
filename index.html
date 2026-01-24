@@ -116,62 +116,6 @@ body.no-tab .timer-row{ display:none !important; }
   font-weight: 900;
 }
 
-/* ===== ESSENTIAL BAR (FIXED) ===== */
-#essential-bar{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-}
-@media (max-width: 520px){
-  #essential-bar{ grid-template-columns: 1fr; }
-}
-
-.essential-card{
-  border-radius: 14px;
-  padding: 8px 10px;            /* ✅ compact */
-  background: var(--card);
-  box-shadow: var(--shadow2);
-  color: var(--text);
-  min-width: 0;                 /* ✅ évite overflow en grid */
-}
-
-/* typo compacte */
-.essential-card .k,
-.essential-card .label{
-  font-size: .72rem;
-  font-weight: 900;
-  opacity: .75;
-  line-height: 1.05;
-}
-
-.essential-card .v,
-.essential-card .value{
-  font-size: .95rem;
-  font-weight: 900;
-  line-height: 1.05;
-}
-
-/* si tu as des lignes type "clé / valeur" dans tes cards */
-.essential-card .row{
-  display:flex;
-  align-items:baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-.essential-card .row > *{ min-width:0; }
-.essential-card .row .value{
-  text-align:right;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* mobile : repasse en 1 colonne si trop serré */
-@media (max-width: 520px){
-  #essential-bar{ grid-template-columns: 1fr; }
-}
-
 /* bouton refresh collé à chaque onglet */
 .tab-wrap{
   display:inline-flex;
@@ -958,22 +902,40 @@ body.modal-open{
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <div class="topbar-inner"></div>
+   <div class="topbar-inner"></div>
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <div class="timer-row"> ... </div>
-
-    <!-- ✅ ESSENTIALS : ici, dans le header fixed -->
-    <div id="essential-bar">
-      <div class="essential-card" id="essential-left">
-        <!-- carte 1 -->
+    <div class="timer-row">
+      <div class="timer-chip">
+        <div class="k">HLE</div>
+        <div id="timer-h40" class="v">--:--</div>
+      </div>
+      <div class="timer-chip">
+        <div class="k">H-15</div>
+        <div id="timer-h15" class="v">--:--</div>
       </div>
 
-      <div class="essential-card" id="essential-right">
-        <!-- carte 2 -->
+      <div id="lidBlock" class="timer-chip" style="display:none;">
+        <div class="k">LID</div>
+        <div id="timer-h8" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">TOBT</div>
+        <div id="timer-tobt" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CTOT</div>
+        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CD</div>
+        <div id="timer-cd" class="v">--:--</div>
       </div>
     </div>
 
@@ -989,6 +951,39 @@ body.modal-open{
   </header>
 
   <div class="card-content">
+
+    <!-- Bandeau ESSENTIEL -->
+    <div class="kv-strip mb-4">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Type</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Salle arr. / Parking</div>
+          <div class="kv-value">
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
@@ -1072,6 +1067,7 @@ body.modal-open{
     </div>
   </div>
 </div>
+
 
 <!-- HORAIRES -->
 <div class="card mb-5">
@@ -1314,13 +1310,8 @@ function unlockScroll(){
 function updateHeaderOffset(){
   const header = document.getElementById('fixedHeader');
   if(!header) return;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const h = Math.ceil(header.getBoundingClientRect().height);
-      document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
-    });
-  });
+  const h = Math.ceil(header.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--fixed-header-h', h + 'px');
 }
 
 /* Vars */
