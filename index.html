@@ -1531,30 +1531,38 @@ function updateHBagsValidity(mode){
 }
 
 function syncAdultGenderLocks(){
-  const male   = document.getElementById('FinalMALE');
-  const female = document.getElementById('FinalFEMALE');
-  const adult  = document.getElementById('FinalADULT');
+  const elM = document.getElementById('FinalMALE');
+  const elF = document.getElementById('FinalFEMALE');
+  const elA = document.getElementById('FinalADULT');
+  if(!elM || !elF || !elA) return;
 
-  const hasGender = (+male.value || 0) + (+female.value || 0) > 0;
-  const hasAdult  = (+adult.value || 0) > 0;
+  const m = (elM.value || '').trim();
+  const f = (elF.value || '').trim();
+  const a = (elA.value || '').trim();
 
-  if (hasGender) {
-    adult.value = '';
-    adult.disabled = true;
-  } else {
-    adult.disabled = false;
+  const hasGender = (m !== '' || f !== '');
+  const hasAdult  = (a !== '');
+
+  // Règle 1 : si MALE ou FEMALE rempli -> ADULT verrouillé
+  if(hasGender){
+    elA.value = '';                 // optionnel : vide ADULT pour éviter incohérence
+    elA.readOnly = true;
+    elA.classList.add('is-static'); // look "bloqué" (Bulma)
+  }else{
+    elA.readOnly = false;
+    elA.classList.remove('is-static');
   }
 
-  if (hasAdult) {
-    male.value = '';
-    female.value = '';
-    male.disabled = true;
-    female.disabled = true;
-  } else {
-    male.disabled = false;
-    female.disabled = false;
+  // Règle 2 : si ADULT rempli (et genders vides) -> MALE/FEMALE verrouillés
+  if(!hasGender && hasAdult){
+    elM.readOnly = true; elF.readOnly = true;
+    elM.classList.add('is-static'); elF.classList.add('is-static');
+  }else{
+    elM.readOnly = false; elF.readOnly = false;
+    elM.classList.remove('is-static'); elF.classList.remove('is-static');
   }
 }
+
 
 /* ===== POIDS auto FR / RK : (BAGS + GB) * 13 ===== */
 function updateFinalWeightIfNeeded(){
@@ -1884,36 +1892,21 @@ function setTOBValidity(isValid){
   tobEl.classList.toggle('is-valid', isValid);
 }
 function updateFinalTOB(){
-  syncAdultIfNeeded();
+  const male   = parseInt(document.getElementById('FinalMALE')?.value || 0, 10);
+  const female = parseInt(document.getElementById('FinalFEMALE')?.value || 0, 10);
+  const adult  = parseInt(document.getElementById('FinalADULT')?.value || 0, 10);
+  const child  = parseInt(document.getElementById('FinalCHILD')?.value || 0, 10);
+  const infant = parseInt(document.getElementById('FinalINFANT')?.value || 0, 10);
 
-  const m = asInt('FinalMALE');
-  const f = asInt('FinalFEMALE');
-  const a = asInt('FinalADULT');
-  const c = asInt('FinalCHILD')  ?? 0;
-  const i = asInt('FinalINFANT') ?? 0;
+  // soit MALE+FEMALE, soit ADULT
+  const adultCount = (male || female) ? (male + female) : adult;
 
-  let main = null; // TOB sans infant
-  if(m != null && f != null) main = (m + f) + c;
-  else if(a != null) main = a + c;
+  const tob = adultCount + child + infant;
 
   const tobEl = document.getElementById('FinalTOB');
-  if(!tobEl) return;
-
-  if(main == null){
-    tobEl.value = '';
-    setTOBValidity(true);
-    return;
+  if(tobEl){
+    tobEl.value = tob > 0 ? tob : '';
   }
-
-  tobEl.value = `${main} + ${i}`;
-
-  const oa = asInt('FinalOA') ?? 0;
-  const ob = asInt('FinalOB') ?? 0;
-  const oc = asInt('FinalOC') ?? 0;
-  const od = asInt('FinalOD') ?? 0;
-  const sum = oa + ob + oc + od;
-
-  setTOBValidity(sum === main);
 }
 
 function refreshUIForTabs(){
@@ -1990,10 +1983,24 @@ function initForm(){
     el.addEventListener('input', updateAllCalculations);
   });
 
+  // ✅ LOCKS MALE/FEMALE/ADULT (HORS DU if(scroller) !)
+  ['FinalMALE','FinalFEMALE','FinalADULT'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{
+      syncAdultGenderLocks();
+      updateFinalTOB();
+    });
+  });
+
+  // état initial (locks)
+  syncAdultGenderLocks();
+
   // 7) Drag scroll timeline (inchangé)
   const scroller = document.getElementById('timelineScroll');
   if(scroller){
     let isDown=false, startX=0, startLeft=0;
+
     scroller.addEventListener('mousedown', e=>{
       isDown=true; startX=e.clientX; startLeft=scroller.scrollLeft;
     });
@@ -2005,6 +2012,7 @@ function initForm(){
       scroller.scrollLeft = startLeft - dx;
       e.preventDefault();
     });
+
     ['wheel','mousedown','touchstart','keydown','scroll'].forEach(ev=>{
       scroller.addEventListener(ev, ()=>{ timelineUserScrolled = true; }, {passive:true});
     });
