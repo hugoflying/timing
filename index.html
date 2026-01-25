@@ -23,7 +23,8 @@
   --field-border: rgba(17,24,39,.18);
   --field-placeholder: rgba(107,114,128,.95);
 
-  --fixed-header-h: 140px;
+  /* header un peu plus compact (plus de timers) */
+  --fixed-header-h: 170px;
 
   --gap: 10px;
   --padCard: 12px;
@@ -81,7 +82,6 @@ html.dark .fixed-header{ border-bottom-color: rgba(255,255,255,.08); }
 /* rien afficher tant qu'il n'y a pas d'onglet */
 .app-wrap{ display:none; }
 body.has-tab .app-wrap{ display:block; }
-body.no-tab .timer-row{ display:none !important; }
 
 /* Topbar */
 .topbar-inner{
@@ -132,66 +132,6 @@ body.no-tab .timer-row{ display:none !important; }
 }
 .tab-refresh.is-loading{ pointer-events:none; opacity:.7; }
 
-/* Timers chips */
-.timer-row{
-  display:flex;
-  gap:10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.timer-chip{
-  min-width: 140px;
-  border-radius: 999px;
-  padding: 10px 14px;
-  background: var(--card);
-  box-shadow: var(--shadow2);
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap:10px;
-  color: var(--text);
-}
-.timer-chip .k{ font-weight: 900; color: var(--text); }
-.timer-chip .v{
-  font-weight: 900;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background:#ef4444;
-  color:#fff;
-  min-width: 70px;
-  text-align:center;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-}
-
-#timer-tobt{ background:#16a34a !important; }
-#timer-h8{ background:#facc15 !important; color:#fff !important; }
-#timer-cd{ background:#93c5fd !important; color:#111 !important; }
-#timer-cd.cd-over{ background:#fee2e2 !important; color:#ef4444 !important; }
-
-/* CTOT éditable */
-.ctot-pill{
-  width: auto;
-  min-width: 70px;
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-  background:#334155 !important;
-  color:#fff !important;
-  font-weight: 900 !important;
-  border-radius: 999px !important;
-  padding: 6px 10px !important;
-  text-align:center;
-  height: auto;
-  line-height: 1.2;
-  font-size: 1rem;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.ctot-pill::-webkit-datetime-edit{ color:#fff; }
-.ctot-pill::-webkit-calendar-picker-indicator{ display:none; -webkit-appearance:none; }
-
 /* Bulma tweaks */
 .card{
   border-radius: var(--radius);
@@ -237,18 +177,16 @@ textarea.si-uppercase{ text-transform: uppercase; }
   opacity: .9;
 }
 
-/* FORCE couleur TOB */
-#FinalTOB.is-invalid{ color:#ef4444 !important; }
-#FinalTOB.is-valid{ color: var(--field-text) !important; }
-
-/* Buttons */
-.btn-actions{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-top: 8px;
+/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
+.select.is-fullwidth select{
+  height: var(--inputH);
+  line-height: calc(var(--inputH) - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
 }
-.btn-actions .button{ border-radius: 12px; font-weight: 900; height: 40px; }
 
 /* Grilles responsive simples */
 .grid-auto{
@@ -265,71 +203,20 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .span-4{ grid-column: span 4; }
   .span-3{ grid-column: span 3; }
 }
-/* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE (base) ===== */
-.kv-strip{
-  display: grid;
-  grid-template-columns: 1fr; /* mobile */
-  gap: var(--gap);
-}
-@media (min-width: 600px){
-  .kv-strip{
-    grid-template-columns: 1fr 1fr; /* tablette + */
-  }
-}
 
-/* ===== TABLET (600–900) ===== */
-@media (min-width: 600px) and (max-width: 900px){
-
-  :root{
-    --gap: 8px;
-    --padCard: 9px;
-    --labelSize: .68rem;
-    --inputH: 34px;
-  }
-
-  /* grid spans tablette */
-  .span-2{ grid-column: span 2; }
-  .span-3{ grid-column: span 3; }
-  .span-4{ grid-column: span 4; }
-  .span-6{ grid-column: span 6; }
-
-  /* Réduction globale */
-  .card-content{ padding: var(--padCard) !important; }
-
-  /* Bandeaux essentiels */
-  .kv-card{ padding: 8px 10px; }
-  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
-  .kv-value{ font-size: 1rem; font-weight: 800; }
-
-  /* Timers chips */
-  .timer-chip{ min-width: 124px; padding: 8px 12px; }
-  .timer-chip .k{ font-size: .75rem; }
-  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
-}
-
-/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
-.select.is-fullwidth select{
-  height: var(--inputH);
-  line-height: calc(var(--inputH) - 2px);
-  padding-top: 0;
-  padding-bottom: 0;
-  display: flex;
-  align-items: center;
-  font-weight: 800;
-}
-
-/* "Rows" ultra compactes pour infos clés */
+/* ===== ESSENTIELS : 2 PAR LIGNE ===== */
 .kv-strip{
   display:grid;
   grid-template-columns: 1fr;
   gap: var(--gap);
 }
-@media (min-width: 769px){
+@media (min-width: 600px){
   .kv-strip{ grid-template-columns: 1fr 1fr; }
 }
+
 .kv-card{
   border-radius: 14px;
-  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
+  background: color-mix(in srgb, var(--card) 90%, #1f2937 10%); /* neutre pro */
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
   padding: 10px 12px;
   display:flex;
@@ -340,225 +227,79 @@ textarea.si-uppercase{ text-transform: uppercase; }
 body.dark .kv-card{
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
 }
+
 .kv-left{ display:flex; flex-direction:column; gap:2px; }
 .kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
 .kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
 
-/* Popup toast */
-#popup{
-  position: fixed;
-  top: calc(var(--fixed-header-h) + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 16px;
-  border-radius: 12px;
-  color:#fff;
-  z-index: 4000;
-  box-shadow: var(--shadow);
+/* header essentiels compact */
+.fixed-header-inner .header-kv{
+  margin-top: 2px;
+  gap: 8px;
+}
+.fixed-header-inner .header-kv .kv-card{
+  box-shadow: none;
+  padding: 8px 10px;
+}
+.fixed-header-inner .header-kv .kv-title{
+  font-size: .65rem;
+  letter-spacing: .05em;
+}
+.fixed-header-inner .header-kv .kv-value{
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1.15;
 }
 
-/* Toggle switch */
-.toggle{
+/* LOAD bouton dans header (style chip) */
+.header-actions{
+  display:flex;
+  align-items:center;
+  justify-content: flex-end;
+}
+.chip-btn{
+  border: 0;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  border-radius: 999px;
+  padding: 8px 12px;
   display:inline-flex;
   align-items:center;
   gap:10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: var(--card);
-  box-shadow: var(--shadow2);
   cursor:pointer;
-  user-select:none;
+}
+.chip-btn .k{ font-weight: 900; color: var(--text); }
+.chip-btn .v{
   font-weight: 900;
-  color: var(--text);
-}
-.toggle input{ position:absolute; opacity:0; pointer-events:none; }
-.toggle .track{
-  width: 44px; height: 26px; border-radius: 999px;
-  background: rgba(148,163,184,.55);
-  position: relative; flex: 0 0 auto;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-}
-.toggle .thumb{
-  width: 22px; height: 22px; border-radius: 999px;
-  background: #fff; position:absolute; top: 2px; left: 2px;
-  transition: transform .18s ease, background .18s ease;
-  box-shadow: 0 6px 16px rgba(0,0,0,.18);
-}
-.toggle input:checked + .track{
-  background: color-mix(in srgb, #3b82f6 70%, #22c55e 30%);
-}
-.toggle input:checked + .track .thumb{ transform: translateX(18px); }
-
-/* ===== AK picker (FULLSCREEN POPUP) ===== */
-#akPopover{
-  position: fixed;
-  inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
-  width: auto;
-  transform: none;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border-radius: 16px;
-  z-index: 4700;
-  padding: 12px;
-  border: 1px solid rgba(0,0,0,.08);
-  display: none;
-  overflow: auto;
-
-  flex-direction: column;
-}
-body.dark #akPopover{ border-color: rgba(255,255,255,.10); }
-
-#akBackdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 4600;
-  display: none;
-}
-
-#akPopover .ak-header{
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--card);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-body.dark #akPopover .ak-header{ border-bottom-color: rgba(255,255,255,.10); }
-
-#akList{ flex: 1 1 auto; overflow-y: auto; }
-
-/* ===== TIMELINE ===== */
-.timeline-track {
-  position: absolute; left:6%; right:6%;
-  height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
-}
-body.dark .timeline-track{ background:#2e2e2e; }
-
-.timeline-tick { position: absolute; width: 1px; background:rgba(0,0,0,0.08); }
-body.dark .timeline-tick { background:#3e444b; }
-
-.timeline-tick-label {
-  position: absolute; transform: translateX(-50%);
-  font-size: 14px; font-weight: 800; color:#111827;
-}
-body.dark .timeline-tick-label { color:#cfd4da; }
-
-.tl-event, .tl-range { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height:1; z-index: 1; }
-.tl-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
-  margin: 0 auto 4px;
-}
-.tl-label {
-  padding: 4px 10px; border-radius: 999px;
-  background: #f1f3f5; color:#111; font-size: 14px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.07);
-  font-weight: 900;
-}
-body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
-
-.tl--std  { --c:#64748b; }
-.tl--tobt { --c:#16a34a; }
-.tl--ctot { --c:#334155; }
-.tl--ops  { --c:#2563eb; }
-.tl--turn { --c:#ef4444; }
-.tl-event .tl-dot { background: var(--c); }
-
-.tl-range{
-  height: 16px;
-  background: color-mix(in srgb, var(--c) 42%, transparent);
-  border: 2px solid var(--c);
+  padding: 6px 10px;
   border-radius: 999px;
-  z-index: 2;
-}
-.tl-range-label{
-  position:absolute; top: -22px; left:50%; transform: translateX(-50%);
-  font-size: 13px; background: rgba(255,255,255,.92);
-  padding: 2px 8px; border-radius: 10px; font-weight: 900;
-  color: #111;
-}
-body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
-
-.timeline-toolbar{
-  display:flex; align-items:center; gap:8px; margin: 4px 0 10px;
-  flex-wrap: wrap;
-}
-.timeline-scroll{
-  overflow-x:auto; overflow-y:hidden;
-  border-radius: 16px;
-  background: var(--card);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-}
-body.dark .timeline-scroll{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.timeline-canvas{ position:relative; min-width:600px; width:100%; }
-
-/* DL error */
-.dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
-
-/* ===== SETTINGS (gear) bottom menu ===== */
-#settingsBackdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 4800;
-  display: none;
+  background: #111827;
+  color:#fff;
+  min-width: 70px;
+  text-align:center;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
-#settingsFab{
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 4900;
-  width: 52px;
-  height: 52px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  box-shadow: var(--shadow2);
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+  .card-content{ padding: var(--padCard) !important; }
+  .kv-card{ padding: 8px 10px; }
+  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
+  .kv-value{ font-size: 1rem; font-weight: 800; }
 }
 
-#settingsMenu{
-  position: fixed;
-  right: 14px;
-  bottom: 74px;
-  z-index: 4901;
-  width: min(320px, calc(100vw - 28px));
-  border-radius: 16px;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(0,0,0,.08);
-  padding: 12px;
-  display: none;
-}
-body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
-
-#settingsMenu .settings-title{ font-weight: 900; margin-bottom: 10px; }
-#settingsMenu .settings-row{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* ===== RESPONSIVE tweaks ===== */
-@media (max-width: 768px){
-  .timer-chip{ min-width: 128px; }
-  .timeline-canvas{ min-width: 720px; }
-}
-@media (max-width: 420px){
-  .timer-chip{ min-width: 120px; padding: 9px 12px; }
-  .timer-chip .v{ min-width: 64px; }
-  .ctot-pill{ min-width: 64px; }
-}
-@media (max-width: 480px){
-  .timer-row{ gap: 6px; }
-  .timer-chip{ min-width: 96px; padding: 6px 8px; gap: 6px; }
-  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
-  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
-  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
+/* Téléphone : on empile */
+@media (max-width: 520px){
+  :root{ --fixed-header-h: 210px; }
+  .fixed-header-inner .header-kv{ grid-template-columns: 1fr; }
 }
 
 /* ===== LDM modal (neutre, sans pastilles couleur) ===== */
@@ -631,12 +372,8 @@ body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   border-color: transparent !important;
 }
 
-.ldm-body{
-  padding: 12px;
-  overflow: auto;
-}
+.ldm-body{ padding: 12px; overflow: auto; }
 
-/* cartes neutres (ARR/EXP/FINAL = même style) */
 .ldm-card{
   border-radius: 16px;
   background: color-mix(in srgb, var(--card) 92%, #000 8%);
@@ -646,7 +383,6 @@ body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 }
 body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
-/* header carte neutre */
 .ldm-card-hdr{
   display:flex;
   align-items:center;
@@ -657,13 +393,11 @@ body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 }
 body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 
-/* on SUPPRIME l’indicateur couleur */
 .ldm-dot{ display:none !important; }
 
 .ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
 .ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
 
-/* grille 2 colonnes simple */
 .ldm-grid{
   padding: 10px 12px 12px;
   display:grid;
@@ -685,7 +419,6 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   font-weight: 800;
 }
 
-/* ===== ligne H1..H4 / OA..OD : plus de pastilles ===== */
 .ldm-row-4{
   grid-column: span 2;
   display:grid;
@@ -693,10 +426,7 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   gap: 8px;
 }
 
-/* champ compact sans "badge" */
-.ldm-row-4 .field{
-  margin: 0 !important;
-}
+.ldm-row-4 .field{ margin: 0 !important; }
 .ldm-row-4 .field .label{
   margin: 0 0 6px !important;
   padding: 0 !important;
@@ -730,205 +460,19 @@ body.modal-open{
   touch-action: none;
 }
 
-/* ===== petit layout PAX "X + Y" ===== */
-.pax-split{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-.pax-split .pax-plus{
-  font-weight: 900;
-  opacity: .8;
-  user-select:none;
-}
-.pax-split .input{ width:100%; }
-
-/* ===== FINAL layout (comme sheet) ===== */
-.final-sheet{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-@media (min-width: 760px){
-  .final-sheet{ grid-template-columns: 1.05fr .95fr; }
-}
-
-.final-box{
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 92%, #000 8%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+/* HLE petite carte couleur dans INFO VOL */
+.badge-card{
+  border-radius: 14px;
   padding: 10px 12px;
-}
-body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-
-.final-box-title{
-  font-weight: 900;
-  letter-spacing:.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
   display:flex;
   align-items:center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  background: color-mix(in srgb, var(--card) 88%, #111827 12%);
 }
-
-.final-mini{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 8px;
-}
-@media (min-width: 760px){
-  .final-mini{ grid-template-columns: repeat(3, minmax(0,1fr)); }
-}
-.final-mini-2{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 8px;
-}
-
-.final-wide{ grid-column: 1 / -1; }
-
-.final-row{
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 8px;
-}
-@media (max-width: 520px){
-  .final-row{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-}
-
-/* look “sheet” : labels plus petits, inputs centrés */
-.final-box .label{ margin-bottom: 6px !important; }
-.final-box .ldm-in{ text-align:center; }
-
-/* ===== LABEL VERTICAL LETTRE PAR LETTRE ===== */
-.vertical-label{
-  width: 28px;
-  min-width: 28px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 2px;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: .82rem;
-  line-height: 1;
-
-  opacity: .95;
-  border-right: 1px solid rgba(0,0,0,.08);
-}
-html.dark .vertical-label{
-  border-right-color: rgba(255,255,255,.10);
-}
-
-.vertical-label span{
-  display: block;
-}
-
-  /* HORAIRES responsive */
-@media (max-width: 520px){
-  .card-content > div[style*="grid-template-columns"]{
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* ===== ESSENTIELS dans le header : 2 colonnes ===== */
-.fixed-header-inner .header-kv{
-  margin-top: 4px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.fixed-header-inner .header-kv .kv-card{
-  box-shadow: none;
-  padding: 8px 10px;
-}
-
-.fixed-header-inner .header-kv .kv-title{
-  font-size: .65rem;
-  letter-spacing: .05em;
-}
-
-.fixed-header-inner .header-kv .kv-value{
-  font-size: .95rem;
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-/* Téléphone : on empile */
-@media (max-width: 520px){
-  .fixed-header-inner .header-kv{
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ===== TAB BAR (Ajouter vol + Liste vols + onglets) : même taille que ESSENTIELS ===== */
-.fixed-header-inner .tabs-chip{
-  padding: 8px 10px;
-  gap: 6px;
-}
-
-.fixed-header-inner .tabs-chip .button{
-  height: 34px;                 /* compact */
-  padding: 0 12px;              /* moins large */
-  font-size: .85rem;            /* même vibe que essentiels */
-  font-weight: 900;
-  border-radius: 999px;
-  line-height: 1;
-}
-
-/* refresh ↻ collé aux onglets */
-.fixed-header-inner .tabs-chip .tab-refresh{
-  height: 34px;
-  min-width: 34px;
-  padding: 0 10px !important;
-  font-size: .9rem;
-}
-
-/* tablette/desktop : un poil plus grand si tu veux */
-@media (min-width: 769px){
-  .fixed-header-inner .tabs-chip .button{ font-size: .9rem; }
-}
-
-/* ===== TIMERS : même taille que onglets ===== */
-.fixed-header-inner .timer-chip{
-  height: 38px;
-  padding: 6px 12px;
-  gap: 4px;
-}
-
-.fixed-header-inner .timer-chip .k{
-  font-size: .85rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.fixed-header-inner .timer-chip .v,
-.fixed-header-inner .timer-chip input{
-  font-size: .85rem;
-  font-weight: 900;
-  line-height: 1;
-  height: auto;
-}
-  
-/* ===== ESSENTIELS : couleur pro neutre ===== */
-.fixed-header-inner .header-kv .kv-card{
-  background: color-mix(in srgb, var(--card) 90%, #1f2937 10%);
-}
-
-/* ===== LOAD dans header ===== */
-.header-load{
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
+.badge-card .t{ font-weight: 900; text-transform: uppercase; color: var(--muted); font-size: .75rem; letter-spacing:.05em;}
+.badge-card .x{ font-weight: 900; font-size: 1.1rem; }
 </style>
 </head>
 
@@ -955,7 +499,6 @@ html.dark .vertical-label{
   </div>
 
   <div class="ldm-body">
-
     <!-- ===== LOAD (ARR + PREVI) ===== -->
     <section class="ldm-card ldm-arr" id="ldmArr">
       <div class="ldm-card-hdr">
@@ -964,13 +507,10 @@ html.dark .vertical-label{
       </div>
 
       <div class="ldm-grid">
-
-        <!-- ARR -->
         <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
           ARR
         </div>
 
-        <!-- PAX / INF / BAGS alignés -->
         <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">PAX</label>
@@ -994,12 +534,10 @@ html.dark .vertical-label{
 
         <div class="ldm-span-2" style="height:1px; background:rgba(0,0,0,.08); margin:4px 0;"></div>
 
-        <!-- PREVI -->
         <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
           PREVI
         </div>
 
-        <!-- PAX / INF / BAGS alignés -->
         <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">PAX</label>
@@ -1020,7 +558,6 @@ html.dark .vertical-label{
           <label class="label">SI</label>
           <textarea class="textarea si-uppercase ldm-ta" id="PreviSI"></textarea>
         </div>
-
       </div>
     </section>
 
@@ -1032,8 +569,6 @@ html.dark .vertical-label{
       </div>
 
       <div class="ldm-grid">
-
-        <!-- MALE / FEMALE -->
         <div class="field">
           <label class="label">MALE</label>
           <input class="input ldm-in" id="FinalMALE" maxlength="3"
@@ -1046,9 +581,7 @@ html.dark .vertical-label{
                  oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
         </div>
 
-        <!-- ADULT / CHILD / INFANT / TOB -->
-        <div class="ldm-span-2"
-             style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;">
+        <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">ADULT</label>
             <input class="input ldm-in" id="FinalADULT" maxlength="3"
@@ -1070,35 +603,28 @@ html.dark .vertical-label{
           </div>
         </div>
 
-        <!-- ZONES -->
         <div class="ldm-row-4">
           <div class="field">
             <label class="label">OA</label>
-            <input class="input ldm-in" id="FinalOA" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOA" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OB</label>
-            <input class="input ldm-in" id="FinalOB" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOB" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OC</label>
-            <input class="input ldm-in" id="FinalOC" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOC" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OD</label>
-            <input class="input ldm-in" id="FinalOD" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOD" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
           </div>
         </div>
 
-        <!-- BAGS / GB -->
         <div class="field">
           <label class="label">BAGS</label>
-          <input class="input ldm-in" id="FinalBAGS" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('final')">
+          <input class="input ldm-in" id="FinalBAGS" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
         </div>
 
         <div class="field">
@@ -1106,86 +632,55 @@ html.dark .vertical-label{
           <input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this)">
         </div>
 
-        <!-- H1..H4 -->
         <div class="ldm-row-4">
           <div class="field">
             <label class="label">H1</label>
-            <input class="input ldm-in" id="FinalH1" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <input class="input ldm-in" id="FinalH1" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
           </div>
           <div class="field">
             <label class="label">H2</label>
-            <input class="input ldm-in" id="FinalH2" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <input class="input ldm-in" id="FinalH2" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
           </div>
           <div class="field">
             <label class="label">H3</label>
-            <input class="input ldm-in" id="FinalH3" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <input class="input ldm-in" id="FinalH3" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
           </div>
           <div class="field">
             <label class="label">H4</label>
-            <input class="input ldm-in" id="FinalH4" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <input class="input ldm-in" id="FinalH4" maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
           </div>
         </div>
 
-        <!-- SI -->
         <div class="field ldm-span-2">
           <label class="label">SI</label>
           <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
         </div>
-
       </div>
     </section>
-
-  </div><!-- /.ldm-body -->
-</div><!-- /#ldmModal -->
+  </div>
+</div>
 
 <!-- ===== FIXED HEADER ===== -->
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <div class="topbar-inner"></div>
+    <div class="topbar-inner">
+      <div></div>
+      <div class="header-actions">
+        <button type="button" class="chip-btn" onclick="openLDM('arr')">
+          <div class="k">LOAD</div>
+          <div class="v">OPEN</div>
+        </button>
+      </div>
+    </div>
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <div class="timer-row">
-      <div class="timer-chip">
-        <div class="k">HLE</div>
-        <div id="timer-h40" class="v">--:--</div>
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">H-15</div>
-        <div id="timer-h15" class="v">--:--</div>
-      </div>
-
-      <div id="lidBlock" class="timer-chip" style="display:none;">
-        <div class="k">LID</div>
-        <div id="timer-h8" class="v">--:--</div>
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">TOBT</div>
-        <div id="timer-tobt" class="v">--:--</div>
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">CTOT</div>
-        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">CD</div>
-        <div id="timer-cd" class="v">--:--</div>
-      </div>
-    </div>
-
-    <!-- ESSENTIELS -->
+    <!-- ESSENTIELS (remplace le bandeau timers) -->
     <div class="kv-strip header-kv">
+      <!-- 1) VOL + ROUTE -->
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Vol</div>
@@ -1201,6 +696,7 @@ html.dark .vertical-label{
         </div>
       </div>
 
+      <!-- 2) IMMAT/TYPE + SIBT/AIBT -->
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Immat / Type</div>
@@ -1209,53 +705,25 @@ html.dark .vertical-label{
           </div>
         </div>
         <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">SIBT / AIBT</div>
+          <div class="kv-value">
+            <span id="kvSIBT">--:--</span> · <span id="kvAIBT">--:--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3) SALL ARR/PARKING + SOBT/AOBT -->
+      <div class="kv-card">
+        <div class="kv-left">
           <div class="kv-title">Salle arr. / Parking</div>
           <div class="kv-value">
             <span id="kvBC">----</span> · <span id="kvPark">--</span>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- LOAD -->
-    <div class="header-load">
-      <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-        <div class="k">LOAD</div>
-        <div class="v">OPEN</div>
-      </button>
-    </div>
-
-  </div>
-</div>
-
-    <!-- ✅ ESSENTIELS (ancré dans le header, sous les timers) -->
-    <div class="kv-strip header-kv">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-          </div>
-        </div>
         <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
+          <div class="kv-title">SOBT / AOBT</div>
           <div class="kv-value">
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+            <span id="kvSOBT">--:--</span> · <span id="kvAOBT">--:--</span>
           </div>
         </div>
       </div>
@@ -1275,6 +743,14 @@ html.dark .vertical-label{
 
   <!-- ⬇️ réduit par défaut -->
   <div class="card-content collapsed-body">
+
+    <!-- HLE : carte couleur (dans INFO VOL) -->
+    <div class="mb-4">
+      <div class="badge-card">
+        <div class="t">HLE</div>
+        <div class="x" id="HLE">--:--</div>
+      </div>
+    </div>
 
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
@@ -1344,91 +820,10 @@ html.dark .vertical-label{
         <label class="label">To</label>
         <input class="input uppercase" type="text" id="To" maxlength="3">
       </div>
-     
-    </div>
-  </div>
-</div>
-
-
-<!-- HORAIRES -->
-<div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-    <p class="card-header-title">HORAIRES</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
-  </header>
-
-  <div class="card-content">
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--gap);">
-
-      <!-- ===== COLONNE ARRIVÉE ===== -->
-      <div class="kv-card"
-           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #16a34a 4%); display:flex; gap:12px;">
-
-        <!-- LABEL VERTICAL -->
-        <div class="vertical-label">
-          <span>A</span><span>R</span><span>R</span><span>I</span><span>V</span><span>É</span><span>E</span>
-        </div>
-
-        <!-- CONTENU -->
-        <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          <div class="field" style="margin:0;">
-            <label class="label">SIBT (Prévu)</label>
-            <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
-          </div>
-
-          <div class="field" style="margin:0;">
-            <label class="label">AIBT</label>
-            <input class="input" type="time" id="AIBT"
-                   onchange="updateAllCalculations()" style="font-weight:900;">
-            <div class="btn-actions">
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button"
-                      onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== COLONNE DÉPART ===== -->
-      <div class="kv-card"
-           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #3b82f6 4%); display:flex; gap:12px;">
-
-        <!-- LABEL VERTICAL -->
-        <div class="vertical-label">
-          <span>D</span><span>É</span><span>P</span><span>A</span><span>R</span><span>T</span>
-        </div>
-
-        <!-- CONTENU -->
-        <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          <div class="field" style="margin:0;">
-            <label class="label">SOBT (Prévu)</label>
-            <input class="input" type="time" id="SOBT"
-                   onchange="manualSOBT=true;updateAllCalculations()">
-          </div>
-
-          <div class="field" style="margin:0;">
-            <label class="label">AOBT</label>
-            <input class="input" type="time" id="AOBT"
-                   onchange="updateAllCalculations()" style="font-weight:900;">
-            <div class="btn-actions">
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button"
-                      onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
 </div>
-
 
   <!-- TIMING -->
   <div class="card mb-5">
