@@ -1195,59 +1195,55 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   </header>
 
   <div class="card-content">
-    <div class="grid-auto">
+    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--gap);">
 
-      <!-- Arrivée -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SIBT</label>
-              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
+      <!-- ===== COLONNE ARRIVÉE ===== -->
+      <div class="kv-card" style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #16a34a 4%);">
+        <div style="font-weight:900; color:var(--text); text-transform:uppercase; margin-bottom:14px; font-size:.9rem; letter-spacing:.06em; text-align:center;">
+          🛬 Arrivée
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <!-- SIBT (sans boutons) -->
+          <div class="field" style="margin:0;">
+            <label class="label">SIBT (Prévu)</label>
+            <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+          </div>
 
-            <div style="min-width:160px;">
-              <label class="label">AIBT</label>
-              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
-              </div>
+          <!-- AIBT (avec boutons) -->
+          <div class="field" style="margin:0;">
+            <label class="label">AIBT</label>
+            <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()" style="font-weight:900;">
+            <div class="btn-actions">
+              <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+              <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Départ -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SOBT</label>
-              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
+      <!-- ===== COLONNE DÉPART ===== -->
+      <div class="kv-card" style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #3b82f6 4%);">
+        <div style="font-weight:900; color:var(--text); text-transform:uppercase; margin-bottom:14px; font-size:.9rem; letter-spacing:.06em; text-align:center;">
+          🛫 Départ
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <!-- SOBT (sans boutons) -->
+          <div class="field" style="margin:0;">
+            <label class="label">SOBT (Prévu)</label>
+            <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+          </div>
 
-            <div style="min-width:160px;">
-              <label class="label">AOBT</label>
-              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
-              </div>
+          <!-- AOBT (avec boutons) -->
+          <div class="field" style="margin:0;">
+            <label class="label">AOBT</label>
+            <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()" style="font-weight:900;">
+            <div class="btn-actions">
+              <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+              <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
             </div>
           </div>
         </div>
