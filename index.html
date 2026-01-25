@@ -921,6 +921,228 @@ html.dark .vertical-label{
 .fixed-header-inner .header-kv .kv-card{
   background: color-mix(in srgb, var(--card) 90%, #1f2937 10%);
 }
+
+/* GLASSMORPHISM - ESSENTIELS HEADER */
+.kv-strip-glass {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 4px;
+}
+
+.glass-card-header {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Effet de lumière en haut */
+.glass-card-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+}
+
+/* Bouton édition glassmorphism */
+.glass-edit-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 900;
+  padding: 0;
+  z-index: 10;
+}
+
+.glass-edit-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Grille principale */
+.glass-grid-header {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.glass-item-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.glass-label-header {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.glass-value-header {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+}
+
+/* Horaires en bas */
+.glass-times-header {
+  display: flex;
+  gap: 12px;
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  flex-wrap: wrap;
+}
+
+.glass-time-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-time-label-header {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.glass-time-value-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Courier New', 'SF Mono', 'Monaco', monospace;
+}
+
+/* Responsive - Tablette (768px et moins) */
+@media (max-width: 768px) {
+  .glass-card-header {
+    padding: 18px;
+  }
+  
+  .glass-grid-header {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .glass-value-header {
+    font-size: 14px;
+  }
+  
+  .glass-edit-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    top: 14px;
+    right: 14px;
+  }
+}
+
+/* Responsive - Mobile (520px et moins) */
+@media (max-width: 520px) {
+  .glass-card-header {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  
+  .glass-grid-header {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .glass-label-header {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  
+  .glass-value-header {
+    font-size: 13px;
+  }
+  
+  .glass-times-header {
+    gap: 10px;
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+  
+  .glass-time-header {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  
+  .glass-time-label-header {
+    font-size: 8px;
+  }
+  
+  .glass-time-value-header {
+    font-size: 12px;
+  }
+  
+  .glass-edit-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+    top: 12px;
+    right: 12px;
+  }
+}
+
+/* Mode sombre - dégradé plus foncé en arrière-plan */
+html.dark .glass-card-header {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+html.dark .glass-time-header {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+html.dark .glass-edit-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.dark .glass-edit-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
   
 /* ===== LOAD dans header ===== */
 .header-load{
@@ -1214,69 +1436,89 @@ html.dark .vertical-label{
 
     </div>
 
-    <!-- ESSENTIELS -->
-    <div class="kv-strip header-kv">
-
-      <!-- Carte 1 : VOL / ROUTE / SIBT-AIBT -->
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol · Route</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-            &nbsp;|&nbsp;
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+    <!-- ESSENTIELS - GLASSMORPHISM -->
+    <div class="kv-strip-glass header-kv">
+      <div class="glass-card-header">
+        
+        <!-- Bouton édition -->
+        <button type="button"
+                class="glass-edit-btn"
+                title="Éditer infos vol"
+                aria-label="Éditer infos vol"
+                onclick="openHeaderEdit()">
+          ✎
+        </button>
+        
+        <!-- Grille des informations -->
+        <div class="glass-grid-header">
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Vol Arr.</div>
+            <div class="glass-value-header" id="kvArrVol">----</div>
           </div>
-          <div class="kv-sub">
-            <span class="kv-mini">SIBT</span> <span id="kvSIBT">--:--</span>
-            &nbsp;·&nbsp;
-            <span class="kv-mini">AIBT</span> <span id="kvAIBT">--:--</span>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Vol Dép.</div>
+            <div class="glass-value-header" id="kvDepVol">----</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">De</div>
+            <div class="glass-value-header" id="kvFrom">---</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Vers</div>
+            <div class="glass-value-header" id="kvTo">---</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Immat</div>
+            <div class="glass-value-header" id="kvImmat">------</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Type</div>
+            <div class="glass-value-header" id="kvType">--</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Salle Arr.</div>
+            <div class="glass-value-header" id="kvBC">----</div>
+          </div>
+          
+          <div class="glass-item-header">
+            <div class="glass-label-header">Parking</div>
+            <div class="glass-value-header" id="kvPark">--</div>
+          </div>
+          
+        </div>
+        
+        <!-- Horaires -->
+        <div class="glass-times-header">
+          <div class="glass-time-header">
+            <div class="glass-time-label-header">SIBT</div>
+            <div class="glass-time-value-header" id="kvSIBT">--:--</div>
+          </div>
+          <div class="glass-time-header">
+            <div class="glass-time-label-header">AIBT</div>
+            <div class="glass-time-value-header" id="kvAIBT">--:--</div>
+          </div>
+          <div class="glass-time-header">
+            <div class="glass-time-label-header">SOBT</div>
+            <div class="glass-time-value-header" id="kvSOBT">--:--</div>
+          </div>
+          <div class="glass-time-header">
+            <div class="glass-time-label-header">AOBT</div>
+            <div class="glass-time-value-header" id="kvAOBT">--:--</div>
           </div>
         </div>
+        
       </div>
-
-      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT + ✎ -->
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title"
-               style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <span>Immat · Type · Salle arr · Parking</span>
-            <button type="button"
-                    class="button is-small is-light"
-                    title="Éditer infos vol"
-                    aria-label="Éditer infos vol"
-                    style="border-radius:999px;font-weight:900;height:30px;padding:0 10px;"
-                    onclick="openHeaderEdit()">
-              ✎
-            </button>
-          </div>
-
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-            &nbsp;|&nbsp;
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-
-          <div class="kv-sub">
-            <span class="kv-mini">SOBT</span> <span id="kvSOBT">--:--</span>
-            &nbsp;·&nbsp;
-            <span class="kv-mini">AOBT</span> <span id="kvAOBT">--:--</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- LOAD -->
-    <div class="header-load">
-      <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-        <div class="k">LOAD</div>
-        <div class="v">OPEN</div>
-      </button>
     </div>
 
   </div>
 </div>
-
 <div class="app-wrap">
 
  <!-- TIMING -->
