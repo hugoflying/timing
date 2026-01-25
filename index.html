@@ -819,8 +819,10 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
     </div>
 
     <div class="lm-seg">
-      <button id="ldmTabArr" class="button is-small is-active" type="button" onclick="ldmSwitch('arr')">ARR</button>
-      <button id="ldmTabFinal" class="button is-small" type="button" onclick="ldmSwitch('final')">FINAL</button>
+      <button id="ldmTabArr" class="button is-small is-active" type="button"
+              onclick="ldmSwitch('arr')">ARR</button>
+      <button id="ldmTabFinal" class="button is-small" type="button"
+              onclick="ldmSwitch('final')">FINAL</button>
     </div>
 
     <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
@@ -838,20 +840,20 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
       <div class="ldm-grid">
 
         <!-- ARR -->
-        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">ARR</div>
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
+          ARR
+        </div>
 
-        <!-- PAX MAIN / PAX INF / BAGS = 3 cases identiques -->
-        <div class="ldm-span-2" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end;">
+        <!-- PAX / INF / BAGS alignés -->
+        <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">PAX</label>
             <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">+ INF</label>
             <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">BAGS</label>
             <input class="input ldm-in" id="ArrBAGS" maxlength="4"
@@ -867,20 +869,20 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
         <div class="ldm-span-2" style="height:1px; background:rgba(0,0,0,.08); margin:4px 0;"></div>
 
         <!-- PREVI -->
-        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">PREVI</div>
+        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
+          PREVI
+        </div>
 
-        <!-- PAX MAIN / PAX INF / BAGS = 3 cases identiques -->
-        <div class="ldm-span-2" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end;">
+        <!-- PAX / INF / BAGS alignés -->
+        <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">PAX</label>
             <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">+ INF</label>
             <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">BAGS</label>
             <input class="input ldm-in" id="PreviBAGS" maxlength="4"
@@ -905,42 +907,40 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
       <div class="ldm-grid">
 
-        <!-- 1ère ligne : MALE / FEMALE -->
+        <!-- MALE / FEMALE -->
         <div class="field">
           <label class="label">MALE</label>
           <input class="input ldm-in" id="FinalMALE" maxlength="3"
-                 oninput="digitsOnly(this); updateFinalTOB()">
+                 oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
         </div>
 
         <div class="field">
           <label class="label">FEMALE</label>
           <input class="input ldm-in" id="FinalFEMALE" maxlength="3"
-                 oninput="digitsOnly(this); updateFinalTOB()">
+                 oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
         </div>
 
-        <!-- 2ème ligne : ADULT / CHILD / INFANT / TOB (même taille) -->
-        <div class="ldm-span-2" style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:10px; align-items:end;">
+        <!-- ADULT / CHILD / INFANT / TOB -->
+        <div class="ldm-span-2"
+             style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;">
           <div class="field" style="margin:0;">
             <label class="label">ADULT</label>
             <input class="input ldm-in" id="FinalADULT" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+                   oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">CHILD</label>
             <input class="input ldm-in" id="FinalCHILD" maxlength="3"
                    oninput="digitsOnly(this); updateFinalTOB()">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">INFANT</label>
             <input class="input ldm-in" id="FinalINFANT" maxlength="3"
                    oninput="digitsOnly(this); updateFinalTOB()">
           </div>
-
           <div class="field" style="margin:0;">
             <label class="label">TOB</label>
-            <input class="input ldm-in" id="FinalTOB" readonly>
+            <input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly>
           </div>
         </div>
 
@@ -948,19 +948,23 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
         <div class="ldm-row-4">
           <div class="field">
             <label class="label">OA</label>
-            <input class="input ldm-in" id="FinalOA" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOA" maxlength="3"
+                   oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OB</label>
-            <input class="input ldm-in" id="FinalOB" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOB" maxlength="3"
+                   oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OC</label>
-            <input class="input ldm-in" id="FinalOC" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOC" maxlength="3"
+                   oninput="digitsOnly(this); updateFinalTOB()">
           </div>
           <div class="field">
             <label class="label">OD</label>
-            <input class="input ldm-in" id="FinalOD" maxlength="3" oninput="digitsOnly(this); updateFinalTOB()">
+            <input class="input ldm-in" id="FinalOD" maxlength="3"
+                   oninput="digitsOnly(this); updateFinalTOB()">
           </div>
         </div>
 
@@ -1524,6 +1528,32 @@ function updateHBagsValidity(mode){
   });
 
   bagsEl.classList.toggle('is-invalid', bags > 0 && sum !== bags);
+}
+
+function syncAdultGenderLocks(){
+  const male   = document.getElementById('FinalMALE');
+  const female = document.getElementById('FinalFEMALE');
+  const adult  = document.getElementById('FinalADULT');
+
+  const hasGender = (+male.value || 0) + (+female.value || 0) > 0;
+  const hasAdult  = (+adult.value || 0) > 0;
+
+  if (hasGender) {
+    adult.value = '';
+    adult.disabled = true;
+  } else {
+    adult.disabled = false;
+  }
+
+  if (hasAdult) {
+    male.value = '';
+    female.value = '';
+    male.disabled = true;
+    female.disabled = true;
+  } else {
+    male.disabled = false;
+    female.disabled = false;
+  }
 }
 
 /* ===== POIDS auto FR / RK : (BAGS + GB) * 13 ===== */
