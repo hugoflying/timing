@@ -3708,6 +3708,14 @@ function applyAKFlight(f, flow, opts = {}){
     }
   }
 
+  /* =========================================================
+     ✅ RÈGLES IMPORT LOAD
+     - PAX ARR -> ArrPAX_MAIN
+     - NE PLUS importer BAGS / POIDS (ni ARR, ni PREVI, ni FINAL)
+     - SI ARR -> ArrSI
+     - SI DEP -> PreviSI + FinalSI
+     ========================================================= */
+
   /* ===== DEP ===== */
   if(flow === 'DEP'){
     setValAK('To', (f.adesIata || '') || HOME_IATA);
@@ -3719,8 +3727,10 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOIfEmptyOrAK('AvionPremierEmbarque', f?.boardingDetails?.startTime);
     setTimeFromISOIfEmptyOrAK('AvionDernierEmbarque', f?.boardingDetails?.endTime);
 
-    const si = akBuildSI(f, true);
-    setIfEmptyOrAK('FinalSI', si);
+    // ✅ SI DEP -> PREVI + FINAL
+    const siDep = akBuildSI(f, true);
+    setIfEmptyOrAK('PreviSI', siDep);
+    setIfEmptyOrAK('FinalSI', siDep);
 
     const prevArr = findLinkedArrForDep(f);
 
@@ -3730,10 +3740,15 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('SIBT', prevArr.sibt || prevArr.eibt);
       setTimeFromISOIfEmptyOrAK('AIBT', prevArr.aibt);
 
-      if(prevArr?.bags  != null) setIfEmptyOrAK('LoadBAGS',     String(prevArr.bags));
-      if(prevArr?.paxNb != null) setIfEmptyOrAK('LoadPAX_MAIN', String(prevArr.paxNb));
+      // ✅ PAX ARR -> LOAD ARR (PAX)
+      if(prevArr?.paxNb != null) setIfEmptyOrAK('ArrPAX_MAIN', String(prevArr.paxNb));
 
-      setIfEmptyOrAK('LoadSI', akBuildSI(prevArr, false));
+      // ❌ PLUS D’IMPORT BAGS/POIDS
+
+      // ✅ SI ARR -> LOAD ARR SI
+      const siArr = akBuildSI(prevArr, false);
+      setIfEmptyOrAK('ArrSI', siArr);
+
     }else{
       setValAK('From', HOME_IATA);
     }
@@ -3745,10 +3760,14 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOAK('SIBT', f.sibt || f.eibt);
     setTimeFromISOAK('AIBT', f.aibt);
 
-    if(f?.bags  != null) setIfEmptyOrAK('LoadBAGS',     String(f.bags));
-    if(f?.paxNb != null) setIfEmptyOrAK('LoadPAX_MAIN', String(f.paxNb));
+    // ✅ PAX ARR -> LOAD ARR (PAX)
+    if(f?.paxNb != null) setIfEmptyOrAK('ArrPAX_MAIN', String(f.paxNb));
 
-    setIfEmptyOrAK('LoadSI', akBuildSI(f, false));
+    // ❌ PLUS D’IMPORT BAGS/POIDS
+
+    // ✅ SI ARR -> LOAD ARR SI
+    const siArr = akBuildSI(f, false);
+    setIfEmptyOrAK('ArrSI', siArr);
 
     const nextDep = findLinkedDepForArr(f);
     if(nextDep){
@@ -3758,8 +3777,11 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('AOBT', nextDep.aobt);
       setTimeFromISOIfEmptyOrAK('CTOT', nextDep.ctot);
 
+      // ✅ SI DEP -> PREVI + FINAL
       const siDep = akBuildSI(nextDep, true);
+      setIfEmptyOrAK('PreviSI', siDep);
       setIfEmptyOrAK('FinalSI', siDep);
+
     }else{
       setValAK('To', HOME_IATA);
     }
