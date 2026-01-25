@@ -837,6 +837,21 @@ html.dark .vertical-label{
   }
 }
 
+/* ===== ESSENTIELS dans le header ===== */
+.header-kv{
+  margin-top: 4px;
+}
+.fixed-header-inner .header-kv .kv-card{
+  box-shadow: none;
+}
+
+/* ===== HORAIRES responsive (téléphone uniquement) ===== */
+@media (max-width: 520px){
+  .card-content > div[style*="grid-template-columns"]{
+    grid-template-columns: 1fr !important;
+  }
+}
+
 </style>
 </head>
 
@@ -1054,7 +1069,7 @@ html.dark .vertical-label{
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-   <div class="topbar-inner"></div>
+    <div class="topbar-inner"></div>
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
@@ -1065,6 +1080,7 @@ html.dark .vertical-label{
         <div class="k">HLE</div>
         <div id="timer-h40" class="v">--:--</div>
       </div>
+
       <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
@@ -1091,21 +1107,8 @@ html.dark .vertical-label{
       </div>
     </div>
 
-  </div>
-</div>
-
-<div class="app-wrap">
-
-<!-- INFO VOL -->
-<div class="card mb-5">
-  <header class="card-header">
-    <p class="card-header-title">INFO VOL</p>
-  </header>
-
-  <div class="card-content">
-
-    <!-- Bandeau ESSENTIEL -->
-    <div class="kv-strip mb-4">
+    <!-- ✅ ESSENTIELS (ancré dans le header, sous les timers) -->
+    <div class="kv-strip header-kv">
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Vol</div>
@@ -1136,6 +1139,21 @@ html.dark .vertical-label{
         </div>
       </div>
     </div>
+
+  </div>
+</div>
+
+<div class="app-wrap">
+
+<!-- INFO VOL -->
+<div class="card mb-5">
+  <header class="card-header">
+    <p class="card-header-title">INFO VOL</p>
+  </header>
+
+  <div class="card-content">
+
+    <!-- ✅ (SUPPRIMÉ) Bandeau ESSENTIEL : il est maintenant dans le header -->
 
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
