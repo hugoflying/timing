@@ -1196,10 +1196,10 @@ html.dark .vertical-label{
       </button>
     </div>
 
-    <!-- ESSENTIELS (2 cartes) -->
+    <!-- ESSENTIELS -->
     <div class="kv-strip header-kv">
 
-      <!-- Carte 1 : VOL + ROUTE + SIBT/AIBT -->
+      <!-- Carte 1 : VOL / ROUTE / SIBT-AIBT -->
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Vol · Route</div>
@@ -1208,7 +1208,6 @@ html.dark .vertical-label{
             &nbsp;|&nbsp;
             <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
-
           <div class="kv-sub">
             <span class="kv-mini">SIBT</span> <span id="kvSIBT">--:--</span>
             &nbsp;·&nbsp;
@@ -1217,7 +1216,7 @@ html.dark .vertical-label{
         </div>
       </div>
 
-      <!-- Carte 2 : IMMAT/TYPE + BC/PARK + SOBT/AOBT -->
+      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT -->
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Immat · Type · Salle arr · Parking</div>
@@ -1226,7 +1225,6 @@ html.dark .vertical-label{
             &nbsp;|&nbsp;
             <span id="kvBC">----</span> · <span id="kvPark">--</span>
           </div>
-
           <div class="kv-sub">
             <span class="kv-mini">SOBT</span> <span id="kvSOBT">--:--</span>
             &nbsp;·&nbsp;
@@ -1235,6 +1233,39 @@ html.dark .vertical-label{
         </div>
       </div>
 
+    </div>
+
+    <!-- TIMERS -->
+    <div class="timer-row">
+      <div class="timer-chip">
+        <div class="k">HLE</div>
+        <div id="timer-h40" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">H-15</div>
+        <div id="timer-h15" class="v">--:--</div>
+      </div>
+
+      <div id="lidBlock" class="timer-chip" style="display:none;">
+        <div class="k">LID</div>
+        <div id="timer-h8" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">TOBT</div>
+        <div id="timer-tobt" class="v">--:--</div>
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CTOT</div>
+        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
+      </div>
+
+      <div class="timer-chip">
+        <div class="k">CD</div>
+        <div id="timer-cd" class="v">--:--</div>
+      </div>
     </div>
 
     <!-- LOAD -->
@@ -1425,10 +1456,17 @@ function openHeaderEdit(){
 function closeHeaderEdit(){
   const b = document.getElementById('hdrEditBackdrop');
   const m = document.getElementById('hdrEditModal');
+
+  // ✅ force une MAJ en fermant
+  updateAllCalculations();
+  saveCurrentTabData();
+  updateTabLabelInstant();
+
   unlockScroll();
   if(m) m.style.display = 'none';
   if(b) b.style.display = 'none';
 }
+
 
 /* Header height */
 function updateHeaderOffset(){
@@ -2158,6 +2196,29 @@ function setupUppercaseInputs(ids){
     el.addEventListener('blur', toUpper);
   });
 }
+
+function bindHeaderEditLiveUpdate(){
+  const ids = [
+    'Date','Parking','Immat','TypeAvion','Cie','NVol','From','To',
+    'SIBT','AIBT','SOBT','AOBT','CTOT'
+  ];
+
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+
+    const fn = ()=>{
+      // recalcul + timers + strip + sauvegarde onglet + label onglet
+      updateAllCalculations();      // contient déjà updateInfoStrip()
+      saveCurrentTabData();         // garde tout en storage
+      updateTabLabelInstant();      // met à jour l’onglet
+    };
+
+    el.addEventListener('input', fn);
+    el.addEventListener('change', fn);
+  });
+}
+bindHeaderEditLiveUpdate();
 
 /* Autosave */
 function attachAutoSave(){
