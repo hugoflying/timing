@@ -1189,12 +1189,14 @@ html.dark .vertical-label{
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <!-- TIMERS (EN HAUT) -->
+    <!-- TIMERS -->
+    <div class="timer-row">
+
       <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
       </div>
-     
+
       <div class="timer-chip">
         <div class="k">TOBT</div>
         <div id="timer-tobt" class="v">--:--</div>
@@ -1209,9 +1211,10 @@ html.dark .vertical-label{
         <div class="k">CD</div>
         <div id="timer-cd" class="v">--:--</div>
       </div>
+
     </div>
 
-    <!-- ESSENTIELS (AVEC ÉDITER INTÉGRÉ) -->
+    <!-- ESSENTIELS -->
     <div class="kv-strip header-kv">
 
       <!-- Carte 1 : VOL / ROUTE / SIBT-AIBT -->
@@ -1223,7 +1226,6 @@ html.dark .vertical-label{
             &nbsp;|&nbsp;
             <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
-
           <div class="kv-sub">
             <span class="kv-mini">SIBT</span> <span id="kvSIBT">--:--</span>
             &nbsp;·&nbsp;
@@ -1232,13 +1234,16 @@ html.dark .vertical-label{
         </div>
       </div>
 
-      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT + BOUTON ÉDITER INTÉGRÉ -->
+      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT + ✎ -->
       <div class="kv-card">
         <div class="kv-left">
-          <div class="kv-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div class="kv-title"
+               style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
             <span>Immat · Type · Salle arr · Parking</span>
             <button type="button"
                     class="button is-small is-light"
+                    title="Éditer infos vol"
+                    aria-label="Éditer infos vol"
                     style="border-radius:999px;font-weight:900;height:30px;padding:0 10px;"
                     onclick="openHeaderEdit()">
               ✎
