@@ -811,13 +811,13 @@ textarea.si-uppercase{ text-transform: uppercase; }
 <!-- Popup notification -->
 <div id="popupNotif" class="popup-notif"></div>
 
-<!-- Fixed Header -->
-<header class="fixed-header">
+<!-- Fixed Header (✅ CORRECT ID: fixedHeader) -->
+<header id="fixedHeader" class="fixed-header">
   <div class="fixed-header-inner">
     
     <!-- Topbar -->
     <div class="topbar-inner">
-      <button class="button is-link" type="button" onclick="addNewTab()">
+      <button class="button is-link" type="button" onclick="createNewTab()">
         <strong>➕ Nouveau vol</strong>
       </button>
 
@@ -826,24 +826,32 @@ textarea.si-uppercase{ text-transform: uppercase; }
       </button>
     </div>
 
-    <!-- Tabs -->
+    <!-- Tabs (✅ CORRECT ID: tab-bar) -->
     <div class="tabs-row">
-      <div id="tabsContainer" class="tabs-chip"></div>
+      <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <!-- Timers -->
+    <!-- Timers (✅ ALL 5 TIMERS with correct IDs) -->
     <div class="timer-row">
       <div class="timer-chip">
-        <span class="k">TOBT</span>
-        <span class="v" id="timer-tobt">--:--</span>
+        <span class="k">H-40</span>
+        <div id="timer-h40" class="v">--:--</div>
+      </div>
+      <div class="timer-chip">
+        <span class="k">H-15</span>
+        <div id="timer-h15" class="v">--:--</div>
       </div>
       <div class="timer-chip">
         <span class="k">H-8</span>
-        <span class="v" id="timer-h8">--:--</span>
+        <div id="timer-h8" class="v">--:--</div>
+      </div>
+      <div class="timer-chip">
+        <span class="k">TOBT</span>
+        <div id="timer-tobt" class="v">--:--</div>
       </div>
       <div class="timer-chip">
         <span class="k">COUNTDOWN</span>
-        <span class="v" id="timer-cd">--:--</span>
+        <div id="timer-cd" class="v">--:--</div>
       </div>
     </div>
 
@@ -901,11 +909,11 @@ textarea.si-uppercase{ text-transform: uppercase; }
         <div class="horaire-grid">
           <div class="horaire-item highlight">
             <span class="h-label">SIBT</span>
-            <input type="time" id="SIBT" class="h-value" style="border:none; background:transparent; width:auto;">
+            <input type="time" id="SIBT" class="h-value" style="border:none; background:transparent; width:auto;" onchange="autoSave()">
           </div>
           <div class="horaire-item highlight">
             <span class="h-label">AIBT</span>
-            <input type="time" id="AIBT" class="h-value" style="border:none; background:transparent; width:auto;">
+            <input type="time" id="AIBT" class="h-value" style="border:none; background:transparent; width:auto;" onchange="autoSave()">
           </div>
         </div>
       </div>
@@ -923,15 +931,15 @@ textarea.si-uppercase{ text-transform: uppercase; }
         <div class="horaire-grid">
           <div class="horaire-item highlight">
             <span class="h-label">SOBT</span>
-            <input type="time" id="SOBT" class="h-value" style="border:none; background:transparent; width:auto;">
+            <input type="time" id="SOBT" class="h-value" style="border:none; background:transparent; width:auto;" onchange="autoSave()">
           </div>
           <div class="horaire-item highlight">
             <span class="h-label">AOBT</span>
-            <input type="time" id="AOBT" class="h-value" style="border:none; background:transparent; width:auto;">
+            <input type="time" id="AOBT" class="h-value" style="border:none; background:transparent; width:auto;" onchange="autoSave()">
           </div>
           <div class="horaire-item ctot-row">
             <span class="h-label">CTOT</span>
-            <input type="time" id="CTOT" class="ctot-pill">
+            <input type="time" id="CTOT" class="ctot-pill" onchange="autoSave()">
           </div>
         </div>
       </div>
@@ -954,7 +962,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">Date</label>
               <div class="control">
-                <input class="input" type="date" id="Date" onchange="updateFlightDisplay()">
+                <input class="input" type="date" id="Date" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -963,7 +971,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">Compagnie</label>
               <div class="control">
-                <input class="input uppercase" type="text" id="Cie" placeholder="FR" maxlength="3" onchange="updateFlightDisplay()">
+                <input class="input uppercase" type="text" id="Cie" placeholder="FR" maxlength="3" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -972,7 +980,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">N° Vol</label>
               <div class="control">
-                <input class="input" type="text" id="NVol" placeholder="1234" maxlength="6" onchange="updateFlightDisplay()">
+                <input class="input" type="text" id="NVol" placeholder="1234" maxlength="6" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -981,7 +989,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">De (FROM)</label>
               <div class="control">
-                <input class="input uppercase" type="text" id="From" placeholder="BVA" maxlength="4" onchange="updateFlightDisplay()">
+                <input class="input uppercase" type="text" id="From" placeholder="BVA" maxlength="4" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -990,7 +998,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">Vers (TO)</label>
               <div class="control">
-                <input class="input uppercase" type="text" id="To" placeholder="OPO" maxlength="4" onchange="updateFlightDisplay()">
+                <input class="input uppercase" type="text" id="To" placeholder="OPO" maxlength="4" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -999,7 +1007,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">Immatriculation</label>
               <div class="control">
-                <input class="input uppercase" type="text" id="Immat" placeholder="F-XXXX" onchange="updateFlightDisplay()">
+                <input class="input uppercase" type="text" id="Immat" placeholder="F-XXXX" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -1008,7 +1016,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
             <div class="field">
               <label class="label">Type Avion</label>
               <div class="control">
-                <input class="input uppercase" type="text" id="TypeAvion" placeholder="B738" onchange="updateFlightDisplay()">
+                <input class="input uppercase" type="text" id="TypeAvion" placeholder="B738" onchange="updateFlightDisplay(); autoSave();">
               </div>
             </div>
           </div>
@@ -1016,9 +1024,9 @@ textarea.si-uppercase{ text-transform: uppercase; }
       </div>
 
       <div class="modal-footer">
-        <button class="button is-light" onclick="closeFlightEditModal()">Annuler</button>
-        <button class="button is-link" onclick="saveFlightInfoAndClose()">
-          <strong>💾 Enregistrer</strong>
+        <button class="button is-light" onclick="closeFlightEditModal()">Fermer</button>
+        <button class="button is-link" onclick="closeFlightEditModal()">
+          <strong>✓ OK</strong>
         </button>
       </div>
     </div>
@@ -1028,7 +1036,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
   
   <!-- TIMINGS ARRIVÉE -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">⏱️ TIMINGS ARRIVÉE</p>
     </header>
     <div class="card-content">
@@ -1101,7 +1109,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- TIMINGS DÉPART -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">⏱️ TIMINGS DÉPART</p>
     </header>
     <div class="card-content">
@@ -1183,7 +1191,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- LOAD ARRIVÉE -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">📦 LOAD ARRIVÉE</p>
     </header>
     <div class="card-content">
@@ -1265,7 +1273,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- LOAD EXPEDIÉ -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">📤 LOAD EXPEDIÉ</p>
     </header>
     <div class="card-content">
@@ -1347,7 +1355,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- LOAD FINAL -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">✅ LOAD FINAL</p>
     </header>
     <div class="card-content">
@@ -1526,7 +1534,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- DL -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">⚠️ DL (Delay)</p>
     </header>
     <div class="card-content">
@@ -1590,7 +1598,7 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
   <!-- FAITS SAILLANTS -->
   <div class="card section-card" style="margin-bottom:14px">
-    <header class="card-header section-collapse" onclick="toggleSection(this)">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
       <p class="card-header-title">📝 FAITS SAILLANTS</p>
     </header>
     <div class="card-content">
@@ -1616,6 +1624,90 @@ textarea.si-uppercase{ text-transform: uppercase; }
   </div>
 
 </div>
+
+<script>
+// ===== NOUVELLES FONCTIONS POUR LE MODAL INFO VOL =====
+function openFlightEditModal() {
+  const backdrop = document.getElementById('flightEditBackdrop');
+  const modal = document.getElementById('flightEditModal');
+  
+  if (backdrop) backdrop.style.display = 'block';
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeFlightEditModal() {
+  const backdrop = document.getElementById('flightEditBackdrop');
+  const modal = document.getElementById('flightEditModal');
+  
+  if (backdrop) backdrop.style.display = 'none';
+  if (modal) modal.style.display = 'none';
+}
+
+function updateFlightDisplay() {
+  // Mise à jour du titre principal
+  const cie = document.getElementById('Cie')?.value || '';
+  const vol = document.getElementById('NVol')?.value || '';
+  const titleEl = document.getElementById('flightMainTitle');
+  if (titleEl) {
+    titleEl.textContent = (cie && vol) ? `${cie}${vol}` : '—';
+  }
+
+  // Mise à jour de la date
+  const dateRaw = document.getElementById('Date')?.value || '';
+  const displayDate = document.getElementById('display-date');
+  if (displayDate && dateRaw) {
+    const [yyyy, mm, dd] = dateRaw.split('-');
+    displayDate.textContent = `${dd}/${mm}/${yyyy}`;
+  } else if (displayDate) {
+    displayDate.textContent = '—';
+  }
+
+  // Mise à jour de la route
+  const from = document.getElementById('From')?.value || '';
+  const to = document.getElementById('To')?.value || '';
+  const displayRoute = document.getElementById('display-route');
+  if (displayRoute) {
+    displayRoute.textContent = (from && to) ? `${from} → ${to}` : '—';
+  }
+
+  // Mise à jour immat
+  const immat = document.getElementById('Immat')?.value || '';
+  const displayImmat = document.getElementById('display-immat');
+  if (displayImmat) {
+    displayImmat.textContent = immat || '—';
+  }
+
+  // Mise à jour type avion
+  const type = document.getElementById('TypeAvion')?.value || '';
+  const displayType = document.getElementById('display-type');
+  if (displayType) {
+    displayType.textContent = type || '—';
+  }
+
+  // Mise à jour RZA (depuis le storage de l'onglet)
+  let rza = '';
+  try {
+    if (currentTabId) {
+      const data = JSON.parse(localStorage.getItem('tab-' + currentTabId) || '{}');
+      rza = (data.RZA || '').toUpperCase().trim();
+    }
+  } catch (e) {}
+  
+  const displayRza = document.getElementById('display-rza');
+  if (displayRza) {
+    displayRza.textContent = rza || '—';
+  }
+}
+
+// Fermeture du modal avec Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('flightEditModal');
+    if (modal && modal.style.display === 'flex') {
+      closeFlightEditModal();
+    }
+  }
+});
 
 <script>
   
