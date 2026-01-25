@@ -1396,54 +1396,51 @@ html.dark .vertical-label{
   </div>
 
   <!-- RETARDS -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">RETARDS (Départ)</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="columns is-multiline">
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 1</label>
-            <div class="control"><input class="input" type="text" id="DLcode1"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 1 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
-          </div>
-        </div>
+<div class="card mb-5">
+  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+    <p class="card-header-title">RETARDS (Départ)</p>
+    <span class="card-header-icon"><span class="icon">⌄</span></span>
+  </header>
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 2</label>
-            <div class="control"><input class="input" type="text" id="DLcode2"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 2 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
-          </div>
-        </div>
+  <div class="card-content">
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--gap);">
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Code 3</label>
-            <div class="control"><input class="input" type="text" id="DLcode3"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 3 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
-          </div>
-        </div>
+      <!-- DL 1 -->
+      <div class="field">
+        <label class="label">DL Code 1</label>
+        <input class="input" type="text" id="DLcode1">
       </div>
+      <div class="field">
+        <label class="label">DL Durée 1 (min)</label>
+        <input class="input" type="number" id="DLduree1" min="0" step="1"
+               oninput="dldChanged(1)">
+      </div>
+
+      <!-- DL 2 -->
+      <div class="field">
+        <label class="label">DL Code 2</label>
+        <input class="input" type="text" id="DLcode2">
+      </div>
+      <div class="field">
+        <label class="label">DL Durée 2 (min)</label>
+        <input class="input" type="number" id="DLduree2" min="0" step="1"
+               oninput="dldChanged(2)">
+      </div>
+
+      <!-- DL 3 -->
+      <div class="field">
+        <label class="label">DL Code 3</label>
+        <input class="input" type="text" id="DLcode3">
+      </div>
+      <div class="field">
+        <label class="label">DL Durée 3 (min)</label>
+        <input class="input" type="number" id="DLduree3" min="0" step="1"
+               oninput="dldChanged(3)">
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- FAITS SAILLANTS -->
   <div class="card mb-5">
