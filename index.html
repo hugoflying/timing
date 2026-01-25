@@ -1892,21 +1892,55 @@ function setTOBValidity(isValid){
   tobEl.classList.toggle('is-valid', isValid);
 }
 function updateFinalTOB(){
-  const male   = parseInt(document.getElementById('FinalMALE')?.value || 0, 10);
-  const female = parseInt(document.getElementById('FinalFEMALE')?.value || 0, 10);
-  const adult  = parseInt(document.getElementById('FinalADULT')?.value || 0, 10);
-  const child  = parseInt(document.getElementById('FinalCHILD')?.value || 0, 10);
-  const infant = parseInt(document.getElementById('FinalINFANT')?.value || 0, 10);
+  const n = (id)=>{
+    const v = (document.getElementById(id)?.value || '').trim();
+    if(v === '') return null;
+    const x = parseInt(v, 10);
+    return Number.isFinite(x) ? x : null;
+  };
 
-  // soit MALE+FEMALE, soit ADULT
-  const adultCount = (male || female) ? (male + female) : adult;
+  const male   = n('FinalMALE');
+  const female = n('FinalFEMALE');
+  const adult  = n('FinalADULT');
+  const child  = n('FinalCHILD')  ?? 0;
+  const infant = n('FinalINFANT') ?? 0;
 
-  const tob = adultCount + child + infant;
+  // MAIN = (MALE+FEMALE si au moins 1 rempli) sinon ADULT
+  let adultsMain = null;
+  if(male != null || female != null){
+    adultsMain = (male ?? 0) + (female ?? 0);
+  } else if(adult != null){
+    adultsMain = adult;
+  }
+
+  // MAIN_TO B = adultsMain + child (SANS infant)
+  let main = null;
+  if(adultsMain != null) main = adultsMain + child;
 
   const tobEl = document.getElementById('FinalTOB');
-  if(tobEl){
-    tobEl.value = tob > 0 ? tob : '';
+  if(!tobEl) return;
+
+  // Si pas assez d’info -> vide + pas d’erreur
+  if(main == null){
+    tobEl.value = '';
+    tobEl.classList.remove('is-invalid','is-valid');
+    return;
   }
+
+  // Affichage "MAIN + INFANT"
+  tobEl.value = `${main} + ${infant}`;
+
+  // Validation OA..OD (doit matcher MAIN, pas infant)
+  const oa = n('FinalOA') ?? 0;
+  const ob = n('FinalOB') ?? 0;
+  const oc = n('FinalOC') ?? 0;
+  const od = n('FinalOD') ?? 0;
+  const sumZones = oa + ob + oc + od;
+
+  const ok = (sumZones === main);
+
+  tobEl.classList.toggle('is-invalid', !ok);
+  tobEl.classList.toggle('is-valid', ok);
 }
 
 function refreshUIForTabs(){
