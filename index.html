@@ -1062,130 +1062,132 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
 <div class="app-wrap">
 
-<!-- INFO VOL -->
-<div class="card mb-5">
-  <header class="card-header">
-    <p class="card-header-title">INFO VOL</p>
-  </header>
+<!-- ================= INFO VOL ================= -->
+<div class="card-content">
 
-  <div class="card-content">
+  <!-- ===== Résumé (lecture seule) ===== -->
+  <div class="kv-card mb-3" style="padding:12px;">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; width:100%;">
+      <div style="display:flex; flex-direction:column; gap:6px; min-width:0; flex:1;">
 
-    <!-- Bandeau ESSENTIEL -->
-    <div class="kv-strip mb-4">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+        <!-- ligne 1 -->
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:baseline; min-width:0;">
+          <div style="font-weight:900; font-size:1.15rem; white-space:nowrap;">
+            <span id="kvDepVol">----</span>
           </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
-          <div class="kv-value">
+
+          <div style="font-weight:900; color:var(--muted); white-space:nowrap;">
             <span id="kvFrom">---</span> → <span id="kvTo">---</span>
           </div>
-        </div>
-      </div>
 
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          <div style="margin-left:auto; font-weight:900; white-space:nowrap;">
+            P<span id="kvPark">--</span>
           </div>
         </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- DÉTAILS (éditables) -->
-    <div id="infoVolDetails" class="grid-auto">
-
-      <!-- Date + Parking + Immat + Type avion -->
-      <div class="field span-3">
-        <label class="label">Date</label>
-        <input class="input" type="date" id="Date">
-      </div>
-
-      <div class="field span-3">
-        <label class="label">Parking</label>
-        <div class="select is-fullwidth">
-          <select id="Parking">
-            <option value="">--</option>
-            <option>1</option><option>2</option><option>3</option><option>4</option>
-            <option>5</option><option>6</option><option>7</option><option>8</option>
-            <option>9</option><option>10</option><option>11</option><option>12</option>
-          </select>
+        <!-- ligne 2 -->
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:baseline; color:var(--muted); font-weight:800;">
+          <span style="white-space:nowrap;">ARR: <span id="kvArrVol">----</span></span>
+          <span style="white-space:nowrap;">IMMAT: <span id="kvImmat">------</span></span>
+          <span style="white-space:nowrap;">TYPE: <span id="kvType">--</span></span>
+          <span style="white-space:nowrap;">BC: <span id="kvBC">--</span></span>
         </div>
       </div>
 
-      <div class="field span-3">
-        <label class="label">Immat</label>
-        <input class="input uppercase" type="text" id="Immat" maxlength="6">
+      <div style="flex:0 0 auto;">
+        <span class="tag is-light" style="font-weight:900;">INFOS AK</span>
       </div>
-
-      <div class="field span-3">
-        <label class="label">Type avion</label>
-        <div class="select is-fullwidth">
-          <select id="TypeAvion">
-            <option value="">--</option>
-            <option>A319</option><option>A320</option><option>A321</option>
-            <option>A20N</option><option>A21N</option><option>A21NY</option>
-            <option>B734</option><option>B737</option><option>B738</option>
-            <option>B38M</option><option>BCS3</option>
-            <option>Autre</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Cie / N° -->
-      <div class="field span-3">
-        <label class="label">Cie</label>
-        <div class="select is-fullwidth">
-          <select id="Cie">
-            <option value="">--</option>
-            <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
-            <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
-            <option>V7</option><option>Autre</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field span-3">
-        <label class="label">N°</label>
-        <input class="input uppercase" type="text" id="NVol">
-      </div>
-
-      <!-- From / To -->
-      <div class="field span-3">
-        <label class="label">From</label>
-        <input class="input uppercase" type="text" id="From" maxlength="3">
-      </div>
-
-      <div class="field span-3">
-        <label class="label">To</label>
-        <input class="input uppercase" type="text" id="To" maxlength="3">
-      </div>
-
-      <!-- LOAD button -->
-      <div class="span-12">
-        <div class="load-row-below">
-          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-            <div class="k">LOAD</div>
-            <div class="v" style="background:#111827;">OPEN</div>
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
-</div>
 
+  <!-- ===== Tiroir Modifier ===== -->
+  <details style="background:var(--card); border-radius:16px; box-shadow:var(--shadow); overflow:hidden;">
+    <summary class="button is-light"
+      style="width:100%; justify-content:space-between; border:0; border-radius:0; font-weight:900;">
+      <span>Modifier les infos vol</span>
+      <span>✎</span>
+    </summary>
+
+    <div style="padding:12px;">
+      <div class="grid-auto">
+
+        <div class="field span-6">
+          <label class="label">Date</label>
+          <input class="input" type="date" id="Date">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Parking</label>
+          <div class="select is-fullwidth">
+            <select id="Parking">
+              <option value="">--</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+              <option>5</option><option>6</option><option>7</option><option>8</option>
+              <option>9</option><option>10</option><option>11</option><option>12</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Immat</label>
+          <input class="input uppercase" type="text" id="Immat" maxlength="6">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Type avion</label>
+          <div class="select is-fullwidth">
+            <select id="TypeAvion">
+              <option value="">--</option>
+              <option>A319</option><option>A320</option><option>A321</option>
+              <option>A20N</option><option>A21N</option><option>A21NY</option>
+              <option>B734</option><option>B737</option><option>B738</option>
+              <option>B38M</option><option>BCS3</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field span-6">
+          <label class="label">Cie</label>
+          <div class="select is-fullwidth">
+            <select id="Cie">
+              <option value="">--</option>
+              <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
+              <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
+              <option>V7</option><option>Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field span-6">
+          <label class="label">N°</label>
+          <input class="input uppercase" type="text" id="NVol">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">From</label>
+          <input class="input uppercase" type="text" id="From" maxlength="3">
+        </div>
+
+        <div class="field span-6">
+          <label class="label">To</label>
+          <input class="input uppercase" type="text" id="To" maxlength="3">
+        </div>
+
+        <div class="span-12">
+          <div class="load-row-below">
+            <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
+              <div class="k">LOAD</div>
+              <div class="v" style="background:#111827;">OPEN</div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </details>
+
+</div>
 
 <!-- HORAIRES -->
 <div class="card mb-5">
