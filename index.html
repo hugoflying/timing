@@ -1625,6 +1625,86 @@ textarea.si-uppercase{ text-transform: uppercase; }
 
 </div>
 
+<!-- ===== RZA MODAL ===== -->
+<div id="rzaBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:6000; backdrop-filter:blur(3px);"></div>
+
+<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:6100; align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(420px, 100%);">
+    <header class="card-header">
+      <p class="card-header-title">RZA requis</p>
+    </header>
+    <div class="card-content">
+      <div class="field">
+        <label class="label">RZA en charge du vol :</label>
+        <div class="control">
+          <input id="rzaModalInput" class="input uppercase" type="text" maxlength="3" autocomplete="off" spellcheck="false">
+        </div>
+        <p class="help" id="rzaHelp" style="display:none; color:#ef4444; font-weight:800;">2 ou 3 lettres uniquement.</p>
+      </div>
+
+      <div class="buttons is-right">
+        <button class="button is-light" type="button" onclick="closeRZAModal(false)">Annuler</button>
+        <button class="button is-link" type="button" onclick="submitRZAModal()">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Airport Keeper Picker ===== -->
+<div id="akBackdrop" onclick="closeAKPicker()"></div>
+
+<div id="akPopover">
+  <div class="ak-header" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+    <div class="select">
+      <select id="akFlow" onchange="loadAKFlights()">
+        <option value="DEP" selected>DEP</option>
+        <option value="ARR">ARR</option>
+      </select>
+    </div>
+
+    <button class="button is-small is-link" type="button" onclick="loadAKFlights()">
+      Rafraîchir
+    </button>
+
+    <span class="tag is-light" id="akStatus">—</span>
+
+    <button class="button is-small is-light" type="button"
+            style="margin-left:auto"
+            onclick="closeAKPicker()">
+      Fermer
+    </button>
+  </div>
+
+  <div id="akList"></div>
+</div>
+
+<!-- ===== SETTINGS MENU (bottom gear) ===== -->
+<div id="settingsBackdrop" onclick="closeSettingsMenu()"></div>
+
+<button id="settingsFab" class="button is-link" type="button" onclick="toggleSettingsMenu()" aria-label="Paramètres">
+  ⚙️
+</button>
+
+<div id="settingsMenu" role="dialog" aria-modal="true">
+  <div class="settings-title">Paramètres</div>
+
+  <div class="settings-row">
+    <label class="toggle" style="justify-content:space-between;">
+      <span id="darkLabel">Clair</span>
+      <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
+      <span class="track"><span class="thumb"></span></span>
+    </label>
+
+    <label class="toggle" style="justify-content:space-between;">
+      <span id="tzLabel">Locale</span>
+      <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
+      <span class="track"><span class="thumb"></span></span>
+    </label>
+
+    <button class="button is-small is-light" type="button" onclick="closeSettingsMenu()">Fermer</button>
+  </div>
+</div>
+
 <script>
 // ===== NOUVELLES FONCTIONS POUR LE MODAL INFO VOL =====
 function openFlightEditModal() {
@@ -1709,7 +1789,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-<script>
   
 /* Collapse */
 function toggleCardBody(headerEl){
@@ -4376,62 +4455,6 @@ function clearAutoSave() {
   }
 }
 </script>
-
-<!-- ===== Airport Keeper Picker ===== -->
-<div id="akBackdrop" onclick="closeAKPicker()"></div>
-
-<div id="akPopover">
-  <div class="ak-header" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
-    <div class="select">
-      <select id="akFlow" onchange="loadAKFlights()">
-        <option value="DEP" selected>DEP</option>
-        <option value="ARR">ARR</option>
-      </select>
-    </div>
-
-    <button class="button is-small is-link" type="button" onclick="loadAKFlights()">
-      Rafraîchir
-    </button>
-
-    <span class="tag is-light" id="akStatus">—</span>
-
-    <button class="button is-small is-light" type="button"
-            style="margin-left:auto"
-            onclick="closeAKPicker()">
-      Fermer
-    </button>
-  </div>
-
-  <div id="akList"></div>
-</div>
-
-<!-- ===== SETTINGS MENU (bottom gear) ===== -->
-<div id="settingsBackdrop" onclick="closeSettingsMenu()"></div>
-
-<button id="settingsFab" class="button is-link" type="button" onclick="toggleSettingsMenu()" aria-label="Paramètres">
-  ⚙️
-</button>
-
-<div id="settingsMenu" role="dialog" aria-modal="true">
-  <div class="settings-title">Paramètres</div>
-
-  <div class="settings-row">
-    <label class="toggle" style="justify-content:space-between;">
-      <span id="darkLabel">Clair</span>
-      <input id="darkToggle" type="checkbox" onchange="setDarkMode(this.checked)">
-      <span class="track"><span class="thumb"></span></span>
-    </label>
-
-    <label class="toggle" style="justify-content:space-between;">
-      <span id="tzLabel">Locale</span>
-      <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
-      <span class="track"><span class="thumb"></span></span>
-    </label>
-
-    <button class="button is-small is-light" type="button" onclick="closeSettingsMenu()">Fermer</button>
-  </div>
-</div>
-
 
 </body>
 </html>
