@@ -868,6 +868,43 @@ html.dark .vertical-label{
   }
 }
 
+  /* ===== BANDEAU ACTIONS (même taille que ESSENTIELS) ===== */
+.fixed-header-inner .kv-strip.actions,
+.fixed-header-inner .actions-strip,
+.fixed-header-inner .add-vol-strip{
+  gap: 8px;
+}
+
+.fixed-header-inner .kv-strip.actions .kv-card,
+.fixed-header-inner .actions-strip .kv-card,
+.fixed-header-inner .add-vol-strip .kv-card{
+  padding: 8px 10px;
+  box-shadow: none;
+}
+
+.fixed-header-inner .kv-strip.actions .kv-title,
+.fixed-header-inner .actions-strip .kv-title,
+.fixed-header-inner .add-vol-strip .kv-title{
+  font-size: .65rem;
+  letter-spacing: .05em;
+}
+
+.fixed-header-inner .kv-strip.actions .kv-value,
+.fixed-header-inner .actions-strip .kv-value,
+.fixed-header-inner .add-vol-strip .kv-value{
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+/* cohérence mobile */
+@media (max-width: 720px){
+  .fixed-header-inner .kv-strip.actions .kv-value,
+  .fixed-header-inner .actions-strip .kv-value,
+  .fixed-header-inner .add-vol-strip .kv-value{
+    font-size: .88rem;
+  }
+}
 
 </style>
 </head>
