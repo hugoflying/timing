@@ -844,19 +844,22 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           ARR
         </div>
 
+        <!-- PAX (2 champs +) + BAGS sur la même ligne -->
         <div class="field ldm-span-2">
           <label class="label">PAX</label>
-          <div class="pax-split">
-            <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
-            <span class="pax-plus">+</span>
-            <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
-          </div>
-        </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div class="pax-split" style="flex:1 1 auto;">
+              <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+              <span class="pax-plus">+</span>
+              <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+            </div>
 
-        <div class="field">
-          <label class="label">BAGS</label>
-          <input class="input ldm-in" id="ArrBAGS" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('arr')">
+            <div style="width:120px; flex:0 0 auto;">
+              <label class="label" style="margin:0 0 6px;">BAGS</label>
+              <input class="input ldm-in" id="ArrBAGS" maxlength="4"
+                     oninput="digitsOnly(this); updateHBagsValidity('arr')">
+            </div>
+          </div>
         </div>
 
         <div class="field ldm-span-2">
@@ -871,19 +874,22 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           PREVI
         </div>
 
+        <!-- PAX (2 champs +) + BAGS sur la même ligne -->
         <div class="field ldm-span-2">
           <label class="label">PAX</label>
-          <div class="pax-split">
-            <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
-            <span class="pax-plus">+</span>
-            <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
-          </div>
-        </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div class="pax-split" style="flex:1 1 auto;">
+              <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+              <span class="pax-plus">+</span>
+              <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
+            </div>
 
-        <div class="field">
-          <label class="label">BAGS</label>
-          <input class="input ldm-in" id="PreviBAGS" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('previ')">
+            <div style="width:120px; flex:0 0 auto;">
+              <label class="label" style="margin:0 0 6px;">BAGS</label>
+              <input class="input ldm-in" id="PreviBAGS" maxlength="4"
+                     oninput="digitsOnly(this); updateHBagsValidity('previ')">
+            </div>
+          </div>
         </div>
 
         <div class="field ldm-span-2">
@@ -903,25 +909,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
       <div class="ldm-grid">
 
-        <!-- PAX -->
-        <div class="field">
-          <label class="label">ADULT</label>
-          <input class="input ldm-in" id="FinalADULT" maxlength="3"
-                 oninput="digitsOnly(this); updateFinalTOB()">
-        </div>
-
-        <div class="field">
-          <label class="label">CHILD</label>
-          <input class="input ldm-in" id="FinalCHILD" maxlength="3"
-                 oninput="digitsOnly(this); updateFinalTOB()">
-        </div>
-
-        <div class="field">
-          <label class="label">INFANT</label>
-          <input class="input ldm-in" id="FinalINFANT" maxlength="3"
-                 oninput="digitsOnly(this); updateFinalTOB()">
-        </div>
-
+        <!-- 1ère ligne : MALE / FEMALE -->
         <div class="field">
           <label class="label">MALE</label>
           <input class="input ldm-in" id="FinalMALE" maxlength="3"
@@ -934,6 +922,29 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
                  oninput="digitsOnly(this); updateFinalTOB()">
         </div>
 
+        <!-- 2ème ligne : ADULT / CHILD / INFANT -->
+        <div class="field">
+          <label class="label">ADULT</label>
+          <input class="input ldm-in" id="FinalADULT" maxlength="3"
+                 oninput="digitsOnly(this); updateFinalTOB()">
+        </div>
+
+        <div class="field">
+          <label class="label">CHILD</label>
+          <input class="input ldm-in" id="FinalCHILD" maxlength="3"
+                 oninput="digitsOnly(this); updateFinalTOB()">
+        </div>
+
+        <div class="field ldm-span-2" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="field" style="margin:0;">
+            <label class="label">INFANT</label>
+            <input class="input ldm-in" id="FinalINFANT" maxlength="3"
+                   oninput="digitsOnly(this); updateFinalTOB()">
+          </div>
+          <div class="field" style="margin:0;"></div>
+        </div>
+
+        <!-- 3ème ligne : TOB -->
         <div class="field ldm-span-2">
           <label class="label">TOB</label>
           <input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly>
@@ -963,7 +974,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           </div>
         </div>
 
-        <!-- BAGS / HOLD -->
+        <!-- BAGS / GB -->
         <div class="field">
           <label class="label">BAGS</label>
           <input class="input ldm-in" id="FinalBAGS" maxlength="4"
@@ -976,6 +987,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
                  oninput="digitsOnly(this)">
         </div>
 
+        <!-- H1..H4 -->
         <div class="ldm-row-4">
           <div class="field">
             <label class="label">H1</label>
@@ -999,6 +1011,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           </div>
         </div>
 
+        <!-- SI -->
         <div class="field ldm-span-2">
           <label class="label">SI</label>
           <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
