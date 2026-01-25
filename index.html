@@ -805,20 +805,19 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
 /* ===== LABEL VERTICAL LETTRE PAR LETTRE ===== */
 .vertical-label{
+  width: 28px;
+  min-width: 28px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
+  gap: 2px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0;
-
-  width: 26px;
-  min-width: 26px;
-
-  line-height: 1.05;
-  font-size: .8rem;
+  font-size: .82rem;
+  line-height: 1;
 
   opacity: .95;
   border-right: 1px solid rgba(0,0,0,.08);
@@ -827,9 +826,8 @@ html.dark .vertical-label{
   border-right-color: rgba(255,255,255,.10);
 }
 
-/* transforme ARRIVEE -> A\nR\nR\nI\nV\nE\nE */
-.vertical-label{
-  white-space: pre-line;
+.vertical-label span{
+  display: block;
 }
 
 
@@ -1228,70 +1226,74 @@ html.dark .vertical-label{
     <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--gap);">
 
       <!-- ===== COLONNE ARRIVÉE ===== -->
-      <div class="kv-card" style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #16a34a 4%); display:flex; gap:12px;">
-        
+      <div class="kv-card"
+           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #16a34a 4%); display:flex; gap:12px;">
+
         <!-- LABEL VERTICAL -->
         <div class="vertical-label">
-          ARRIVÉE
+          <span>A</span><span>R</span><span>R</span><span>I</span><span>V</span><span>E</span><span>E</span>
         </div>
 
         <!-- CONTENU -->
         <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          
-          <!-- SIBT -->
           <div class="field" style="margin:0;">
             <label class="label">SIBT (Prévu)</label>
             <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
           </div>
 
-          <!-- AIBT -->
           <div class="field" style="margin:0;">
             <label class="label">AIBT</label>
-            <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()" style="font-weight:900;">
+            <input class="input" type="time" id="AIBT"
+                   onchange="updateAllCalculations()" style="font-weight:900;">
             <div class="btn-actions">
-              <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
+              <button class="button is-dark is-light" type="button"
+                      onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button"
+                      onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+              <button class="button is-dark is-light" type="button"
+                      onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- ===== COLONNE DÉPART ===== -->
-      <div class="kv-card" style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #3b82f6 4%); display:flex; gap:12px;">
-        
+      <div class="kv-card"
+           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #3b82f6 4%); display:flex; gap:12px;">
+
         <!-- LABEL VERTICAL -->
         <div class="vertical-label">
-          DÉPART
+          <span>D</span><span>E</span><span>P</span><span>A</span><span>R</span><span>T</span>
         </div>
 
         <!-- CONTENU -->
         <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          
-          <!-- SOBT -->
           <div class="field" style="margin:0;">
             <label class="label">SOBT (Prévu)</label>
-            <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+            <input class="input" type="time" id="SOBT"
+                   onchange="manualSOBT=true;updateAllCalculations()">
           </div>
 
-          <!-- AOBT -->
           <div class="field" style="margin:0;">
             <label class="label">AOBT</label>
-            <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()" style="font-weight:900;">
+            <input class="input" type="time" id="AOBT"
+                   onchange="updateAllCalculations()" style="font-weight:900;">
             <div class="btn-actions">
-              <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
+              <button class="button is-dark is-light" type="button"
+                      onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button"
+                      onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+              <button class="button is-dark is-light" type="button"
+                      onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
             </div>
           </div>
-
         </div>
       </div>
 
     </div>
   </div>
 </div>
+
 
   <!-- TIMING -->
   <div class="card mb-5">
