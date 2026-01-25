@@ -837,9 +837,11 @@ html.dark .vertical-label{
   }
 }
 
-/* ===== ESSENTIELS dans le header (compact 2 colonnes) ===== */
+/* ===== ESSENTIELS dans le header : 2 colonnes ===== */
 .fixed-header-inner .header-kv{
   margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
@@ -859,19 +861,13 @@ html.dark .vertical-label{
   line-height: 1.15;
 }
 
-/* encore plus dense si écran étroit */
-@media (max-width: 720px){
-  .fixed-header-inner .header-kv .kv-value{
-    font-size: .88rem;
+/* Téléphone : on empile */
+@media (max-width: 520px){
+  .fixed-header-inner .header-kv{
+    grid-template-columns: 1fr;
   }
 }
 
-/* ===== HORAIRES responsive (téléphone uniquement) ===== */
-@media (max-width: 520px){
-  .card-content > div[style*="grid-template-columns"]{
-    grid-template-columns: 1fr !important;
-  }
-}
 
 </style>
 </head>
