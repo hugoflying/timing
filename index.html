@@ -305,1033 +305,1283 @@ textarea.si-uppercase{ text-transform: uppercase; }
   .timer-chip{ min-width: 124px; padding: 8px 12px; }
   .timer-chip .k{ font-size: .75rem; }
   .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
+
+  /* Header INFO VOL */
+  .flight-info-header{ padding: 8px 10px !important; }
+  .flight-info-grid{ gap: 6px !important; }
+  .fi-item .fi-label{ font-size: .62rem !important; }
+  .fi-item .fi-value{ font-size: .82rem !important; }
+
+  /* Horaires cards */
+  .horaire-card{ padding: 10px !important; }
+  .horaire-card .card-header-title{ font-size: .85rem !important; padding: 8px 10px !important; }
+  .horaire-grid{ gap: 6px !important; }
+  .horaire-item .h-label{ font-size: .65rem !important; }
+  .horaire-item .h-value{ font-size: .88rem !important; }
 }
 
-/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
-.select.is-fullwidth select{
-  height: var(--inputH);
-  line-height: calc(var(--inputH) - 2px);
-  padding-top: 0;
-  padding-bottom: 0;
+/* ===== NOUVEAUX STYLES INFO VOL HEADER ===== */
+.flight-info-header{
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  box-shadow: var(--shadow2);
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.flight-info-top{
   display: flex;
-  align-items: center;
-  font-weight: 800;
-}
-
-/* "Rows" ultra compactes pour infos clés */
-.kv-strip{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: var(--gap);
-}
-@media (min-width: 769px){
-  .kv-strip{ grid-template-columns: 1fr 1fr; }
-}
-.kv-card{
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--card) 90%, #3b82f6 10%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-  padding: 10px 12px;
-  display:flex;
-  align-items:center;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
   gap: 10px;
 }
-body.dark .kv-card{
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-}
-.kv-left{ display:flex; flex-direction:column; gap:2px; }
-.kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
-.kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
 
-/* Popup toast */
-#popup{
+.flight-main-title{
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.flight-edit-btn{
+  border-radius: 999px !important;
+  height: 36px;
+  padding: 0 16px !important;
+  font-weight: 900 !important;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.flight-info-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 600px){
+  .flight-info-grid{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.fi-item{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fi-label{
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.fi-value{
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* ===== MODAL EDIT INFO VOL ===== */
+.modal-backdrop{
+  display: none;
   position: fixed;
-  top: calc(var(--fixed-header-h) + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 16px;
-  border-radius: 12px;
-  color:#fff;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
   z-index: 4000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-container{
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 4001;
+  overflow-y: auto;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box{
+  background: var(--card);
+  border-radius: var(--radius);
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  padding: 20px;
+}
+
+.modal-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--field-border);
+}
+
+.modal-title{
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.modal-close-btn{
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  font-size: 1.2rem;
+}
+
+.modal-body{
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-footer{
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 2px solid var(--field-border);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ===== HORAIRES CARDS ===== */
+.horaires-container{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+@media (min-width: 600px){
+  .horaires-container{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.horaire-card{
+  background: var(--card);
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.horaire-card .card-header{
+  padding: 0;
+  box-shadow: none;
+}
+
+.horaire-card.arr-card .card-header{
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.horaire-card.dep-card .card-header{
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.horaire-card .card-header-title{
+  color: #ffffff !important;
+  padding: 12px 14px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.horaire-card .card-header-icon{
+  font-size: 1.2rem;
+}
+
+.horaire-card .card-content{
+  padding: 14px !important;
+}
+
+.horaire-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.horaire-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--field-bg);
+  border-radius: 10px;
+  border: 1px solid var(--field-border);
+}
+
+.h-label{
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.h-value{
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text);
+  font-family: 'Courier New', monospace;
+}
+
+.horaire-item.highlight{
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.horaire-item.ctot-row{
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.15), rgba(51, 65, 85, 0.05));
+  border-color: rgba(51, 65, 85, 0.3);
+}
+
+/* Airport Keeper Picker */
+#akBackdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:5000;
+  backdrop-filter: blur(3px);
+}
+
+#akPopover{
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  max-width:700px;
+  max-height:80vh;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 25px 60px rgba(0,0,0,.4);
+  padding:16px;
+  z-index:5001;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+#akList{
+  overflow-y:auto;
+  flex:1;
+  margin-top:10px;
+}
+
+.ak-flight{
+  padding:12px;
+  margin-bottom:8px;
+  background:var(--field-bg);
+  border:1px solid var(--field-border);
+  border-radius:10px;
+  cursor:pointer;
+  transition: all .2s;
+}
+
+.ak-flight:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow2);
+  border-color:#3b82f6;
+}
+
+.ak-flight strong{
+  color:var(--text);
+  font-weight:900;
+}
+
+/* Settings FAB & Menu */
+#settingsFab{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:56px;
+  height:56px;
+  border-radius:50% !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  z-index:2000;
+  font-size:1.5rem;
+  padding:0 !important;
+  border:none;
+}
+
+#settingsBackdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:2500;
+  backdrop-filter:blur(2px);
+}
+
+#settingsMenu{
+  display:none;
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 12px 40px rgba(0,0,0,.3);
+  padding:16px;
+  z-index:2501;
+  min-width:240px;
+}
+
+.settings-title{
+  font-weight:900;
+  font-size:1.1rem;
+  margin-bottom:12px;
+  color:var(--text);
+}
+
+.settings-row{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
 /* Toggle switch */
 .toggle{
-  display:inline-flex;
+  display:flex;
   align-items:center;
   gap:10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: var(--card);
-  box-shadow: var(--shadow2);
   cursor:pointer;
   user-select:none;
-  font-weight: 900;
-  color: var(--text);
 }
-.toggle input{ position:absolute; opacity:0; pointer-events:none; }
+
+.toggle input{
+  display:none;
+}
+
 .toggle .track{
-  width: 44px; height: 26px; border-radius: 999px;
-  background: rgba(148,163,184,.55);
-  position: relative; flex: 0 0 auto;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+  position:relative;
+  width:48px;
+  height:26px;
+  background:#cbd5e1;
+  border-radius:999px;
+  transition:background .2s;
 }
-.toggle .thumb{
-  width: 22px; height: 22px; border-radius: 999px;
-  background: #fff; position:absolute; top: 2px; left: 2px;
-  transition: transform .18s ease, background .18s ease;
-  box-shadow: 0 6px 16px rgba(0,0,0,.18);
-}
+
 .toggle input:checked + .track{
-  background: color-mix(in srgb, #3b82f6 70%, #22c55e 30%);
-}
-.toggle input:checked + .track .thumb{ transform: translateX(18px); }
-
-/* ===== AK picker (FULLSCREEN POPUP) ===== */
-#akPopover{
-  position: fixed;
-  inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
-  width: auto;
-  transform: none;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border-radius: 16px;
-  z-index: 4700;
-  padding: 12px;
-  border: 1px solid rgba(0,0,0,.08);
-  display: none;
-  overflow: auto;
-
-  flex-direction: column;
-}
-body.dark #akPopover{ border-color: rgba(255,255,255,.10); }
-
-#akBackdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 4600;
-  display: none;
+  background:#3b82f6;
 }
 
-#akPopover .ak-header{
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--card);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-body.dark #akPopover .ak-header{ border-bottom-color: rgba(255,255,255,.10); }
-
-#akList{ flex: 1 1 auto; overflow-y: auto; }
-
-/* ===== TIMELINE ===== */
-.timeline-track {
-  position: absolute; left:6%; right:6%;
-  height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
-}
-body.dark .timeline-track{ background:#2e2e2e; }
-
-.timeline-tick { position: absolute; width: 1px; background:rgba(0,0,0,0.08); }
-body.dark .timeline-tick { background:#3e444b; }
-
-.timeline-tick-label {
-  position: absolute; transform: translateX(-50%);
-  font-size: 14px; font-weight: 800; color:#111827;
-}
-body.dark .timeline-tick-label { color:#cfd4da; }
-
-.tl-event, .tl-range { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height:1; z-index: 1; }
-.tl-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
-  margin: 0 auto 4px;
-}
-.tl-label {
-  padding: 4px 10px; border-radius: 999px;
-  background: #f1f3f5; color:#111; font-size: 14px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.07);
-  font-weight: 900;
-}
-body.dark .tl-label { background:#232733; color:#f5f5f5; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
-
-.tl--std  { --c:#64748b; }
-.tl--tobt { --c:#16a34a; }
-.tl--ctot { --c:#334155; }
-.tl--ops  { --c:#2563eb; }
-.tl--turn { --c:#ef4444; }
-.tl-event .tl-dot { background: var(--c); }
-
-.tl-range{
-  height: 16px;
-  background: color-mix(in srgb, var(--c) 42%, transparent);
-  border: 2px solid var(--c);
-  border-radius: 999px;
-  z-index: 2;
-}
-.tl-range-label{
-  position:absolute; top: -22px; left:50%; transform: translateX(-50%);
-  font-size: 13px; background: rgba(255,255,255,.92);
-  padding: 2px 8px; border-radius: 10px; font-weight: 900;
-  color: #111;
-}
-body.dark .tl-range-label { background: rgba(0,0,0,.45); color:#fff; }
-
-.timeline-toolbar{
-  display:flex; align-items:center; gap:8px; margin: 4px 0 10px;
-  flex-wrap: wrap;
-}
-.timeline-scroll{
-  overflow-x:auto; overflow-y:hidden;
-  border-radius: 16px;
-  background: var(--card);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-}
-body.dark .timeline-scroll{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.timeline-canvas{ position:relative; min-width:600px; width:100%; }
-
-/* DL error */
-.dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
-
-/* ===== SETTINGS (gear) bottom menu ===== */
-#settingsBackdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 4800;
-  display: none;
+.toggle .thumb{
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:20px;
+  height:20px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform .2s;
+  box-shadow:0 2px 4px rgba(0,0,0,.2);
 }
 
-#settingsFab{
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 4900;
-  width: 52px;
-  height: 52px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  box-shadow: var(--shadow2);
+.toggle input:checked + .track .thumb{
+  transform:translateX(22px);
 }
 
-#settingsMenu{
-  position: fixed;
-  right: 14px;
-  bottom: 74px;
-  z-index: 4901;
-  width: min(320px, calc(100vw - 28px));
-  border-radius: 16px;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(0,0,0,.08);
-  padding: 12px;
-  display: none;
+/* RZA Modal */
+.rza-modal-backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:6000;
+  backdrop-filter:blur(3px);
 }
-body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
 
-#settingsMenu .settings-title{ font-weight: 900; margin-bottom: 10px; }
-#settingsMenu .settings-row{
+.rza-modal-container{
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 25px 60px rgba(0,0,0,.5);
+  padding:24px;
+  z-index:6001;
+  width:90%;
+  max-width:400px;
+}
+
+.rza-modal-title{
+  font-size:1.4rem;
+  font-weight:900;
+  margin-bottom:16px;
+  color:var(--text);
+}
+
+.rza-input{
+  width:100%;
+  text-align:center;
+  font-size:1.8rem !important;
+  font-weight:900 !important;
+  letter-spacing:0.1em;
+  height:60px !important;
+}
+
+.rza-help{
+  color:#ef4444;
+  font-size:0.85rem;
+  margin-top:8px;
+  text-align:center;
+  font-weight:600;
+}
+
+.rza-buttons{
   display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* ===== RESPONSIVE tweaks ===== */
-@media (max-width: 768px){
-  .timer-chip{ min-width: 128px; }
-  .timeline-canvas{ min-width: 720px; }
-}
-@media (max-width: 420px){
-  .timer-chip{ min-width: 120px; padding: 9px 12px; }
-  .timer-chip .v{ min-width: 64px; }
-  .ctot-pill{ min-width: 64px; }
-}
-@media (max-width: 480px){
-  .timer-row{ gap: 6px; }
-  .timer-chip{ min-width: 96px; padding: 6px 8px; gap: 6px; }
-  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
-  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
-  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
-}
-
-/* ===== LDM modal (neutre, sans pastilles couleur) ===== */
-#ldmBackdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.40);
-  z-index: 4400;
-  display: none;
-}
-
-#ldmModal{
-  position: fixed;
-  inset: calc(var(--fixed-header-h) + 10px) 10px 10px 10px;
-  z-index: 4500;
-  background: var(--card);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(0,0,0,.10);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-}
-body.dark #ldmModal{ border-color: rgba(255,255,255,.10); }
-
-.ldm-header{
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: var(--card);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-body.dark .ldm-header{ border-bottom-color: rgba(255,255,255,.10); }
-
-.ldm-title{
-  display:flex;
-  align-items:center;
   gap:10px;
-  flex: 1 1 auto;
-}
-.ldm-title strong{ font-weight: 900; font-size: 1.05rem; }
-
-#ldmHint{
-  font-weight: 900;
-  border-radius: 999px;
+  margin-top:16px;
 }
 
-/* segment buttons */
-.lm-seg{
-  display:inline-flex;
-  gap:6px;
-  background: color-mix(in srgb, var(--card) 86%, #000 14%);
-  padding: 6px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-}
-body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-.lm-seg .button{
-  border-radius: 999px !important;
-  font-weight: 900;
-  height: 34px;
-}
-.lm-seg .button.is-active{
-  background: #2563eb !important;
-  color: #fff !important;
-  border-color: transparent !important;
+/* Popup notification */
+.popup-notif{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(-100px);
+  background:var(--card);
+  color:var(--text);
+  padding:14px 20px;
+  border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  z-index:9000;
+  font-weight:900;
+  font-size:0.95rem;
+  opacity:0;
+  transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events:none;
 }
 
-.ldm-body{
-  padding: 12px;
-  overflow: auto;
+.popup-notif.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
 }
 
-/* cartes neutres (ARR/EXP/FINAL = même style) */
-.ldm-card{
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 92%, #000 8%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-  overflow: hidden;
-  margin-bottom: 10px;
+/* Responsive mobile optimizations */
+@media (max-width: 599px){
+  .flight-main-title{
+    font-size: 1.2rem;
+  }
+  
+  .flight-edit-btn{
+    padding: 0 12px !important;
+    font-size: 0.8rem;
+  }
+  
+  .fi-label{
+    font-size: 0.65rem;
+  }
+  
+  .fi-value{
+    font-size: 0.88rem;
+  }
+  
+  .horaire-card .card-header-title{
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+  
+  .h-label{
+    font-size: 0.7rem;
+  }
+  
+  .h-value{
+    font-size: 0.95rem;
+  }
 }
-body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-
-/* header carte neutre */
-.ldm-card-hdr{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--card) 88%, #000 12%);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-}
-body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
-
-/* on SUPPRIME l’indicateur couleur */
-.ldm-dot{ display:none !important; }
-
-.ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
-.ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
-
-/* grille 2 colonnes simple */
-.ldm-grid{
-  padding: 10px 12px 12px;
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 10px;
-}
-.ldm-span-2{ grid-column: span 2; }
-
-.ldm-in{
-  height: 38px !important;
-  padding: 6px 10px !important;
-  font-weight: 900 !important;
-  text-align: center;
-  letter-spacing: .02em;
-}
-.ldm-ta{
-  min-height: 90px !important;
-  height: auto !important;
-  font-weight: 800;
-}
-
-/* ===== ligne H1..H4 / OA..OD : plus de pastilles ===== */
-.ldm-row-4{
-  grid-column: span 2;
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-}
-
-/* champ compact sans "badge" */
-.ldm-row-4 .field{
-  margin: 0 !important;
-}
-.ldm-row-4 .field .label{
-  margin: 0 0 6px !important;
-  padding: 0 !important;
-  display:block;
-  min-width: auto;
-  height: auto;
-  border-radius: 0;
-  font-size: var(--labelSize) !important;
-  font-weight: 900 !important;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: var(--text) !important;
-  opacity: .9;
-}
-.ldm-row-4 .field .label::before{ display:none !important; content:none !important; }
-
-@media (max-width: 520px){
-  #ldmModal{ inset: calc(var(--fixed-header-h) + 10px) 8px 8px 8px; }
-  .ldm-row-4{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ldm-in{ height: 36px !important; padding: 6px 8px !important; }
-  .ldm-ta{ min-height: 86px !important; }
-}
-
-html.modal-open,
-body.modal-open{
-  overflow: hidden;
-  height: 100%;
-  overscroll-behavior: none;
-  touch-action: none;
-}
-
-/* ===== petit layout PAX "X + Y" ===== */
-.pax-split{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-.pax-split .pax-plus{
-  font-weight: 900;
-  opacity: .8;
-  user-select:none;
-}
-.pax-split .input{ width:100%; }
-
-/* ===== FINAL layout (comme sheet) ===== */
-.final-sheet{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-@media (min-width: 760px){
-  .final-sheet{ grid-template-columns: 1.05fr .95fr; }
-}
-
-.final-box{
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 92%, #000 8%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-  padding: 10px 12px;
-}
-body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-
-.final-box-title{
-  font-weight: 900;
-  letter-spacing:.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.final-mini{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 8px;
-}
-@media (min-width: 760px){
-  .final-mini{ grid-template-columns: repeat(3, minmax(0,1fr)); }
-}
-.final-mini-2{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 8px;
-}
-
-.final-wide{ grid-column: 1 / -1; }
-
-.final-row{
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 8px;
-}
-@media (max-width: 520px){
-  .final-row{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-}
-
-/* look “sheet” : labels plus petits, inputs centrés */
-.final-box .label{ margin-bottom: 6px !important; }
-.final-box .ldm-in{ text-align:center; }
-
 </style>
 </head>
+<body>
 
-<body onload="initForm()">
+<!-- Popup notification -->
+<div id="popupNotif" class="popup-notif"></div>
 
-<!-- ===== LDM (FULLSCREEN) ===== -->
-<div id="ldmBackdrop" onclick="closeLDM()" style="display:none;"></div>
+<!-- Fixed Header -->
+<header class="fixed-header">
+  <div class="fixed-header-inner">
+    
+    <!-- Topbar -->
+    <div class="topbar-inner">
+      <button class="button is-link" type="button" onclick="addNewTab()">
+        <strong>➕ Nouveau vol</strong>
+      </button>
 
-<div id="ldmModal" role="dialog" aria-modal="true" style="display:none;">
-  <div class="ldm-header">
-    <div class="ldm-title">
-      <strong>LOAD</strong>
-      <span id="ldmHint" class="tag is-light">ARRIVÉE</span>
+      <button class="button is-info" type="button" onclick="openAKPicker()">
+        <strong>📡 Airport Keeper</strong>
+      </button>
     </div>
 
-    <div class="lm-seg">
-      <button id="ldmTabArr" class="button is-small is-active" type="button"
-              onclick="ldmSwitch('arr')">ARR</button>
-      <button id="ldmTabFinal" class="button is-small" type="button"
-              onclick="ldmSwitch('final')">FINAL</button>
+    <!-- Tabs -->
+    <div class="tabs-row">
+      <div id="tabsContainer" class="tabs-chip"></div>
     </div>
 
-    <button class="button is-small is-light" type="button" onclick="closeLDM()">Fermer</button>
+    <!-- Timers -->
+    <div class="timer-row">
+      <div class="timer-chip">
+        <span class="k">TOBT</span>
+        <span class="v" id="timer-tobt">--:--</span>
+      </div>
+      <div class="timer-chip">
+        <span class="k">H-8</span>
+        <span class="v" id="timer-h8">--:--</span>
+      </div>
+      <div class="timer-chip">
+        <span class="k">COUNTDOWN</span>
+        <span class="v" id="timer-cd">--:--</span>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- Main Content -->
+<div class="app-wrap">
+
+  <!-- ===== NOUVEAU : INFO VOL HEADER ===== -->
+  <div class="flight-info-header">
+    <div class="flight-info-top">
+      <div class="flight-main-title" id="flightMainTitle">—</div>
+      <button class="button is-link is-small flight-edit-btn" onclick="openFlightEditModal()">
+        ✏️ Modifier
+      </button>
+    </div>
+    
+    <div class="flight-info-grid">
+      <div class="fi-item">
+        <div class="fi-label">Date</div>
+        <div class="fi-value" id="display-date">—</div>
+      </div>
+      <div class="fi-item">
+        <div class="fi-label">Route</div>
+        <div class="fi-value" id="display-route">—</div>
+      </div>
+      <div class="fi-item">
+        <div class="fi-label">Immatriculation</div>
+        <div class="fi-value" id="display-immat">—</div>
+      </div>
+      <div class="fi-item">
+        <div class="fi-label">Type Avion</div>
+        <div class="fi-value" id="display-type">—</div>
+      </div>
+      <div class="fi-item">
+        <div class="fi-label">RZA</div>
+        <div class="fi-value" id="display-rza">—</div>
+      </div>
+    </div>
   </div>
 
-  <div class="ldm-body">
+  <!-- ===== NOUVEAU : HORAIRES CARDS ===== -->
+  <div class="horaires-container">
+    
+    <!-- Card ARRIVÉE -->
+    <div class="horaire-card arr-card">
+      <header class="card-header">
+        <p class="card-header-title">
+          <span class="card-header-icon">🛬</span>
+          ARRIVÉE
+        </p>
+      </header>
+      <div class="card-content">
+        <div class="horaire-grid">
+          <div class="horaire-item highlight">
+            <span class="h-label">SIBT</span>
+            <input type="time" id="SIBT" class="h-value" style="border:none; background:transparent; width:auto;">
+          </div>
+          <div class="horaire-item highlight">
+            <span class="h-label">AIBT</span>
+            <input type="time" id="AIBT" class="h-value" style="border:none; background:transparent; width:auto;">
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- ===== LOAD (ARR + PREVI) ===== -->
-    <section class="ldm-card ldm-arr" id="ldmArr">
-      <div class="ldm-card-hdr">
-        <div class="ldm-card-title">LOAD</div>
-        <div class="ldm-card-sub">ARR + PREVI</div>
+    <!-- Card DÉPART -->
+    <div class="horaire-card dep-card">
+      <header class="card-header">
+        <p class="card-header-title">
+          <span class="card-header-icon">🛫</span>
+          DÉPART
+        </p>
+      </header>
+      <div class="card-content">
+        <div class="horaire-grid">
+          <div class="horaire-item highlight">
+            <span class="h-label">SOBT</span>
+            <input type="time" id="SOBT" class="h-value" style="border:none; background:transparent; width:auto;">
+          </div>
+          <div class="horaire-item highlight">
+            <span class="h-label">AOBT</span>
+            <input type="time" id="AOBT" class="h-value" style="border:none; background:transparent; width:auto;">
+          </div>
+          <div class="horaire-item ctot-row">
+            <span class="h-label">CTOT</span>
+            <input type="time" id="CTOT" class="ctot-pill">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== MODAL EDIT INFO VOL ===== -->
+  <div class="modal-backdrop" id="flightEditBackdrop" onclick="closeFlightEditModal()"></div>
+  <div class="modal-container" id="flightEditModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">✈️ Modifier les infos vol</h2>
+        <button class="button is-light is-small modal-close-btn" onclick="closeFlightEditModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="grid-auto">
+          <div class="span-12">
+            <div class="field">
+              <label class="label">Date</label>
+              <div class="control">
+                <input class="input" type="date" id="Date" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-6">
+            <div class="field">
+              <label class="label">Compagnie</label>
+              <div class="control">
+                <input class="input uppercase" type="text" id="Cie" placeholder="FR" maxlength="3" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-6">
+            <div class="field">
+              <label class="label">N° Vol</label>
+              <div class="control">
+                <input class="input" type="text" id="NVol" placeholder="1234" maxlength="6" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-6">
+            <div class="field">
+              <label class="label">De (FROM)</label>
+              <div class="control">
+                <input class="input uppercase" type="text" id="From" placeholder="BVA" maxlength="4" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-6">
+            <div class="field">
+              <label class="label">Vers (TO)</label>
+              <div class="control">
+                <input class="input uppercase" type="text" id="To" placeholder="OPO" maxlength="4" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-12">
+            <div class="field">
+              <label class="label">Immatriculation</label>
+              <div class="control">
+                <input class="input uppercase" type="text" id="Immat" placeholder="F-XXXX" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+
+          <div class="span-12">
+            <div class="field">
+              <label class="label">Type Avion</label>
+              <div class="control">
+                <input class="input uppercase" type="text" id="TypeAvion" placeholder="B738" onchange="updateFlightDisplay()">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ldm-grid">
+      <div class="modal-footer">
+        <button class="button is-light" onclick="closeFlightEditModal()">Annuler</button>
+        <button class="button is-link" onclick="saveFlightInfoAndClose()">
+          <strong>💾 Enregistrer</strong>
+        </button>
+      </div>
+    </div>
+  </div>
 
-        <!-- ARR -->
-        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
-          ARR
+  <!-- ===== RESTE DES SECTIONS (inchangées) ===== -->
+  
+  <!-- TIMINGS ARRIVÉE -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">⏱️ TIMINGS ARRIVÉE</p>
+    </header>
+    <div class="card-content">
+      <div class="grid-auto">
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée PNT</label>
+            <div class="control">
+              <input class="input" type="time" id="ArrPNT" onchange="autoSave()">
+            </div>
+          </div>
         </div>
 
-        <!-- PAX / INF / BAGS alignés -->
-        <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
-          <div class="field" style="margin:0;">
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée PNC</label>
+            <div class="control">
+              <input class="input" type="time" id="ArrPNC" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Premier débarqué</label>
+            <div class="control">
+              <input class="input" type="time" id="PremierDebarque" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Dernier débarqué</label>
+            <div class="control">
+              <input class="input" type="time" id="DernierDebarque" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée INAD</label>
+            <div class="control">
+              <input class="input" type="time" id="ArriveeINAD" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée Lift</label>
+            <div class="control">
+              <input class="input" type="time" id="ArriveeLiftArr" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Départ Lift</label>
+            <div class="control">
+              <input class="input" type="time" id="DepartLiftArr" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMINGS DÉPART -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">⏱️ TIMINGS DÉPART</p>
+    </header>
+    <div class="card-content">
+      <div class="grid-auto">
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Premier embarqué</label>
+            <div class="control">
+              <input class="input" type="time" id="AvionPremierEmbarque" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Dernier embarqué</label>
+            <div class="control">
+              <input class="input" type="time" id="AvionDernierEmbarque" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée Fuel</label>
+            <div class="control">
+              <input class="input" type="time" id="ArriveeFuel" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Départ Fuel</label>
+            <div class="control">
+              <input class="input" type="time" id="DepartFuel" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Arrivée Lift</label>
+            <div class="control">
+              <input class="input" type="time" id="ArriveeLift" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Départ Lift</label>
+            <div class="control">
+              <input class="input" type="time" id="DepartLift" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Remise LID/LDS</label>
+            <div class="control">
+              <input class="input" type="time" id="RemiseLID" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Fermeture porte avion</label>
+            <div class="control">
+              <input class="input" type="time" id="FermeturePorteAvion" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOAD ARRIVÉE -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">📦 LOAD ARRIVÉE</p>
+    </header>
+    <div class="card-content">
+      <div class="grid-auto">
+        <div class="span-4">
+          <div class="field">
             <label class="label">PAX</label>
-            <input class="input ldm-in" id="ArrPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
+            <div class="control">
+              <input class="input" type="number" id="LoadPAX" onchange="autoSave()">
+            </div>
           </div>
-          <div class="field" style="margin:0;">
-            <label class="label">+ INF</label>
-            <input class="input ldm-in" id="ArrPAX_INF" maxlength="3" oninput="digitsOnly(this)">
-          </div>
-          <div class="field" style="margin:0;">
+        </div>
+
+        <div class="span-4">
+          <div class="field">
             <label class="label">BAGS</label>
-            <input class="input ldm-in" id="ArrBAGS" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('arr')">
+            <div class="control">
+              <input class="input" type="number" id="LoadBAGS" onchange="autoSave()">
+            </div>
           </div>
         </div>
 
-        <div class="field ldm-span-2">
-          <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="ArrSI"></textarea>
-        </div>
-
-        <div class="ldm-span-2" style="height:1px; background:rgba(0,0,0,.08); margin:4px 0;"></div>
-
-        <!-- PREVI -->
-        <div class="ldm-span-2" style="font-weight:900; letter-spacing:.08em; text-transform:uppercase;">
-          PREVI
-        </div>
-
-        <!-- PAX / INF / BAGS alignés -->
-        <div class="ldm-span-2" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
-          <div class="field" style="margin:0;">
-            <label class="label">PAX</label>
-            <input class="input ldm-in" id="PreviPAX_MAIN" maxlength="4" oninput="digitsOnly(this)">
-          </div>
-          <div class="field" style="margin:0;">
-            <label class="label">+ INF</label>
-            <input class="input ldm-in" id="PreviPAX_INF" maxlength="3" oninput="digitsOnly(this)">
-          </div>
-          <div class="field" style="margin:0;">
-            <label class="label">BAGS</label>
-            <input class="input ldm-in" id="PreviBAGS" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('previ')">
-          </div>
-        </div>
-
-        <div class="field ldm-span-2">
-          <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="PreviSI"></textarea>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ===== LOAD FINAL ===== -->
-    <section class="ldm-card ldm-final" id="ldmFinal" style="display:none;">
-      <div class="ldm-card-hdr">
-        <div class="ldm-card-title">LOAD FINAL</div>
-        <div class="ldm-card-sub">FINAL</div>
-      </div>
-
-      <div class="ldm-grid">
-
-        <!-- MALE / FEMALE -->
-        <div class="field">
-          <label class="label">MALE</label>
-          <input class="input ldm-in" id="FinalMALE" maxlength="3"
-                 oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
-        </div>
-
-        <div class="field">
-          <label class="label">FEMALE</label>
-          <input class="input ldm-in" id="FinalFEMALE" maxlength="3"
-                 oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
-        </div>
-
-        <!-- ADULT / CHILD / INFANT / TOB -->
-        <div class="ldm-span-2"
-             style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;">
-          <div class="field" style="margin:0;">
-            <label class="label">ADULT</label>
-            <input class="input ldm-in" id="FinalADULT" maxlength="3"
-                   oninput="digitsOnly(this); syncAdultGenderLocks(); updateFinalTOB()">
-          </div>
-          <div class="field" style="margin:0;">
-            <label class="label">CHILD</label>
-            <input class="input ldm-in" id="FinalCHILD" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
-          </div>
-          <div class="field" style="margin:0;">
-            <label class="label">INFANT</label>
-            <input class="input ldm-in" id="FinalINFANT" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
-          </div>
-          <div class="field" style="margin:0;">
-            <label class="label">TOB</label>
-            <input class="input ldm-in has-text-weight-bold" id="FinalTOB" readonly>
-          </div>
-        </div>
-
-        <!-- ZONES -->
-        <div class="ldm-row-4">
+        <div class="span-4">
           <div class="field">
-            <label class="label">OA</label>
-            <input class="input ldm-in" id="FinalOA" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
-          </div>
-          <div class="field">
-            <label class="label">OB</label>
-            <input class="input ldm-in" id="FinalOB" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
-          </div>
-          <div class="field">
-            <label class="label">OC</label>
-            <input class="input ldm-in" id="FinalOC" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
-          </div>
-          <div class="field">
-            <label class="label">OD</label>
-            <input class="input ldm-in" id="FinalOD" maxlength="3"
-                   oninput="digitsOnly(this); updateFinalTOB()">
+            <label class="label">POIDS</label>
+            <div class="control">
+              <input class="input" type="number" id="LoadPOIDS" onchange="autoSave()">
+            </div>
           </div>
         </div>
 
-        <!-- BAGS / GB -->
-        <div class="field">
-          <label class="label">BAGS</label>
-          <input class="input ldm-in" id="FinalBAGS" maxlength="4"
-                 oninput="digitsOnly(this); updateHBagsValidity('final')">
-        </div>
-
-        <div class="field">
-          <label class="label">GB</label>
-          <input class="input ldm-in" id="FinalGB" maxlength="4" oninput="digitsOnly(this)">
-        </div>
-
-        <!-- H1..H4 -->
-        <div class="ldm-row-4">
+        <div class="span-3">
           <div class="field">
             <label class="label">H1</label>
-            <input class="input ldm-in" id="FinalH1" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <div class="control">
+              <input class="input" type="number" id="LoadH1" onchange="autoSave()">
+            </div>
           </div>
+        </div>
+
+        <div class="span-3">
           <div class="field">
             <label class="label">H2</label>
-            <input class="input ldm-in" id="FinalH2" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <div class="control">
+              <input class="input" type="number" id="LoadH2" onchange="autoSave()">
+            </div>
           </div>
+        </div>
+
+        <div class="span-3">
           <div class="field">
             <label class="label">H3</label>
-            <input class="input ldm-in" id="FinalH3" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <div class="control">
+              <input class="input" type="number" id="LoadH3" onchange="autoSave()">
+            </div>
           </div>
+        </div>
+
+        <div class="span-3">
           <div class="field">
             <label class="label">H4</label>
-            <input class="input ldm-in" id="FinalH4" maxlength="4"
-                   oninput="digitsOnly(this); updateHBagsValidity('final')">
+            <div class="control">
+              <input class="input" type="number" id="LoadH4" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-12">
+          <div class="field">
+            <label class="label">SI</label>
+            <div class="control">
+              <textarea class="textarea si-uppercase" id="LoadSI" rows="2" onchange="autoSave()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOAD EXPEDIÉ -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">📤 LOAD EXPEDIÉ</p>
+    </header>
+    <div class="card-content">
+      <div class="grid-auto">
+        <div class="span-4">
+          <div class="field">
+            <label class="label">PAX</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpPAX" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">BAGS</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpBAGS" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">POIDS</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpPOIDS" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H1</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpH1" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H2</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpH2" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H3</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpH3" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H4</label>
+            <div class="control">
+              <input class="input" type="number" id="ExpH4" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-12">
+          <div class="field">
+            <label class="label">SI</label>
+            <div class="control">
+              <textarea class="textarea si-uppercase" id="ExpSI" rows="2" onchange="autoSave()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOAD FINAL -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">✅ LOAD FINAL</p>
+    </header>
+    <div class="card-content">
+      <div class="grid-auto">
+        <!-- Passagers par genre -->
+        <div class="span-6">
+          <div class="field">
+            <label class="label">MALE</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalMALE" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">FEMALE</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalFEMALE" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Passagers par catégorie -->
+        <div class="span-4">
+          <div class="field">
+            <label class="label">ADULT</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalADULT" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">CHILD</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalCHILD" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">INFANT</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalINFANT" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <!-- TOB -->
+        <div class="span-12">
+          <div class="field">
+            <label class="label">TOB</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalTOB" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Zones -->
+        <div class="span-3">
+          <div class="field">
+            <label class="label">OA</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalOA" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">OB</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalOB" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">OC</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalOC" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">OD</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalOD" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagages -->
+        <div class="span-4">
+          <div class="field">
+            <label class="label">BAGS</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalBAGS" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">POIDS</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalPOIDS" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-4">
+          <div class="field">
+            <label class="label">GB</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalGB" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Holds -->
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H1</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalH1" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H2</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalH2" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H3</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalH3" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-3">
+          <div class="field">
+            <label class="label">H4</label>
+            <div class="control">
+              <input class="input" type="number" id="FinalH4" onchange="autoSave()">
+            </div>
           </div>
         </div>
 
         <!-- SI -->
-        <div class="field ldm-span-2">
-          <label class="label">SI</label>
-          <textarea class="textarea si-uppercase ldm-ta" id="FinalSI"></textarea>
-        </div>
-
-      </div>
-    </section>
-
-  </div><!-- /.ldm-body -->
-</div><!-- /#ldmModal -->
-
-<!-- ===== FIXED HEADER ===== -->
-<div class="fixed-header" id="fixedHeader">
-  <div class="fixed-header-inner">
-
-   <div class="topbar-inner"></div>
-
-    <div class="tabs-row">
-      <div id="tab-bar" class="tabs-chip"></div>
-    </div>
-
-    <div class="timer-row">
-      <div class="timer-chip">
-        <div class="k">HLE</div>
-        <div id="timer-h40" class="v">--:--</div>
-      </div>
-      <div class="timer-chip">
-        <div class="k">H-15</div>
-        <div id="timer-h15" class="v">--:--</div>
-      </div>
-
-      <div id="lidBlock" class="timer-chip" style="display:none;">
-        <div class="k">LID</div>
-        <div id="timer-h8" class="v">--:--</div>
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">TOBT</div>
-        <div id="timer-tobt" class="v">--:--</div>
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">CTOT</div>
-        <input id="CTOT" class="ctot-pill" type="time" onchange="updateAllCalculations()">
-      </div>
-
-      <div class="timer-chip">
-        <div class="k">CD</div>
-        <div id="timer-cd" class="v">--:--</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="app-wrap">
-
-<!-- INFO VOL -->
-<div class="card mb-5">
-  <header class="card-header">
-    <p class="card-header-title">INFO VOL</p>
-  </header>
-
-  <div class="card-content">
-
-    <!-- Bandeau ESSENTIEL -->
-    <div class="kv-strip mb-4">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
-          <div class="kv-value">
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+        <div class="span-12">
+          <div class="field">
+            <label class="label">SI</label>
+            <div class="control">
+              <textarea class="textarea si-uppercase" id="FinalSI" rows="3" onchange="autoSave()"></textarea>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DÉTAILS (éditables) -->
-    <div id="infoVolDetails" class="grid-auto">
-
-      <!-- Date + Parking + Immat + Type avion -->
-      <div class="field span-3">
-        <label class="label">Date</label>
-        <input class="input" type="date" id="Date">
-      </div>
-
-      <div class="field span-3">
-        <label class="label">Parking</label>
-        <div class="select is-fullwidth">
-          <select id="Parking">
-            <option value="">--</option>
-            <option>1</option><option>2</option><option>3</option><option>4</option>
-            <option>5</option><option>6</option><option>7</option><option>8</option>
-            <option>9</option><option>10</option><option>11</option><option>12</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field span-3">
-        <label class="label">Immat</label>
-        <input class="input uppercase" type="text" id="Immat" maxlength="6">
-      </div>
-
-      <div class="field span-3">
-        <label class="label">Type avion</label>
-        <div class="select is-fullwidth">
-          <select id="TypeAvion">
-            <option value="">--</option>
-            <option>A319</option><option>A320</option><option>A321</option>
-            <option>A20N</option><option>A21N</option><option>A21NY</option>
-            <option>B734</option><option>B737</option><option>B738</option>
-            <option>B38M</option><option>BCS3</option>
-            <option>Autre</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Cie / N° -->
-      <div class="field span-3">
-        <label class="label">Cie</label>
-        <div class="select is-fullwidth">
-          <select id="Cie">
-            <option value="">--</option>
-            <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
-            <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
-            <option>V7</option><option>Autre</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field span-3">
-        <label class="label">N°</label>
-        <input class="input uppercase" type="text" id="NVol">
-      </div>
-
-      <!-- From / To -->
-      <div class="field span-3">
-        <label class="label">From</label>
-        <input class="input uppercase" type="text" id="From" maxlength="3">
-      </div>
-
-      <div class="field span-3">
-        <label class="label">To</label>
-        <input class="input uppercase" type="text" id="To" maxlength="3">
-      </div>
-
-      <!-- LOAD button -->
-      <div class="span-12">
-        <div class="load-row-below">
-          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-            <div class="k">LOAD</div>
-            <div class="v" style="background:#111827;">OPEN</div>
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
-</div>
 
-
-<!-- HORAIRES -->
-<div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-    <p class="card-header-title">HORAIRES</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
-  </header>
-
-  <div class="card-content">
-    <div class="grid-auto">
-
-      <!-- Arrivée -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SIBT</label>
-              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-
-            <div style="min-width:160px;">
-              <label class="label">AIBT</label>
-              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Départ -->
-      <div class="span-12">
-        <div class="kv-card" style="padding:12px;">
-          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
-            <div style="min-width:160px;">
-              <label class="label">SOBT</label>
-              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-
-            <div style="min-width:160px;">
-              <label class="label">AOBT</label>
-              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
-              <div class="btn-actions">
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-  <!-- TIMING -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">TIMING</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
+  <!-- DL -->
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">⚠️ DL (Delay)</p>
     </header>
     <div class="card-content">
-      <div id="timing-grid"></div>
-    </div>
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">TIMELINE</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="timeline-toolbar">
-        <button type="button" class="button is-small" onclick="timelineZoomOut()">−</button>
-        <span class="tag is-light" id="timelineZoomLabel">100%</span>
-        <button type="button" class="button is-small" onclick="timelineZoomIn()">+</button>
-        <button type="button" class="button is-small is-light" onclick="timelineZoomReset()">Reset</button>
-      </div>
-
-      <div class="timeline-scroll" id="timelineScroll">
-        <div id="timelineCanvas" class="timeline-canvas"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RETARDS -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">RETARDS (Départ)</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <div class="columns is-multiline">
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+      <div class="grid-auto">
+        <div class="span-6">
           <div class="field">
             <label class="label">DL Code 1</label>
-            <div class="control"><input class="input" type="text" id="DLcode1"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 1 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+            <div class="control">
+              <input class="input" type="text" id="DLcode1" maxlength="2" onchange="autoSave()">
+            </div>
           </div>
         </div>
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Durée (min)</label>
+            <div class="control">
+              <input class="input" type="number" id="DLduree1" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
           <div class="field">
             <label class="label">DL Code 2</label>
-            <div class="control"><input class="input" type="text" id="DLcode2"></div>
-          </div>
-        </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-          <div class="field">
-            <label class="label">DL Durée 2 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+            <div class="control">
+              <input class="input" type="text" id="DLcode2" maxlength="2" onchange="autoSave()">
+            </div>
           </div>
         </div>
 
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+        <div class="span-6">
           <div class="field">
-            <label class="label">DL Code 3</label>
-            <div class="control"><input class="input" type="text" id="DLcode3"></div>
+            <label class="label">Durée (min)</label>
+            <div class="control">
+              <input class="input" type="number" id="DLduree2" onchange="autoSave()">
+            </div>
           </div>
         </div>
-        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+
+        <div class="span-6">
           <div class="field">
-            <label class="label">DL Durée 3 (min)</label>
-            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+            <label class="label">DL Code 3</label>
+            <div class="control">
+              <input class="input" type="text" id="DLcode3" maxlength="2" onchange="autoSave()">
+            </div>
+          </div>
+        </div>
+
+        <div class="span-6">
+          <div class="field">
+            <label class="label">Durée (min)</label>
+            <div class="control">
+              <input class="input" type="number" id="DLduree3" onchange="autoSave()">
+            </div>
           </div>
         </div>
       </div>
@@ -1339,47 +1589,32 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   </div>
 
   <!-- FAITS SAILLANTS -->
-  <div class="card mb-5">
-    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-      <p class="card-header-title">FAITS SAILLANTS</p>
-      <span class="card-header-icon"><span class="icon">⌄</span></span>
-    </header>
-    <div class="card-content">
-      <textarea class="textarea" id="FaitsSaillants" placeholder="Faits saillants…"></textarea>
-    </div>
-  </div>
-
-  <div class="buttons is-centered">
-    <button class="button is-success is-medium" id="validate" onclick="openRZAModal()">VALIDER</button>
-    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
-    <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
-  </div>
-
-</div>
-
-  <!-- ===== RZA MODAL ===== -->
-<div id="rzaBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:6000;"></div>
-
-<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:6100; align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(420px, 100%);">
-    <header class="card-header">
-      <p class="card-header-title">RZA requis</p>
+  <div class="card section-card" style="margin-bottom:14px">
+    <header class="card-header section-collapse" onclick="toggleSection(this)">
+      <p class="card-header-title">📝 FAITS SAILLANTS</p>
     </header>
     <div class="card-content">
       <div class="field">
-        <label class="label">RZA en charge du vol :</label>
         <div class="control">
-          <input id="rzaModalInput" class="input uppercase" type="text" maxlength="3" autocomplete="off" spellcheck="false">
+          <textarea class="textarea" id="FaitsSaillants" rows="4" placeholder="Notez ici les événements importants..." onchange="autoSave()"></textarea>
         </div>
-        <p class="help" id="rzaHelp" style="display:none; color:#ef4444; font-weight:800;">2 ou 3 lettres uniquement.</p>
-      </div>
-
-      <div class="buttons is-right">
-        <button class="button is-light" type="button" onclick="closeRZAModal(false)">Annuler</button>
-        <button class="button is-link" type="button" onclick="submitRZAModal()">Valider</button>
       </div>
     </div>
   </div>
+
+  <!-- ACTIONS -->
+  <div class="btn-actions">
+    <button class="button is-success" onclick="validateForm()">
+      <strong>📧 Envoyer</strong>
+    </button>
+    <button class="button is-info" onclick="manualSave()">
+      <strong>💾 Sauvegarder</strong>
+    </button>
+    <button class="button is-danger" onclick="clearAutoSave()">
+      <strong>🗑️ Effacer</strong>
+    </button>
+  </div>
+
 </div>
 
 <script>
