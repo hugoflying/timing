@@ -1189,53 +1189,7 @@ html.dark .vertical-label{
       <div id="tab-bar" class="tabs-chip"></div>
     </div>
 
-    <!-- ACTIONS -->
-    <div class="header-top-actions">
-      <button type="button" class="button is-small is-light" onclick="openHeaderEdit()">
-        ✎ Éditer
-      </button>
-    </div>
-
-    <!-- ESSENTIELS -->
-    <div class="kv-strip header-kv">
-
-      <!-- Carte 1 : VOL / ROUTE / SIBT-AIBT -->
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol · Route</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-            &nbsp;|&nbsp;
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-          </div>
-          <div class="kv-sub">
-            <span class="kv-mini">SIBT</span> <span id="kvSIBT">--:--</span>
-            &nbsp;·&nbsp;
-            <span class="kv-mini">AIBT</span> <span id="kvAIBT">--:--</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT -->
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat · Type · Salle arr · Parking</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-            &nbsp;|&nbsp;
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-          <div class="kv-sub">
-            <span class="kv-mini">SOBT</span> <span id="kvSOBT">--:--</span>
-            &nbsp;·&nbsp;
-            <span class="kv-mini">AOBT</span> <span id="kvAOBT">--:--</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- TIMERS -->
+    <!-- TIMERS (EN HAUT) -->
     <div class="timer-row">
       <div class="timer-chip">
         <div class="k">HLE</div>
@@ -1266,6 +1220,56 @@ html.dark .vertical-label{
         <div class="k">CD</div>
         <div id="timer-cd" class="v">--:--</div>
       </div>
+    </div>
+
+    <!-- ESSENTIELS (AVEC ÉDITER INTÉGRÉ) -->
+    <div class="kv-strip header-kv">
+
+      <!-- Carte 1 : VOL / ROUTE / SIBT-AIBT -->
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol · Route</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+            &nbsp;|&nbsp;
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+          </div>
+
+          <div class="kv-sub">
+            <span class="kv-mini">SIBT</span> <span id="kvSIBT">--:--</span>
+            &nbsp;·&nbsp;
+            <span class="kv-mini">AIBT</span> <span id="kvAIBT">--:--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte 2 : IMMAT / TYPE / BC / PARK + SOBT-AOBT + BOUTON ÉDITER INTÉGRÉ -->
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <span>Immat · Type · Salle arr · Parking</span>
+            <button type="button"
+                    class="button is-small is-light"
+                    style="border-radius:999px;font-weight:900;height:30px;padding:0 10px;"
+                    onclick="openHeaderEdit()">
+              ✎ Éditer
+            </button>
+          </div>
+
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+            &nbsp;|&nbsp;
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
+
+          <div class="kv-sub">
+            <span class="kv-mini">SOBT</span> <span id="kvSOBT">--:--</span>
+            &nbsp;·&nbsp;
+            <span class="kv-mini">AOBT</span> <span id="kvAOBT">--:--</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- LOAD -->
