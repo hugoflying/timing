@@ -1187,7 +1187,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 </div>
 
 
-<!-- HORAIRES (REFONTE LISIBLE) -->
+<!-- HORAIRES (REFONTE LISIBLE AVEC +1 / -1) -->
 <div class="card mb-5">
   <header class="card-header section-collapse" onclick="toggleCardBody(this)">
     <p class="card-header-title">HORAIRES</p>
@@ -1205,23 +1205,28 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           </div>
 
           <!-- SIBT -->
-          <div class="field mb-3">
+          <div class="field mb-4">
             <label class="label">SIBT</label>
             <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+            <div class="btn-actions">
+              <button class="button is-light" type="button"
+                onclick="adjustTime('SIBT',-1); updateAllCalculations()">-1</button>
+              <button class="button is-light" type="button"
+                onclick="adjustTime('SIBT',1); updateAllCalculations()">+1</button>
+            </div>
           </div>
 
           <!-- AIBT -->
           <div class="field">
             <label class="label">AIBT</label>
-            <div class="control">
-              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
-            </div>
-            <div class="mt-2">
-              <button class="button is-link is-small is-fullwidth"
-                      type="button"
-                      onclick="setNow('AIBT'); updateAllCalculations()">
-                NOW
-              </button>
+            <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+            <div class="btn-actions">
+              <button class="button is-light" type="button"
+                onclick="adjustTime('AIBT',-1); updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button"
+                onclick="setNow('AIBT'); updateAllCalculations()">NOW</button>
+              <button class="button is-light" type="button"
+                onclick="adjustTime('AIBT',1); updateAllCalculations()">+1</button>
             </div>
           </div>
         </div>
@@ -1235,24 +1240,29 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
           </div>
 
           <!-- SOBT -->
-          <div class="field mb-3">
+          <div class="field mb-4">
             <label class="label">SOBT</label>
             <input class="input" type="time" id="SOBT"
                    onchange="manualSOBT=true; updateAllCalculations()">
+            <div class="btn-actions">
+              <button class="button is-light" type="button"
+                onclick="adjustTime('SOBT',-1); updateAllCalculations()">-1</button>
+              <button class="button is-light" type="button"
+                onclick="adjustTime('SOBT',1); updateAllCalculations()">+1</button>
+            </div>
           </div>
 
           <!-- AOBT -->
           <div class="field">
             <label class="label">AOBT</label>
-            <div class="control">
-              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
-            </div>
-            <div class="mt-2">
-              <button class="button is-link is-small is-fullwidth"
-                      type="button"
-                      onclick="setNow('AOBT'); updateAllCalculations()">
-                NOW
-              </button>
+            <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+            <div class="btn-actions">
+              <button class="button is-light" type="button"
+                onclick="adjustTime('AOBT',-1); updateAllCalculations()">-1</button>
+              <button class="button is-link" type="button"
+                onclick="setNow('AOBT'); updateAllCalculations()">NOW</button>
+              <button class="button is-light" type="button"
+                onclick="adjustTime('AOBT',1); updateAllCalculations()">+1</button>
             </div>
           </div>
         </div>
