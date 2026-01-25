@@ -921,7 +921,13 @@ html.dark .vertical-label{
 .fixed-header-inner .header-kv .kv-card{
   background: color-mix(in srgb, var(--card) 90%, #1f2937 10%);
 }
-  
+
+/* ===== LOAD dans header ===== */
+.header-load{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
 
 </style>
 </head>
@@ -1178,6 +1184,50 @@ html.dark .vertical-label{
       </div>
     </div>
 
+    <!-- ESSENTIELS -->
+    <div class="kv-strip header-kv">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Type</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Salle arr. / Parking</div>
+          <div class="kv-value">
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOAD -->
+    <div class="header-load">
+      <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
+        <div class="k">LOAD</div>
+        <div class="v">OPEN</div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
     <!-- ✅ ESSENTIELS (ancré dans le header, sous les timers) -->
     <div class="kv-strip header-kv">
       <div class="kv-card">
@@ -1294,17 +1344,7 @@ html.dark .vertical-label{
         <label class="label">To</label>
         <input class="input uppercase" type="text" id="To" maxlength="3">
       </div>
-
-      <!-- LOAD button -->
-      <div class="span-12">
-        <div class="load-row-below">
-          <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-            <div class="k">LOAD</div>
-            <div class="v" style="background:#111827;">OPEN</div>
-          </button>
-        </div>
-      </div>
-
+     
     </div>
   </div>
 </div>
