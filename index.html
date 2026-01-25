@@ -837,12 +837,33 @@ html.dark .vertical-label{
   }
 }
 
-/* ===== ESSENTIELS dans le header ===== */
-.header-kv{
+/* ===== ESSENTIELS dans le header (compact 2 colonnes) ===== */
+.fixed-header-inner .header-kv{
   margin-top: 4px;
+  gap: 8px;
 }
+
 .fixed-header-inner .header-kv .kv-card{
   box-shadow: none;
+  padding: 8px 10px;
+}
+
+.fixed-header-inner .header-kv .kv-title{
+  font-size: .65rem;
+  letter-spacing: .05em;
+}
+
+.fixed-header-inner .header-kv .kv-value{
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+/* encore plus dense si écran étroit */
+@media (max-width: 720px){
+  .fixed-header-inner .header-kv .kv-value{
+    font-size: .88rem;
+  }
 }
 
 /* ===== HORAIRES responsive (téléphone uniquement) ===== */
