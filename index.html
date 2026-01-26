@@ -5,21 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SUIVI PERFORMANCE</title>
 
+<!-- Bulma -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
 
 <style>
-/* =========================
-   1) TOKENS / THEME
-========================= */
 :root{
   --bg: #f6f7fb;
   --card: #ffffff;
   --text: #111827;
   --muted: #6b7280;
-
   --shadow: 0 10px 28px rgba(0,0,0,.08);
   --shadow2: 0 6px 18px rgba(0,0,0,.10);
-
   --radius: 14px;
 
   --field-bg: #ffffff;
@@ -28,7 +24,6 @@
   --field-placeholder: rgba(107,114,128,.95);
 
   --fixed-header-h: 140px;
-  --fixed-footer-h: 72px;
 
   --gap: 10px;
   --padCard: 12px;
@@ -40,15 +35,14 @@
   :root{ --gap: 12px; --padCard: 14px; --inputH: 44px; }
 }
 
-html, body{ min-height: 100%; background: var(--bg) !important; }
 body{ background: var(--bg); color: var(--text); margin: 0; }
+html, body{ min-height: 100%; background: var(--bg) !important; }
 
 html.dark, body.dark{
   --bg: #0f1115;
   --card: #151922;
   --text: #e5e7eb;
   --muted: #9ca3af;
-
   --shadow: 0 10px 28px rgba(0,0,0,.45);
   --shadow2: 0 6px 18px rgba(0,0,0,.50);
 
@@ -58,10 +52,7 @@ html.dark, body.dark{
   --field-placeholder: rgba(156,163,175,.95);
 }
 
-/* =========================
-   2) LAYOUT GLOBAL
-========================= */
-/* Header fixe */
+/* ===== FIXED HEADER ===== */
 .fixed-header{
   position: fixed;
   inset: 0 0 auto 0;
@@ -81,12 +72,10 @@ html.dark .fixed-header{ border-bottom-color: rgba(255,255,255,.08); }
   gap: 10px;
 }
 
-/* Wrapper app */
 .app-wrap{
   max-width: 1120px;
   margin: 0 auto;
   padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
-  padding-bottom: calc(var(--fixed-footer-h) + 18px);
 }
 
 /* rien afficher tant qu'il n'y a pas d'onglet */
@@ -102,7 +91,7 @@ body.has-tab .app-wrap{ display:block; }
   flex-wrap: wrap;
 }
 
-/* Tabs */
+/* Tabs row */
 .tabs-row{ display:flex; justify-content:center; }
 .tabs-chip{
   width: 100%;
@@ -142,9 +131,6 @@ body.has-tab .app-wrap{ display:block; }
 }
 .tab-refresh.is-loading{ pointer-events:none; opacity:.7; }
 
-/* =========================
-   3) COMPOSANTS UI
-========================= */
 /* Timers chips */
 .timer-row{
   display:flex;
@@ -177,6 +163,7 @@ body.has-tab .app-wrap{ display:block; }
   align-items:center;
   justify-content:center;
 }
+
 #timer-tobt{ background:#16a34a !important; }
 #timer-h8{ background:#facc15 !important; color:#fff !important; }
 #timer-cd{ background:#93c5fd !important; color:#111 !important; }
@@ -222,6 +209,7 @@ body.dark .card-header{
 .card-header-title{ font-weight: 900; color: var(--text) !important; }
 .section-collapse{ cursor: pointer; user-select: none; }
 .collapsed-body{ display: none; }
+
 .card-content{ padding: var(--padCard) !important; }
 
 /* Inputs */
@@ -236,6 +224,7 @@ body.dark .card-header{
 .textarea{ min-height: 110px; height: auto; }
 .input.uppercase{ text-transform: uppercase; }
 textarea.si-uppercase{ text-transform: uppercase; }
+
 .input::placeholder, .textarea::placeholder{ color: var(--field-placeholder) !important; }
 
 .field .label{
@@ -260,7 +249,64 @@ textarea.si-uppercase{ text-transform: uppercase; }
 }
 .btn-actions .button{ border-radius: 12px; font-weight: 900; height: 40px; }
 
-/* Select aligné input */
+/* Grilles responsive simples */
+.grid-auto{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.span-12{ grid-column: span 12; }
+.span-6{  grid-column: span 12; }
+.span-4{  grid-column: span 6; }
+.span-3{  grid-column: span 6; }
+@media (min-width: 769px){
+  .span-6{ grid-column: span 6; }
+  .span-4{ grid-column: span 4; }
+  .span-3{ grid-column: span 3; }
+}
+/* ===== BANDEAUX ESSENTIELS : 2 PAR LIGNE (base) ===== */
+.kv-strip{
+  display: grid;
+  grid-template-columns: 1fr; /* mobile */
+  gap: var(--gap);
+}
+@media (min-width: 600px){
+  .kv-strip{
+    grid-template-columns: 1fr 1fr; /* tablette + */
+  }
+}
+
+/* ===== TABLET (600–900) ===== */
+@media (min-width: 600px) and (max-width: 900px){
+
+  :root{
+    --gap: 8px;
+    --padCard: 9px;
+    --labelSize: .68rem;
+    --inputH: 34px;
+  }
+
+  /* grid spans tablette */
+  .span-2{ grid-column: span 2; }
+  .span-3{ grid-column: span 3; }
+  .span-4{ grid-column: span 4; }
+  .span-6{ grid-column: span 6; }
+
+  /* Réduction globale */
+  .card-content{ padding: var(--padCard) !important; }
+
+  /* Bandeaux essentiels */
+  .kv-card{ padding: 8px 10px; }
+  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
+  .kv-value{ font-size: 1rem; font-weight: 800; }
+
+  /* Timers chips */
+  .timer-chip{ min-width: 124px; padding: 8px 12px; }
+  .timer-chip .k{ font-size: .75rem; }
+  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
+}
+
+/* ===== Alignement visuel SELECT comme INPUT (global) ===== */
 .select.is-fullwidth select{
   height: var(--inputH);
   line-height: calc(var(--inputH) - 2px);
@@ -271,33 +317,14 @@ textarea.si-uppercase{ text-transform: uppercase; }
   font-weight: 800;
 }
 
-/* =========================
-   4) GRILLES / BANDEAUX
-========================= */
-.grid-auto{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gap);
-}
-.span-12{ grid-column: span 12; }
-.span-6{  grid-column: span 12; }
-.span-4{  grid-column: span 6; }
-.span-3{  grid-column: span 6; }
-
-@media (min-width: 769px){
-  .span-6{ grid-column: span 6; }
-  .span-4{ grid-column: span 4; }
-  .span-3{ grid-column: span 3; }
-}
-
-/* Bandeaux (KV) */
+/* "Rows" ultra compactes pour infos clés */
 .kv-strip{
   display:grid;
-  grid-template-columns: 1fr; /* mobile */
+  grid-template-columns: 1fr;
   gap: var(--gap);
 }
-@media (min-width: 600px){
-  .kv-strip{ grid-template-columns: 1fr 1fr; } /* tablette + */
+@media (min-width: 769px){
+  .kv-strip{ grid-template-columns: 1fr 1fr; }
 }
 .kv-card{
   border-radius: 14px;
@@ -309,7 +336,9 @@ textarea.si-uppercase{ text-transform: uppercase; }
   justify-content: space-between;
   gap: 10px;
 }
-body.dark .kv-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+body.dark .kv-card{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
 .kv-left{ display:flex; flex-direction:column; gap:2px; }
 .kv-title{ font-size:.78rem; font-weight:900; color: var(--muted); text-transform:uppercase; }
 .kv-value{ font-size:1.1rem; font-weight:900; color: var(--text); }
@@ -327,7 +356,7 @@ body.dark .kv-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   box-shadow: var(--shadow);
 }
 
-/* Toggle switch (clair/locale) */
+/* Toggle switch */
 .toggle{
   display:inline-flex;
   align-items:center;
@@ -359,9 +388,7 @@ body.dark .kv-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 }
 .toggle input:checked + .track .thumb{ transform: translateX(18px); }
 
-/* =========================
-   5) AK POPUP
-========================= */
+/* ===== AK picker (FULLSCREEN POPUP) ===== */
 #akPopover{
   position: fixed;
   inset: calc(var(--fixed-header-h) + 12px) 12px 12px 12px;
@@ -375,6 +402,7 @@ body.dark .kv-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   border: 1px solid rgba(0,0,0,.08);
   display: none;
   overflow: auto;
+
   flex-direction: column;
 }
 body.dark #akPopover{ border-color: rgba(255,255,255,.10); }
@@ -399,9 +427,7 @@ body.dark #akPopover .ak-header{ border-bottom-color: rgba(255,255,255,.10); }
 
 #akList{ flex: 1 1 auto; overflow-y: auto; }
 
-/* =========================
-   6) TIMELINE
-========================= */
+/* ===== TIMELINE ===== */
 .timeline-track {
   position: absolute; left:6%; right:6%;
   height: 4px; background:#cfd4da; transform:translateY(-50%); border-radius:4px;
@@ -470,9 +496,7 @@ body.dark .timeline-scroll{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 /* DL error */
 .dl-error { border: 2px solid #ef4444 !important; border-radius: 12px; }
 
-/* =========================
-   7) SETTINGS MENU (gear)
-========================= */
+/* ===== SETTINGS (gear) bottom menu ===== */
 #settingsBackdrop{
   position: fixed;
   inset: 0;
@@ -518,9 +542,25 @@ body.dark #settingsMenu{ border-color: rgba(255,255,255,.10); }
   gap: 10px;
 }
 
-/* =========================
-   8) LDM MODAL
-========================= */
+/* ===== RESPONSIVE tweaks ===== */
+@media (max-width: 768px){
+  .timer-chip{ min-width: 128px; }
+  .timeline-canvas{ min-width: 720px; }
+}
+@media (max-width: 420px){
+  .timer-chip{ min-width: 120px; padding: 9px 12px; }
+  .timer-chip .v{ min-width: 64px; }
+  .ctot-pill{ min-width: 64px; }
+}
+@media (max-width: 480px){
+  .timer-row{ gap: 6px; }
+  .timer-chip{ min-width: 96px; padding: 6px 8px; gap: 6px; }
+  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
+  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
+  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
+}
+
+/* ===== LDM modal (neutre, sans pastilles couleur) ===== */
 #ldmBackdrop{
   position: fixed;
   inset: 0;
@@ -595,7 +635,7 @@ body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   overflow: auto;
 }
 
-/* cartes neutres */
+/* cartes neutres (ARR/EXP/FINAL = même style) */
 .ldm-card{
   border-radius: 16px;
   background: color-mix(in srgb, var(--card) 92%, #000 8%);
@@ -605,6 +645,7 @@ body.dark .lm-seg{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 }
 body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
+/* header carte neutre */
 .ldm-card-hdr{
   display:flex;
   align-items:center;
@@ -615,11 +656,13 @@ body.dark .ldm-card{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 }
 body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
 
+/* on SUPPRIME l’indicateur couleur */
 .ldm-dot{ display:none !important; }
 
 .ldm-card-title{ font-weight: 900; letter-spacing:.08em; }
 .ldm-card-sub{ color: var(--muted); font-weight: 800; font-size: .85rem; margin-left:auto; }
 
+/* grille 2 colonnes simple */
 .ldm-grid{
   padding: 10px 12px 12px;
   display:grid;
@@ -641,17 +684,24 @@ body.dark .ldm-card-hdr{ border-bottom-color: rgba(255,255,255,.08); }
   font-weight: 800;
 }
 
+/* ===== ligne H1..H4 / OA..OD : plus de pastilles ===== */
 .ldm-row-4{
   grid-column: span 2;
   display:grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
-.ldm-row-4 .field{ margin: 0 !important; }
+
+/* champ compact sans "badge" */
+.ldm-row-4 .field{
+  margin: 0 !important;
+}
 .ldm-row-4 .field .label{
   margin: 0 0 6px !important;
   padding: 0 !important;
   display:block;
+  min-width: auto;
+  height: auto;
   border-radius: 0;
   font-size: var(--labelSize) !important;
   font-weight: 900 !important;
@@ -679,9 +729,21 @@ body.modal-open{
   touch-action: none;
 }
 
-/* =========================
-   9) FINAL SHEET
-========================= */
+/* ===== petit layout PAX "X + Y" ===== */
+.pax-split{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.pax-split .pax-plus{
+  font-weight: 900;
+  opacity: .8;
+  user-select:none;
+}
+.pax-split .input{ width:100%; }
+
+/* ===== FINAL layout (comme sheet) ===== */
 .final-sheet{
   display:grid;
   grid-template-columns: 1fr;
@@ -716,11 +778,15 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 8px;
 }
+@media (min-width: 760px){
+  .final-mini{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
 .final-mini-2{
   display:grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
   gap: 8px;
 }
+
 .final-wide{ grid-column: 1 / -1; }
 
 .final-row{
@@ -732,22 +798,28 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   .final-row{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
 
+/* look “sheet” : labels plus petits, inputs centrés */
 .final-box .label{ margin-bottom: 6px !important; }
 .final-box .ldm-in{ text-align:center; }
 
 /* RETARDS : 2 lignes x 3 colonnes dès 600px */
 .dl-grid{
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr;  /* mobile <600 */
   gap: var(--gap);
 }
+
 @media (min-width: 600px){
-  .dl-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dl-grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 600+ => 3 colonnes */
+  }
 }
 
-/* =========================
-   10) FOOTER FIXE
-========================= */
+:root{
+  --fixed-footer-h: 72px;
+}
+
+/* footer fixed bottom */
 .fixed-footer{
   position: fixed;
   inset: auto 0 0 0;
@@ -771,9 +843,19 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
   flex-wrap: wrap;
 }
 
-/* =========================
-   11) FAB STACK + FUEL MENU
-========================= */
+/* padding pour pas cacher le contenu derrière le footer */
+.app-wrap{
+  padding-bottom: calc(var(--fixed-footer-h) + 18px);
+}
+
+/* version compacte tablette */
+@media (min-width: 600px) and (max-width: 900px){
+  :root{ --fixed-footer-h: 64px; }
+  .fixed-footer-inner{ padding: 8px 12px; }
+}
+
+/* ===== FAB STACK (au-dessus de la molette) ===== */
+
 #loadFab,
 #fuelFab{
   position: fixed;
@@ -790,10 +872,12 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
 }
 
 /* positions */
-#loadFab{ bottom: 158px; }
-#fuelFab{ bottom: 86px; }
+#loadFab{ bottom: 158px; } /* au-dessus du fuel */
+#fuelFab{ bottom: 86px; }  /* juste au-dessus de la molette */
 
-/* Fuel backdrop */
+
+/* ===== FUEL MENU ===== */
+
 #fuelBackdrop{
   position: fixed;
   inset: 0;
@@ -817,70 +901,64 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
 }
 body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 
-/* Fuel menu : look cohérent avec settings */
+/* ===== FUEL = LOOK "TOGGLE" (Clair/Locale) ===== */
+
 #fuelMenu .settings-row{
   display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-#fuelMenu .field{ margin: 0 !important; }
-
-/* =========================
-   12) RESPONSIVE
-========================= */
-
-/* tablette 600–900 : compact + spans */
-@media (min-width: 600px) and (max-width: 900px){
-  :root{
-    --gap: 8px;
-    --padCard: 9px;
-    --labelSize: .68rem;
-    --inputH: 34px;
-    --fixed-footer-h: 64px;
-  }
-
-  .span-2{ grid-column: span 2; }
-  .span-3{ grid-column: span 3; }
-  .span-4{ grid-column: span 4; }
-  .span-6{ grid-column: span 6; }
-
-  .kv-card{ padding: 8px 10px; }
-  .kv-title{ font-size: .70rem; letter-spacing: .04em; }
-  .kv-value{ font-size: 1rem; font-weight: 800; }
-
-  .timer-chip{ min-width: 124px; padding: 8px 12px; }
-  .timer-chip .k{ font-size: .75rem; }
-  .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
-
-  .fixed-footer-inner{ padding: 8px 12px; }
-
-  /* INFO VOL : 1 ligne sur ta tablette */
-  .info-vol{
-    display:flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items:center;
-  }
-  .info-vol > *{ white-space: nowrap; }
+  flex-direction:column;
+  gap:10px;
 }
 
-/* petits écrans */
-@media (max-width: 768px){
-  .timer-chip{ min-width: 128px; }
-  .timeline-canvas{ min-width: 720px; }
+/* chaque ligne comme un toggle */
+#fuelMenu .fuel-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
 }
-@media (max-width: 480px){
-  .timer-row{ gap: 6px; }
-  .timer-chip{ min-width: 96px; padding: 6px 8px; gap: 6px; }
-  .timer-chip .k{ font-size: .7rem; font-weight: 800; }
-  .timer-chip .v{ min-width: 54px; padding: 4px 6px; font-size: .8rem; }
-  .ctot-pill{ min-width: 54px; padding: 4px 6px !important; font-size: .8rem; }
+
+/* texte à gauche = même style que Clair/Locale */
+#fuelMenu .fuel-row .fuel-label{
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--text);
+  margin:0;
+  padding:0;
+  text-transform:none;
+  letter-spacing:0;
 }
-@media (max-width: 420px){
-  .timer-chip{ min-width: 120px; padding: 9px 12px; }
-  .timer-chip .v{ min-width: 64px; }
-  .ctot-pill{ min-width: 64px; }
+
+/* input à droite, compact */
+#fuelMenu .fuel-row .fuel-input{
+  width: 110px;
+  height: 34px;
+  padding: 6px 10px;
+
+  border-radius: 999px;
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+  color: var(--field-text);
+
+  font-weight: 900;
+  font-size: 1rem;
+  text-align: right;
+  box-shadow: none;
 }
+
+/* enlève les flèches number (optionnel, propre) */
+#fuelMenu input[type=number]::-webkit-outer-spin-button,
+#fuelMenu input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+#fuelMenu input[type=number]{ -moz-appearance: textfield; }
+
 
 </style>
 </head>
