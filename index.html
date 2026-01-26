@@ -3795,16 +3795,19 @@ function renderAKList(flights, flow){
 }
 
  // ===== Import : règles BVA =====
-function akBuildSI(f, allowDL = true){
+function akBuildSI(f, allowDL = true, opts = {}){
+  const includeDL = opts.includeDL !== undefined ? !!opts.includeDL : true;
+
   const parts = [];
 
   const rmk = (f?.remarks || '').trim();
   if(rmk) parts.push(rmk);
 
-  if(allowDL){
+  // DL AK : uniquement si autorisé ET includeDL=true
+  if(allowDL && includeDL){
     const tb = f?.dlCodes?.typeb;
     if(Array.isArray(tb) && tb.length){
-      parts.push(`DL: ${tb.map(x=>`${x.code} +${x.delay}`).join(' / ')}`);
+      parts.push(`DL: ${tb.map(x => `${x.code} +${x.delay}`).join(' / ')}`);
     }
   }
 
