@@ -4216,55 +4216,50 @@ ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
     `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
 }
 
+/* ===== FUEL ===== */
 function openFuelMenu(){
   const b = document.getElementById('fuelBackdrop');
   const m = document.getElementById('fuelMenu');
   if(b) b.style.display = '';
   if(m) m.style.display = 'block';
 }
+
 function closeFuelMenu(){
   const b = document.getElementById('fuelBackdrop');
   const m = document.getElementById('fuelMenu');
   if(m) m.style.display = 'none';
   if(b) b.style.display = 'none';
 }
+
 function toggleFuelMenu(){
   const m = document.getElementById('fuelMenu');
   const isOpen = m && m.style.display !== 'none' && m.style.display !== '';
-  if(isOpen) closeFuelMenu();
-  else openFuelMenu();
+
+  closeAllPopups();
+  if(!isOpen) openFuelMenu();
 }
 
-/* ESC ferme aussi fuel */
+/* ESC ferme fuel */
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape') closeFuelMenu();
 });
 
+/* ===== CLOSE ALL POPUPS ===== */
 function closeAllPopups(){
-  // fuel
-  document.getElementById('fuelMenu')?.style.setProperty('display','none');
-  document.getElementById('fuelBackdrop')?.style.setProperty('display','none');
+  // FUEL
+  closeFuelMenu?.();
 
-  // load (LDM)
-  document.getElementById('ldm')?.style.setProperty('display','none');
-  document.getElementById('ldmBackdrop')?.style.setProperty('display','none');
+  // LOAD (LDM)
+  closeLDM?.();
 
-  // settings
-  document.getElementById('settingsPanel')?.style.setProperty('display','none');
-  document.getElementById('settingsBackdrop')?.style.setProperty('display','none');
-}
+  // SETTINGS
+  closeSettingsMenu?.();
 
-/* ===== FUEL ===== */
-function toggleFuelMenu(){
-  const menu = document.getElementById('fuelMenu');
-  const backdrop = document.getElementById('fuelBackdrop');
-  const isOpen = menu.style.display === 'block';
+  // AK
+  closeAKPicker?.();
 
-  closeAllPopups();
-  if (!isOpen){
-    menu.style.display = 'block';
-    backdrop.style.display = 'block';
-  }
+  // RZA
+  closeRZAModal?.(false);
 }
 
 /* ===== LOAD ===== */
