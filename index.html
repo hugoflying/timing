@@ -2799,14 +2799,22 @@ function totalDelayMinutes(){
   return total;
 }
 
+/*
+  RÈGLE DE REMPLISSAGE :
+  - si DL1 = 93/93A => on ne remplit/redistribue que DL2 puis DL3 (remain = total - d1)
+  - sinon => on remplit/redistribue DL1 puis DL2 puis DL3 (total)
+*/
 function redistributeDL(){
   const total = totalDelayMinutes();
+
+  const c1 = document.getElementById('DLcode1');
+  const c2 = document.getElementById('DLcode2');
+  const c3 = document.getElementById('DLcode3');
 
   const f1 = document.getElementById('DLduree1');
   const f2 = document.getElementById('DLduree2');
   const f3 = document.getElementById('DLduree3');
-  const c1 = document.getElementById('DLcode1');
-  if(!f1 || !f2 || !f3 || !c1) return;
+  if(!f1 || !f2 || !f3 || !c1 || !c2 || !c3) return;
 
   let d1 = parseInt(f1.value)||0;
   let d2 = parseInt(f2.value)||0;
@@ -2814,24 +2822,23 @@ function redistributeDL(){
 
   if(total==null){ clearDLBorders(); return; }
 
-  d1 = Math.max(0, Math.min(d1, total));
-
   const v1 = (c1.value || '').toUpperCase().trim();
   const has93 = (v1 === '93' || v1 === '93A');
 
   if(has93){
-    // ✅ s'il y a 93/93A en DL1 : on répartit le reste sur DL2 puis DL3 (JAMAIS l’inverse)
+    // DL1 = 93/93A => DL2/DL3 portent le reste
+    d1 = Math.max(0, Math.min(d1, total));
     const remain = Math.max(0, total - d1);
 
+    // bornes remain
     d2 = Math.max(0, Math.min(d2, remain));
     d3 = Math.max(0, Math.min(d3, remain));
 
+    // logique d'ajustement : si tu touches DL2 => DL3 s'ajuste, si tu touches DL3 => DL2 s'ajuste
     if(lastDLChanged === 3){
-      // si l'user touche DL3 -> ajuste DL2 (mais DL2 reste "prioritaire" visuellement)
       d3 = Math.max(0, Math.min(d3, remain));
       d2 = remain - d3;
     }else{
-      // default + si l'user touche DL2 -> ajuste DL3
       d2 = Math.max(0, Math.min(d2, remain));
       d3 = remain - d2;
     }
@@ -2840,22 +2847,28 @@ function redistributeDL(){
     f2.value = d2 || '';
     f3.value = d3 || '';
 
+    // ⚠️ codes : DL2 en premier, puis DL3 (on ne bouge pas les codes si l'user les a mis)
+    if((f2.value || '').trim() && !(c2.value || '').trim()) c2.value = '';
+    if((f3.value || '').trim() && !(c3.value || '').trim()) c3.value = '';
+
     const sum = d1 + d2 + d3;
     if (sum !== total) markLastFilledDLError();
     else clearDLBorders();
     return;
   }
 
-  // ===== pas de 93/93A : logique normale sur 1/2/3 =====
+  // ===== PAS DE 93/93A : DL1/DL2/DL3 =====
+  d1 = Math.max(0, Math.min(d1, total));
+
   if(lastDLChanged === 1){
     const remain = Math.max(0, total - d1);
     d2 = Math.max(0, Math.min(d2, remain));
     d3 = Math.max(0, remain - d2);
-  } else if (lastDLChanged === 2){
+  }else if(lastDLChanged === 2){
     const remain = Math.max(0, total - d1);
     d2 = Math.max(0, Math.min(d2, remain));
     d3 = Math.max(0, remain - d2);
-  } else {
+  }else{
     const remain = Math.max(0, total - d1);
     d3 = Math.max(0, Math.min(d3, remain));
     d2 = Math.max(0, remain - d3);
@@ -2889,6 +2902,7 @@ function clearDLBorders(){
     if(el) el.classList.remove('dl-error');
   });
 }
+
 
 /* Utils time */
 function setNow(fieldId) {
