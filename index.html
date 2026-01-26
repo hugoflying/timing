@@ -803,6 +803,19 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 .final-box .label{ margin-bottom: 6px !important; }
 .final-box .ldm-in{ text-align:center; }
 
+/* RETARDS : 2 lignes x 3 colonnes dès 600px */
+.dl-grid{
+  display: grid;
+  grid-template-columns: 1fr;  /* mobile <600 */
+  gap: var(--gap);
+}
+
+@media (min-width: 600px){
+  .dl-grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 600+ => 3 colonnes */
+  }
+}
+
 </style>
 </head>
 
@@ -1288,7 +1301,7 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
     </div>
   </div>
 
- <!-- RETARDS -->
+<!-- RETARDS -->
 <div class="card mb-5">
   <header class="card-header section-collapse" onclick="toggleCardBody(this)">
     <p class="card-header-title">RETARDS (Départ)</p>
@@ -1296,68 +1309,47 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
   </header>
 
   <div class="card-content">
-    <div class="columns is-multiline">
 
-      <!-- LIGNE 1 : DL CODES -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Code 1</label>
-          <div class="control">
-            <input class="input" type="text" id="DLcode1">
-          </div>
-        </div>
+    <!-- LIGNE 1 : DL CODES -->
+    <div class="dl-grid">
+      <div class="field">
+        <label class="label">DL Code 1</label>
+        <div class="control"><input class="input" type="text" id="DLcode1"></div>
       </div>
 
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Code 2</label>
-          <div class="control">
-            <input class="input" type="text" id="DLcode2">
-          </div>
-        </div>
+      <div class="field">
+        <label class="label">DL Code 2</label>
+        <div class="control"><input class="input" type="text" id="DLcode2"></div>
       </div>
 
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Code 3</label>
-          <div class="control">
-            <input class="input" type="text" id="DLcode3">
-          </div>
-        </div>
+      <div class="field">
+        <label class="label">DL Code 3</label>
+        <div class="control"><input class="input" type="text" id="DLcode3"></div>
       </div>
-
-      <!-- LIGNE 2 : DL DURÉES -->
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Durée 1 (min)</label>
-          <div class="control">
-            <input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)">
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Durée 2 (min)</label>
-          <div class="control">
-            <input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)">
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-full-mobile is-one-third-tablet is-one-third-desktop">
-        <div class="field">
-          <label class="label">DL Durée 3 (min)</label>
-          <div class="control">
-            <input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)">
-          </div>
-        </div>
-      </div>
-
     </div>
+
+    <div style="height: var(--gap);"></div>
+
+    <!-- LIGNE 2 : DL DURÉES -->
+    <div class="dl-grid">
+      <div class="field">
+        <label class="label">DL Durée 1 (min)</label>
+        <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+      </div>
+
+      <div class="field">
+        <label class="label">DL Durée 2 (min)</label>
+        <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+      </div>
+
+      <div class="field">
+        <label class="label">DL Durée 3 (min)</label>
+        <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+      </div>
+    </div>
+
   </div>
 </div>
-
 
   <!-- FAITS SAILLANTS -->
   <div class="card mb-5">
