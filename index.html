@@ -1364,7 +1364,6 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 
   <div class="buttons is-centered">
     <button class="button is-success is-medium" id="validate" onclick="openRZAModal()">VALIDER</button>
-    <button class="button is-link is-medium" id="save" onclick="manualSave()">SAUVEGARDER</button>
     <button class="button is-danger is-light is-medium" id="reset" onclick="clearAutoSave()">RÉINITIALISER TOUT</button>
   </div>
 
@@ -4146,11 +4145,6 @@ ${[dlBlock, faitsBlock].filter(Boolean).join("\n")}`;
 
   window.location.href =
     `mailto:trafic@aeroportbeauvais.com?subject=${encodeURIComponent(titre)}&body=${encodeURIComponent(body)}`;
-}
-
-function manualSave() {
-  saveCurrentTabData();
-  showPopup("Enregistrement réussi", "#2563eb", 2000);
 }
 
 function clearAutoSave() {
