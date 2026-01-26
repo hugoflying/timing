@@ -4229,66 +4229,48 @@ function closeFuelMenu(){
   if(b) b.style.display = 'none';
 }
 function toggleFuelMenu(){
-  const m = document.getElementById('fuelMenu');
-  const isOpen = m && m.style.display !== 'none' && m.style.display !== '';
-  if(isOpen) closeFuelMenu();
-  else openFuelMenu();
+  const menu = document.getElementById('fuelMenu');
+  const isOpen = menu && menu.style.display !== 'none' && menu.style.display !== '';
+
+  if(isOpen){
+    closeAllPopups();
+  }else{
+    closeAllPopups();
+    document.getElementById('fuelMenu').style.display = 'block';
+    document.getElementById('fuelBackdrop').style.display = 'block';
+  }
 }
 
-/* ESC ferme aussi fuel */
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') closeFuelMenu();
-});
-
 function closeAllPopups(){
-  // fuel
+  // FUEL
   document.getElementById('fuelMenu')?.style.setProperty('display','none');
   document.getElementById('fuelBackdrop')?.style.setProperty('display','none');
 
-  // load (LDM)
-  document.getElementById('ldm')?.style.setProperty('display','none');
+  // LOAD (LDM)
+  document.getElementById('ldmModal')?.style.setProperty('display','none');
   document.getElementById('ldmBackdrop')?.style.setProperty('display','none');
 
-  // settings
-  document.getElementById('settingsPanel')?.style.setProperty('display','none');
+  // SETTINGS
+  document.getElementById('settingsMenu')?.style.setProperty('display','none');
   document.getElementById('settingsBackdrop')?.style.setProperty('display','none');
+
+  // AK (si tu veux aussi)
+  document.getElementById('akPopover')?.style.setProperty('display','none');
+  document.getElementById('akBackdrop')?.style.setProperty('display','none');
+
+  // scroll unlock si LDM était ouvert
+  unlockScroll();
 }
 
-/* ===== FUEL ===== */
-function toggleFuelMenu(){
-  const menu = document.getElementById('fuelMenu');
-  const backdrop = document.getElementById('fuelBackdrop');
-  const isOpen = menu.style.display === 'block';
+function toggleLDM(mode='arr'){
+  const m = document.getElementById('ldmModal');
+  const isOpen = m && m.style.display !== 'none' && m.style.display !== '';
 
-  closeAllPopups();
-  if (!isOpen){
-    menu.style.display = 'block';
-    backdrop.style.display = 'block';
-  }
-}
-
-/* ===== LOAD ===== */
-function toggleLDM(tab){
-  const panel = document.getElementById('ldm');
-  const backdrop = document.getElementById('ldmBackdrop');
-  const isOpen = panel.style.display === 'block';
-
-  closeAllPopups();
-  if (!isOpen){
-    openLDM(tab); // ta fonction existante
-  }
-}
-
-/* ===== PARAMÈTRES ===== */
-function toggleSettings(){
-  const panel = document.getElementById('settingsPanel');
-  const backdrop = document.getElementById('settingsBackdrop');
-  const isOpen = panel.style.display === 'block';
-
-  closeAllPopups();
-  if (!isOpen){
-    panel.style.display = 'block';
-    backdrop.style.display = 'block';
+  if(isOpen){
+    closeAllPopups();
+  }else{
+    closeAllPopups();
+    openLDM(mode);
   }
 }
 
@@ -4406,7 +4388,7 @@ function clearAutoSave() {
   
 <!-- ===== FAB LOAD + FUEL ===== -->
 <button id="loadFab" class="button is-info" type="button"
-        onclick="openLDM('arr')" aria-label="Load">
+        onclick="toggleLDM('arr')" aria-label="Load">
   🧳
 </button>
 
