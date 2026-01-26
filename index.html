@@ -853,16 +853,7 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   .timer-chip .v{ padding: 5px 8px; min-width: 64px; }
 
   .fixed-footer-inner{ padding: 8px 12px; }
-
-  /* INFO VOL : 1 ligne sur ta tablette */
-  .info-vol{
-    display:flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items:center;
-  }
-  .info-vol > *{ white-space: nowrap; }
-}
+} /* ✅ fermeture manquante chez toi */
 
 /* petits écrans */
 @media (max-width: 768px){
@@ -882,65 +873,73 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   .ctot-pill{ min-width: 64px; }
 }
 
-/* Bandeau INFO VOL : lisible (600x900) */
+/* =========================
+   ✅ INFO VOL (à la fin)
+========================= */
+/* conteneur des 2 bandeaux (les 2 cartes) */
 .info-vol{
-  display: grid;
-  grid-template-columns: 1fr 1fr;   /* 2 bandeaux sur 1 ligne */
-  gap: 12px;                        /* + d’air entre les 2 cartes */
-  align-items: stretch;
+  display:grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  align-items: stretch !important;
 }
 
-/* la carte */
+/* carte VOL/ROUTE/IMMAT/TYPE/SALLE */
 .info-vol .kv-card{
-  padding: 12px 14px;               /* + d’air dedans */
-  gap: 14px;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+  display:grid !important;
+  grid-template-columns: 1.2fr 1fr .8fr !important; /* VOL | IMMAT/TYPE | SALLE */
+  column-gap: 16px !important;
+  row-gap: 8px !important;
+  align-items:center !important;
+
+  padding: 12px 14px !important;
+  border-radius: 16px !important;
 }
 
-/* à l’intérieur : 3 colonnes propres */
-.info-vol .kv-card{
-  display: grid;
-  grid-template-columns: 1.15fr 1fr .85fr; /* VOL/ROUTE, IMMAT/TYPE, ARR/PARK */
-  column-gap: 16px;
-  row-gap: 8px;
-  align-items: center;
+/* séparation visuelle entre colonnes */
+.info-vol .kv-card > *:not(:first-child){
+  padding-left: 14px !important;
+  border-left: 1px solid rgba(0,0,0,.10) !important;
+}
+html.dark .info-vol .kv-card > *:not(:first-child){
+  border-left-color: rgba(255,255,255,.12) !important;
 }
 
-/* chaque bloc (label + value) */
-.info-vol .kv-left{
-  gap: 4px;
-}
-
-/* labels moins “agressifs” */
+/* titres + valeurs : plus lisible */
 .info-vol .kv-title{
-  font-size: .72rem;
-  letter-spacing: .08em;
-  opacity: .75;
-  font-weight: 800;
+  font-size: .72rem !important;
+  letter-spacing: .08em !important;
+  opacity: .75 !important;
+  font-weight: 800 !important;
+  margin-bottom: 4px !important;
 }
 
-/* valeurs plus lisibles */
 .info-vol .kv-value{
-  font-size: 1.12rem;
-  line-height: 1.1;
-  font-weight: 950;
+  font-size: 1.12rem !important;
+  line-height: 1.12 !important;
+  font-weight: 950 !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-/* séparateurs visuels entre colonnes (facultatif mais ça aide) */
-.info-vol .kv-card > :not(:first-child){
-  padding-left: 14px;
-  border-left: 1px solid rgba(0,0,0,.10);
-}
-html.dark .info-vol .kv-card > :not(:first-child){
-  border-left-color: rgba(255,255,255,.12);
-}
-
-/* si un texte est long, on évite l’écrasement */
-.info-vol .kv-value{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* si ça devient trop serré */
+@media (max-width: 640px){
+  .info-vol{ grid-template-columns: 1fr !important; }
+  .info-vol .kv-card{
+    grid-template-columns: 1fr 1fr !important; /* VOL/ROUTE | IMMAT/TYPE */
+  }
+  .info-vol .kv-card > *:nth-child(3){
+    grid-column: 1 / -1 !important; /* SALLE en dessous */
+    border-left: 0 !important;
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(0,0,0,.10) !important;
+    padding-top: 10px !important;
+  }
+  html.dark .info-vol .kv-card > *:nth-child(3){
+    border-top-color: rgba(255,255,255,.12) !important;
+  }
 }
 
 </style>
