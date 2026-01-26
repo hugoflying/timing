@@ -4268,15 +4268,21 @@ function toggleFuelMenu(){
 }
 
 /* ===== LOAD ===== */
-function toggleLDM(tab){
-  const panel = document.getElementById('ldm');
-  const backdrop = document.getElementById('ldmBackdrop');
-  const isOpen = panel.style.display === 'block';
+function toggleLDM(mode='arr'){
+  const modal = document.getElementById('ldmModal');   // ✅ bon id
+  const isOpen = modal && modal.style.display !== 'none' && modal.style.display !== '';
 
+  // ferme tout ce qui peut être ouvert
   closeAllPopups();
-  if (!isOpen){
-    openLDM(tab); // ta fonction existante
+
+  // si LOAD était déjà ouvert -> on le ferme
+  if(isOpen){
+    closeLDM(); // ✅ ta fonction existante
+    return;
   }
+
+  // sinon on l'ouvre
+  openLDM(mode);
 }
 
 /* ===== PARAMÈTRES ===== */
