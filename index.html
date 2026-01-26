@@ -803,133 +803,6 @@ body.dark .final-box{ box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 .final-box .label{ margin-bottom: 6px !important; }
 .final-box .ldm-in{ text-align:center; }
 
-/* ===== LABEL VERTICAL LETTRE PAR LETTRE ===== */
-.vertical-label{
-  width: 28px;
-  min-width: 28px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 2px;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: .82rem;
-  line-height: 1;
-
-  opacity: .95;
-  border-right: 1px solid rgba(0,0,0,.08);
-}
-html.dark .vertical-label{
-  border-right-color: rgba(255,255,255,.10);
-}
-
-.vertical-label span{
-  display: block;
-}
-
-  /* HORAIRES responsive */
-@media (max-width: 520px){
-  .card-content > div[style*="grid-template-columns"]{
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* ===== ESSENTIELS dans le header : 2 colonnes ===== */
-.fixed-header-inner .header-kv{
-  margin-top: 4px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.fixed-header-inner .header-kv .kv-card{
-  box-shadow: none;
-  padding: 8px 10px;
-}
-
-.fixed-header-inner .header-kv .kv-title{
-  font-size: .65rem;
-  letter-spacing: .05em;
-}
-
-.fixed-header-inner .header-kv .kv-value{
-  font-size: .95rem;
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-/* Téléphone : on empile */
-@media (max-width: 520px){
-  .fixed-header-inner .header-kv{
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ===== TAB BAR (Ajouter vol + Liste vols + onglets) : même taille que ESSENTIELS ===== */
-.fixed-header-inner .tabs-chip{
-  padding: 8px 10px;
-  gap: 6px;
-}
-
-.fixed-header-inner .tabs-chip .button{
-  height: 34px;                 /* compact */
-  padding: 0 12px;              /* moins large */
-  font-size: .85rem;            /* même vibe que essentiels */
-  font-weight: 900;
-  border-radius: 999px;
-  line-height: 1;
-}
-
-/* refresh ↻ collé aux onglets */
-.fixed-header-inner .tabs-chip .tab-refresh{
-  height: 34px;
-  min-width: 34px;
-  padding: 0 10px !important;
-  font-size: .9rem;
-}
-
-/* tablette/desktop : un poil plus grand si tu veux */
-@media (min-width: 769px){
-  .fixed-header-inner .tabs-chip .button{ font-size: .9rem; }
-}
-
-/* ===== TIMERS : même taille que onglets ===== */
-.fixed-header-inner .timer-chip{
-  height: 38px;
-  padding: 6px 12px;
-  gap: 4px;
-}
-
-.fixed-header-inner .timer-chip .k{
-  font-size: .85rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.fixed-header-inner .timer-chip .v,
-.fixed-header-inner .timer-chip input{
-  font-size: .85rem;
-  font-weight: 900;
-  line-height: 1;
-  height: auto;
-}
-
-/* ===== ESSENTIELS : couleur pro neutre ===== */
-.fixed-header-inner .header-kv .kv-card{
-  background: color-mix(in srgb, var(--card) 90%, #1f2937 10%);
-}
-  
-
-/* ===== LOAD dans header ===== */
-.header-load{
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
 </style>
 </head>
 
@@ -1147,7 +1020,7 @@ html.dark .vertical-label{
 <div class="fixed-header" id="fixedHeader">
   <div class="fixed-header-inner">
 
-    <div class="topbar-inner"></div>
+   <div class="topbar-inner"></div>
 
     <div class="tabs-row">
       <div id="tab-bar" class="tabs-chip"></div>
@@ -1158,7 +1031,6 @@ html.dark .vertical-label{
         <div class="k">HLE</div>
         <div id="timer-h40" class="v">--:--</div>
       </div>
-
       <div class="timer-chip">
         <div class="k">H-15</div>
         <div id="timer-h15" class="v">--:--</div>
@@ -1185,83 +1057,6 @@ html.dark .vertical-label{
       </div>
     </div>
 
-    <!-- ESSENTIELS -->
-    <div class="kv-strip header-kv">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
-          <div class="kv-value">
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LOAD -->
-    <div class="header-load">
-      <button type="button" class="timer-chip chip-btn" onclick="openLDM('arr')">
-        <div class="k">LOAD</div>
-        <div class="v">OPEN</div>
-      </button>
-    </div>
-
-  </div>
-</div>
-
-    <!-- ✅ ESSENTIELS (ancré dans le header, sous les timers) -->
-    <div class="kv-strip header-kv">
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Vol</div>
-          <div class="kv-value">
-            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Route</div>
-          <div class="kv-value">
-            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kv-card">
-        <div class="kv-left">
-          <div class="kv-title">Immat / Type</div>
-          <div class="kv-value">
-            <span id="kvImmat">------</span> · <span id="kvType">--</span>
-          </div>
-        </div>
-        <div class="kv-left" style="text-align:right;">
-          <div class="kv-title">Salle arr. / Parking</div>
-          <div class="kv-value">
-            <span id="kvBC">----</span> · <span id="kvPark">--</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
@@ -1269,13 +1064,44 @@ html.dark .vertical-label{
 
 <!-- INFO VOL -->
 <div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+  <header class="card-header">
     <p class="card-header-title">INFO VOL</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
   </header>
 
-  <!-- ⬇️ réduit par défaut -->
-  <div class="card-content collapsed-body">
+  <div class="card-content">
+
+    <!-- Bandeau ESSENTIEL -->
+    <div class="kv-strip mb-4">
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Vol</div>
+          <div class="kv-value">
+            <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Route</div>
+          <div class="kv-value">
+            <span id="kvFrom">---</span> → <span id="kvTo">---</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kv-card">
+        <div class="kv-left">
+          <div class="kv-title">Immat / Type</div>
+          <div class="kv-value">
+            <span id="kvImmat">------</span> · <span id="kvType">--</span>
+          </div>
+        </div>
+        <div class="kv-left" style="text-align:right;">
+          <div class="kv-title">Salle arr. / Parking</div>
+          <div class="kv-value">
+            <span id="kvBC">----</span> · <span id="kvPark">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- DÉTAILS (éditables) -->
     <div id="infoVolDetails" class="grid-auto">
@@ -1356,7 +1182,6 @@ html.dark .vertical-label{
         </div>
       </div>
 
-     
     </div>
   </div>
 </div>
@@ -1370,68 +1195,59 @@ html.dark .vertical-label{
   </header>
 
   <div class="card-content">
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--gap);">
+    <div class="grid-auto">
 
-      <!-- ===== COLONNE ARRIVÉE ===== -->
-      <div class="kv-card"
-           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #16a34a 4%); display:flex; gap:12px;">
+      <!-- Arrivée -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Arrivée</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SIBT</label>
+              <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SIBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
 
-        <!-- LABEL VERTICAL -->
-        <div class="vertical-label">
-          <span>A</span><span>R</span><span>R</span><span>I</span><span>V</span><span>É</span><span>E</span>
-        </div>
-
-        <!-- CONTENU -->
-        <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          <div class="field" style="margin:0;">
-            <label class="label">SIBT (Prévu)</label>
-            <input class="input" type="time" id="SIBT" onchange="updateAllCalculations()">
-          </div>
-
-          <div class="field" style="margin:0;">
-            <label class="label">AIBT</label>
-            <input class="input" type="time" id="AIBT"
-                   onchange="updateAllCalculations()" style="font-weight:900;">
-            <div class="btn-actions">
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button"
-                      onclick="setNow('AIBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
+            <div style="min-width:160px;">
+              <label class="label">AIBT</label>
+              <input class="input" type="time" id="AIBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AIBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AIBT',1);updateAllCalculations()">+1</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ===== COLONNE DÉPART ===== -->
-      <div class="kv-card"
-           style="padding:14px; background:color-mix(in srgb, var(--card) 96%, #3b82f6 4%); display:flex; gap:12px;">
+      <!-- Départ -->
+      <div class="span-12">
+        <div class="kv-card" style="padding:12px;">
+          <div style="font-weight:900; color:var(--muted); text-transform:uppercase;">Départ</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+            <div style="min-width:160px;">
+              <label class="label">SOBT</label>
+              <input class="input" type="time" id="SOBT" onchange="manualSOBT=true;updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('SOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('SOBT',1);updateAllCalculations()">+1</button>
+              </div>
+            </div>
 
-        <!-- LABEL VERTICAL -->
-        <div class="vertical-label">
-          <span>D</span><span>É</span><span>P</span><span>A</span><span>R</span><span>T</span>
-        </div>
-
-        <!-- CONTENU -->
-        <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-          <div class="field" style="margin:0;">
-            <label class="label">SOBT (Prévu)</label>
-            <input class="input" type="time" id="SOBT"
-                   onchange="manualSOBT=true;updateAllCalculations()">
-          </div>
-
-          <div class="field" style="margin:0;">
-            <label class="label">AOBT</label>
-            <input class="input" type="time" id="AOBT"
-                   onchange="updateAllCalculations()" style="font-weight:900;">
-            <div class="btn-actions">
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
-              <button class="button is-link" type="button"
-                      onclick="setNow('AOBT');updateAllCalculations()">Now</button>
-              <button class="button is-dark is-light" type="button"
-                      onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
+            <div style="min-width:160px;">
+              <label class="label">AOBT</label>
+              <input class="input" type="time" id="AOBT" onchange="updateAllCalculations()">
+              <div class="btn-actions">
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',-1);updateAllCalculations()">-1</button>
+                <button class="button is-link" type="button" onclick="setNow('AOBT');updateAllCalculations()">Now</button>
+                <button class="button is-dark is-light" type="button" onclick="adjustTime('AOBT',1);updateAllCalculations()">+1</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1440,7 +1256,6 @@ html.dark .vertical-label{
     </div>
   </div>
 </div>
-
 
   <!-- TIMING -->
   <div class="card mb-5">
@@ -1474,51 +1289,54 @@ html.dark .vertical-label{
   </div>
 
   <!-- RETARDS -->
-<div class="card mb-5">
-  <header class="card-header section-collapse" onclick="toggleCardBody(this)">
-    <p class="card-header-title">RETARDS (Départ)</p>
-    <span class="card-header-icon"><span class="icon">⌄</span></span>
-  </header>
+  <div class="card mb-5">
+    <header class="card-header section-collapse" onclick="toggleCardBody(this)">
+      <p class="card-header-title">RETARDS (Départ)</p>
+      <span class="card-header-icon"><span class="icon">⌄</span></span>
+    </header>
+    <div class="card-content">
+      <div class="columns is-multiline">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 1</label>
+            <div class="control"><input class="input" type="text" id="DLcode1"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 1 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
+          </div>
+        </div>
 
-  <div class="card-content">
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--gap);">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 2</label>
+            <div class="control"><input class="input" type="text" id="DLcode2"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 2 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
+          </div>
+        </div>
 
-      <!-- DL 1 -->
-      <div class="field">
-        <label class="label">DL Code 1</label>
-        <input class="input" type="text" id="DLcode1">
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Code 3</label>
+            <div class="control"><input class="input" type="text" id="DLcode3"></div>
+          </div>
+        </div>
+        <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
+          <div class="field">
+            <label class="label">DL Durée 3 (min)</label>
+            <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label class="label">DL Durée 1 (min)</label>
-        <input class="input" type="number" id="DLduree1" min="0" step="1"
-               oninput="dldChanged(1)">
-      </div>
-
-      <!-- DL 2 -->
-      <div class="field">
-        <label class="label">DL Code 2</label>
-        <input class="input" type="text" id="DLcode2">
-      </div>
-      <div class="field">
-        <label class="label">DL Durée 2 (min)</label>
-        <input class="input" type="number" id="DLduree2" min="0" step="1"
-               oninput="dldChanged(2)">
-      </div>
-
-      <!-- DL 3 -->
-      <div class="field">
-        <label class="label">DL Code 3</label>
-        <input class="input" type="text" id="DLcode3">
-      </div>
-      <div class="field">
-        <label class="label">DL Durée 3 (min)</label>
-        <input class="input" type="number" id="DLduree3" min="0" step="1"
-               oninput="dldChanged(3)">
-      </div>
-
     </div>
   </div>
-</div>
 
   <!-- FAITS SAILLANTS -->
   <div class="card mb-5">
@@ -1565,7 +1383,7 @@ html.dark .vertical-label{
 </div>
 
 <script>
-
+  
 /* Collapse */
 function toggleCardBody(headerEl){
   const card = headerEl.closest('.card');
@@ -2427,7 +2245,7 @@ function createNewTab(){
   localStorage.setItem('lastTabId', id);
 
   clearFormFields();            // reset champs
-
+  
   // snapshot initial
   const data = {};
   document.querySelectorAll('input, select, textarea').forEach(el=>{
