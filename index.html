@@ -959,18 +959,17 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 }
 #fuelMenu input[type=number]{ -moz-appearance: textfield; }
 
-/* ===== TABLET 600x900 : footer sur 1 ligne ===== */
+/* ===== TABLET 600px : INFO VOL sur 1 ligne ===== */
 @media (max-width: 700px){
-  .fixed-footer .footer-row{
+  .info-vol{
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 10px;
+    align-items: center;
   }
 
-  .fixed-footer .timer-chip{
-    flex: 1;
-    min-width: 0;
+  .info-vol > *{
+    white-space: nowrap;
   }
 }
 
