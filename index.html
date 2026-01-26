@@ -2704,7 +2704,7 @@ function updateTOBT() {
 
 /* DL CODES (NOUVELLE LOGIQUE) */
 function updateDLCode() {
-  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase().trim();
 
   const soTxt = document.getElementById('SOBT')?.value || '';
   const aoTxt = document.getElementById('AOBT')?.value || '';
@@ -2724,8 +2724,14 @@ function updateDLCode() {
 
   // reset si incomplet
   if(sobt == null || aobt == null || tobt == null){
-    c1.value = '';
-    d1.value = '';
+    // si c'était figé 93, on nettoie
+    const v = (c1.value || '').toUpperCase().trim();
+    if(v === '93' || v === '93A'){
+      c1.value = '';
+      d1.value = '';
+      c1.readOnly = false; d1.readOnly = false;
+      c1.classList.remove('is-static'); d1.classList.remove('is-static');
+    }
     return;
   }
 
@@ -2740,18 +2746,62 @@ function updateDLCode() {
   if(fixed > total) fixed = total;
 
   if(fixed > 0){
+    // si DL1 contenait autre chose que 93/93A, on décale DL1 -> DL2 -> DL3
+    const prev = (c1.value || '').toUpperCase().trim();
+    const prevIs93 = (prev === '93' || prev === '93A');
+    if(!prevIs93 && ((c1.value || '').trim() || (d1.value || '').trim())){
+      shiftDLDownOne();
+    }
+
     c1.value = code93;
     d1.value = String(fixed);
+
+    // ✅ figer DL1
+    c1.readOnly = true; d1.readOnly = true;
+    c1.classList.add('is-static'); d1.classList.add('is-static');
   }else{
-    // pas de 93/93A => on laisse DL1 libre
+    // pas de 93/93A => DL1 libre
     const v = (c1.value || '').toUpperCase().trim();
-    if(v === '93' || v === '93A') c1.value = '';
-    // d1.value : on ne touche pas (si l’utilisateur a déjà mis autre chose)
+    if(v === '93' || v === '93A'){
+      c1.value = '';
+      d1.value = '';
+    }
+    c1.readOnly = false; d1.readOnly = false;
+    c1.classList.remove('is-static'); d1.classList.remove('is-static');
   }
 }
 
+/* util : DL1 -> DL2, DL2 -> DL3 */
+function shiftDLDownOne(){
+  const c1 = document.getElementById('DLcode1');
+  const d1 = document.getElementById('DLduree1');
+  const c2 = document.getElementById('DLcode2');
+  const d2 = document.getElementById('DLduree2');
+  const c3 = document.getElementById('DLcode3');
+  const d3 = document.getElementById('DLduree3');
+  if(!c1||!d1||!c2||!d2||!c3||!d3) return;
+
+  c3.value = c2.value || '';
+  d3.value = d2.value || '';
+
+  c2.value = c1.value || '';
+  d2.value = d1.value || '';
+
+  c1.value = '';
+  d1.value = '';
+}
+
 /* DL redistribution (DL93/93A figé si présent) */
-function dldChanged(index){ lastDLChanged = index; redistributeDL(); }
+function dldChanged(index){
+  // si DL1 est figé 93/93A -> on ignore les edits "1"
+  const c1 = document.getElementById('DLcode1');
+  const v = (c1?.value || '').toUpperCase().trim();
+  const isFixed93 = (v === '93' || v === '93A');
+  if(isFixed93 && index === 1) return;
+
+  lastDLChanged = index;
+  redistributeDL();
+}
 
 function totalDelayMinutes(){
   const so = document.getElementById('SOBT')?.value || '';
@@ -2774,7 +2824,7 @@ function redistributeDL(){
   const f2 = document.getElementById('DLduree2');
   const f3 = document.getElementById('DLduree3');
   const c1 = document.getElementById('DLcode1');
-  if(!f1 || !f2 || !f3) return;
+  if(!f1 || !f2 || !f3 || !c1) return;
 
   let d1 = parseInt(f1.value)||0;
   let d2 = parseInt(f2.value)||0;
@@ -2782,28 +2832,25 @@ function redistributeDL(){
 
   if(total==null){ clearDLBorders(); return; }
 
-  // DL93/93A figé si présent
-  const isFixed93 = (() => {
-    const v = (c1?.value || '').toUpperCase().trim();
-    return (v === '93' || v === '93A');
-  })();
+  const v1 = (c1.value || '').toUpperCase().trim();
+  const isFixed93 = (v1 === '93' || v1 === '93A');
 
   // bornes
   d1 = Math.max(0, Math.min(d1, total));
 
   if(isFixed93){
-    // on répartit uniquement sur DL2/DL3, DL1 ne bouge pas
+    // ✅ DL1 figé : on remplit/ajuste uniquement DL2 puis DL3
     const remain = Math.max(0, total - d1);
 
     d2 = Math.max(0, Math.min(d2, remain));
     d3 = Math.max(0, Math.min(d3, remain));
 
-    if(lastDLChanged === 2){
-      d3 = remain - d2;
-    }else if(lastDLChanged === 3){
+    // ✅ si on touche DL2 -> ajuste DL3, si on touche DL3 -> ajuste DL2
+    if(lastDLChanged === 3){
+      d3 = Math.max(0, Math.min(d3, remain));
       d2 = remain - d3;
     }else{
-      // si l'user touche DL1 (ou init), on garde la logique DL2 pilote
+      d2 = Math.max(0, Math.min(d2, remain));
       d3 = remain - d2;
     }
 
@@ -2820,7 +2867,7 @@ function redistributeDL(){
     return;
   }
 
-  // ===== CAS NORMAL : DL1/DL2/DL3 se partagent le total (ancienne logique propre) =====
+  /* ===== PAS de 93/93A : logique normale sur 1/2/3 ===== */
   d1 = Math.max(0, Math.min(d1, total));
 
   if(lastDLChanged === 1){
