@@ -3919,9 +3919,6 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOAK('AOBT', f.aobt);
     setTimeFromISOIfEmptyOrAK('CTOT', f.ctot);
 
-    setTimeFromISOIfEmptyOrAK('AvionPremierEmbarque', f?.boardingDetails?.startTime);
-    setTimeFromISOIfEmptyOrAK('AvionDernierEmbarque', f?.boardingDetails?.endTime);
-
     const siDep = akBuildSI(f, true);
     setIfEmptyOrAK('PreviSI', siDep);
     setIfEmptyOrAK('FinalSI', siDep);
