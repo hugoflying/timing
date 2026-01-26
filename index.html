@@ -2702,47 +2702,78 @@ function updateTOBT() {
   outEl.textContent = fmtHHMM(TOBT_adj);
 }
 
-/* DL CODES */
+/* DL CODES (NOUVELLE LOGIQUE) */
 function updateDLCode() {
-  const cie = (document.getElementById('Cie').value||'').toUpperCase();
-  const sibttxt = document.getElementById('SIBT')?.value || '';
-  const aibttxt = document.getElementById('AIBT')?.value || '';
-  if (!sibttxt || !aibttxt) return;
+  const cie = (document.getElementById('Cie')?.value || '').toUpperCase();
 
-  const [sH, sM] = sibttxt.split(':').map(Number);
-  const [aH, aM] = aibttxt.split(':').map(Number);
-  const SIBT = new Date(); SIBT.setHours(sH, sM);
-  const AIBT = new Date(); AIBT.setHours(aH, aM);
+  const soTxt = document.getElementById('SOBT')?.value || '';
+  const aoTxt = document.getElementById('AOBT')?.value || '';
+  const sobt = parseHHMM(soTxt);
+  const aobt = parseHHMM(aoTxt);
 
-  if (AIBT > SIBT) {
-    if (cie === 'FR' || cie === 'RK') document.getElementById('DLcode1').value = '93';
-    else if (cie === 'W4' || cie === 'W6') document.getElementById('DLcode1').value = '93A';
-    else document.getElementById('DLcode1').value = '';
-    document.getElementById('DLduree1').value = Math.round((AIBT - SIBT) / 60000) || '';
-  } else {
-    document.getElementById('DLcode1').value = '';
-    document.getElementById('DLduree1').value = '';
+  // TOBT (celle calculée et affichée)
+  const tobt = (window._tobtAdjMins != null)
+    ? window._tobtAdjMins
+    : parseHHMM((document.getElementById('timer-tobt')?.textContent || '').trim());
+
+  const code93 = (cie === 'W4' || cie === 'W6') ? '93A' : '93';
+
+  const c1 = document.getElementById('DLcode1');
+  const d1 = document.getElementById('DLduree1');
+  if(!c1 || !d1) return;
+
+  // reset si incomplet
+  if(sobt == null || aobt == null || tobt == null){
+    c1.value = '';
+    d1.value = '';
+    return;
+  }
+
+  // total = AOBT - SOBT (minuit ok)
+  let total = aobt - sobt;
+  if(total < 0) total += 1440;
+
+  // fixed = TOBT - SOBT (minuit ok), borné à [0..total]
+  let fixed = tobt - sobt;
+  if(fixed < 0) fixed += 1440;
+  if(fixed < 0) fixed = 0;
+  if(fixed > total) fixed = total;
+
+  if(fixed > 0){
+    c1.value = code93;
+    d1.value = String(fixed);
+  }else{
+    // pas de 93/93A => on laisse DL1 libre
+    const v = (c1.value || '').toUpperCase().trim();
+    if(v === '93' || v === '93A') c1.value = '';
+    // d1.value : on ne touche pas (si l’utilisateur a déjà mis autre chose)
   }
 }
 
-/* DL redistribution */
+/* DL redistribution (DL93/93A figé si présent) */
 function dldChanged(index){ lastDLChanged = index; redistributeDL(); }
+
 function totalDelayMinutes(){
   const so = document.getElementById('SOBT')?.value || '';
   const ao = document.getElementById('AOBT')?.value || '';
   if(!so || !ao) return null;
+
   const s = parseHHMM(so);
   const a = parseHHMM(ao);
   if (s==null || a==null) return null;
+
   let total = a - s;
   if (total < 0) total += 1440;
   return total;
 }
+
 function redistributeDL(){
   const total = totalDelayMinutes();
+
   const f1 = document.getElementById('DLduree1');
   const f2 = document.getElementById('DLduree2');
   const f3 = document.getElementById('DLduree3');
+  const c1 = document.getElementById('DLcode1');
   if(!f1 || !f2 || !f3) return;
 
   let d1 = parseInt(f1.value)||0;
@@ -2751,21 +2782,59 @@ function redistributeDL(){
 
   if(total==null){ clearDLBorders(); return; }
 
+  // DL93/93A figé si présent
+  const isFixed93 = (() => {
+    const v = (c1?.value || '').toUpperCase().trim();
+    return (v === '93' || v === '93A');
+  })();
+
+  // bornes
+  d1 = Math.max(0, Math.min(d1, total));
+
+  if(isFixed93){
+    // on répartit uniquement sur DL2/DL3, DL1 ne bouge pas
+    const remain = Math.max(0, total - d1);
+
+    d2 = Math.max(0, Math.min(d2, remain));
+    d3 = Math.max(0, Math.min(d3, remain));
+
+    if(lastDLChanged === 2){
+      d3 = remain - d2;
+    }else if(lastDLChanged === 3){
+      d2 = remain - d3;
+    }else{
+      // si l'user touche DL1 (ou init), on garde la logique DL2 pilote
+      d3 = remain - d2;
+    }
+
+    d2 = Math.max(0, Math.min(d2, remain));
+    d3 = Math.max(0, Math.min(d3, remain));
+
+    f1.value = d1 || '';
+    f2.value = d2 || '';
+    f3.value = d3 || '';
+
+    const sum = d1 + d2 + d3;
+    if (sum !== total) markLastFilledDLError();
+    else clearDLBorders();
+    return;
+  }
+
+  // ===== CAS NORMAL : DL1/DL2/DL3 se partagent le total (ancienne logique propre) =====
   d1 = Math.max(0, Math.min(d1, total));
 
   if(lastDLChanged === 1){
     let remain = total - d1;
-    d2 = Math.min(remain, Math.max(0, d2));
-    d2 = Math.min(remain, d2 + (remain - d2));
-    remain = total - d1 - d2;
-    d3 = Math.max(0, remain);
+    d2 = Math.max(0, Math.min(d2, remain));
+    d3 = Math.max(0, remain - d2);
   } else if (lastDLChanged === 2){
-    const maxD2 = Math.max(0, total - d1);
-    d2 = Math.max(0, Math.min(d2, maxD2));
-    d3 = Math.max(0, total - d1 - d2);
+    const remain = Math.max(0, total - d1);
+    d2 = Math.max(0, Math.min(d2, remain));
+    d3 = Math.max(0, remain - d2);
   } else {
-    const maxD3 = Math.max(0, total - d1 - d2);
-    d3 = Math.max(0, Math.min(d3, maxD3));
+    const remain = Math.max(0, total - d1);
+    d3 = Math.max(0, Math.min(d3, remain));
+    d2 = Math.max(0, remain - d3);
   }
 
   f1.value = d1 || '';
@@ -2773,9 +2842,10 @@ function redistributeDL(){
   f3.value = d3 || '';
 
   const sum = d1 + d2 + d3;
-  if (sum > total) markLastFilledDLError();
+  if (sum !== total) markLastFilledDLError();
   else clearDLBorders();
 }
+
 function markLastFilledDLError(){
   clearDLBorders();
   const f1 = document.getElementById('DLduree1');
@@ -2788,6 +2858,7 @@ function markLastFilledDLError(){
   else if (d2 > 0) f2.classList.add('dl-error');
   else if (d1 > 0) f1.classList.add('dl-error');
 }
+
 function clearDLBorders(){
   ['DLduree1','DLduree2','DLduree3'].forEach(id=>{
     const el = document.getElementById(id);
