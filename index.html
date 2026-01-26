@@ -904,26 +904,29 @@ body.dark #fuelMenu{
   border-color: rgba(255,255,255,.10);
 }
 
-/* ===== FORM PRO LOOK ===== */
+/* ===== FORM PRO LOOK (aligné sur Clair / Locale) ===== */
 
 #fuelMenu .settings-row{
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 #fuelMenu .field{
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 #fuelMenu .label{
-  font-size: .85rem;
-  font-weight: 600;
-  letter-spacing: .02em;
-  line-height: 1.1;
+  font-size: 1rem;        /* même taille que Clair / Locale */
+  font-weight: 600;       /* même graisse */
+  line-height: 1.2;
+  letter-spacing: 0;
   margin: 0;
+  padding: 0;
+  text-transform: none;   /* enlève le style “label formulaire” */
+  color: inherit;         /* même couleur que les toggles */
 }
 
 #fuelMenu .input{
@@ -935,10 +938,9 @@ body.dark #fuelMenu{
 
 /* bouton */
 #fuelMenu .button{
-  margin-top: 6px;
+  margin-top: 8px;
   align-self: flex-end;
 }
-
 
 </style>
 </head>
