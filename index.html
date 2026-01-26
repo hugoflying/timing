@@ -3970,7 +3970,8 @@ function applyAKFlight(f, flow, opts = {}){
     setTimeFromISOAK('AOBT', f.aobt);
     setTimeFromISOIfEmptyOrAK('CTOT', f.ctot);
 
-    const siDep = akBuildSI(f, true);
+    // ❌ DL AK interdit dans LOAD PREVI / FINAL
+    const siDep = akBuildSI(f, true, { includeDL:false });
     setIfEmptyOrAK('PreviSI', siDep);
     setIfEmptyOrAK('FinalSI', siDep);
 
@@ -3985,7 +3986,7 @@ function applyAKFlight(f, flow, opts = {}){
         setIfEmptyOrAK('ArrPAX_MAIN', String(prevArr.paxNb));
       }
 
-      const siArr = akBuildSI(prevArr, false);
+      const siArr = akBuildSI(prevArr, false, { includeDL:false });
       setIfEmptyOrAK('ArrSI', siArr);
     }else{
       setValAK('From', HOME_IATA);
@@ -4002,7 +4003,7 @@ function applyAKFlight(f, flow, opts = {}){
       setIfEmptyOrAK('ArrPAX_MAIN', String(f.paxNb));
     }
 
-    const siArr = akBuildSI(f, false);
+    const siArr = akBuildSI(f, false, { includeDL:false });
     setIfEmptyOrAK('ArrSI', siArr);
 
     const nextDep = findLinkedDepForArr(f);
@@ -4013,7 +4014,8 @@ function applyAKFlight(f, flow, opts = {}){
       setTimeFromISOIfEmptyOrAK('AOBT', nextDep.aobt);
       setTimeFromISOIfEmptyOrAK('CTOT', nextDep.ctot);
 
-      const siDep = akBuildSI(nextDep, true);
+      // ❌ DL AK interdit dans LOAD PREVI / FINAL
+      const siDep = akBuildSI(nextDep, true, { includeDL:false });
       setIfEmptyOrAK('PreviSI', siDep);
       setIfEmptyOrAK('FinalSI', siDep);
     }else{
