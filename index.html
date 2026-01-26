@@ -882,6 +882,67 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   .ctot-pill{ min-width: 64px; }
 }
 
+/* Bandeau INFO VOL : lisible (600x900) */
+.info-vol{
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* 2 bandeaux sur 1 ligne */
+  gap: 12px;                        /* + d’air entre les 2 cartes */
+  align-items: stretch;
+}
+
+/* la carte */
+.info-vol .kv-card{
+  padding: 12px 14px;               /* + d’air dedans */
+  gap: 14px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+/* à l’intérieur : 3 colonnes propres */
+.info-vol .kv-card{
+  display: grid;
+  grid-template-columns: 1.15fr 1fr .85fr; /* VOL/ROUTE, IMMAT/TYPE, ARR/PARK */
+  column-gap: 16px;
+  row-gap: 8px;
+  align-items: center;
+}
+
+/* chaque bloc (label + value) */
+.info-vol .kv-left{
+  gap: 4px;
+}
+
+/* labels moins “agressifs” */
+.info-vol .kv-title{
+  font-size: .72rem;
+  letter-spacing: .08em;
+  opacity: .75;
+  font-weight: 800;
+}
+
+/* valeurs plus lisibles */
+.info-vol .kv-value{
+  font-size: 1.12rem;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+/* séparateurs visuels entre colonnes (facultatif mais ça aide) */
+.info-vol .kv-card > :not(:first-child){
+  padding-left: 14px;
+  border-left: 1px solid rgba(0,0,0,.10);
+}
+html.dark .info-vol .kv-card > :not(:first-child){
+  border-left-color: rgba(255,255,255,.12);
+}
+
+/* si un texte est long, on évite l’écrasement */
+.info-vol .kv-value{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 </style>
 </head>
 
