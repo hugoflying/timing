@@ -854,11 +854,12 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
   .fixed-footer-inner{ padding: 8px 12px; }
 }
 
-/* FAB stack (au-dessus de la molette) */
-#loadFab{
+/* ===== FAB STACK (au-dessus de la molette) ===== */
+
+#loadFab,
+#fuelFab{
   position: fixed;
   right: 14px;
-  bottom: 158px; /* au-dessus du fuel et settings */
   z-index: 4900;
   width: 52px;
   height: 52px;
@@ -870,20 +871,12 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
   box-shadow: var(--shadow2);
 }
 
-#fuelFab{
-  position: fixed;
-  right: 14px;
-  bottom: 86px;  /* juste au-dessus de la molette */
-  z-index: 4900;
-  width: 52px;
-  height: 52px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  box-shadow: var(--shadow2);
-}
+/* positions */
+#loadFab{ bottom: 158px; } /* au-dessus du fuel */
+#fuelFab{ bottom: 86px; }  /* juste au-dessus de la molette */
+
+
+/* ===== FUEL MENU ===== */
 
 #fuelBackdrop{
   position: fixed;
@@ -896,18 +889,20 @@ html.dark .fixed-footer{ border-top-color: rgba(255,255,255,.08); }
 #fuelMenu{
   position: fixed;
   right: 14px;
-  bottom: 214px; /* au-dessus des 3 boutons */
+  bottom: 214px; /* au-dessus des FAB */
   z-index: 4901;
   width: min(320px, calc(100vw - 28px));
+  padding: 12px;
   border-radius: 16px;
   background: var(--card);
   box-shadow: var(--shadow);
   border: 1px solid rgba(0,0,0,.08);
-  padding: 12px;
   display: none;
 }
-body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 
+body.dark #fuelMenu{
+  border-color: rgba(255,255,255,.10);
+}
 
 </style>
 </head>
@@ -4358,6 +4353,18 @@ function clearAutoSave() {
     <button class="button is-small is-light" type="button" onclick="closeFuelMenu()">Fermer</button>
   </div>
 </div>
+  
+<!-- ===== FAB LOAD + FUEL ===== -->
+<button id="loadFab" class="button is-info" type="button"
+        onclick="openLDM('arr')" aria-label="Load">
+  🧳
+</button>
+
+<button id="fuelFab" class="button is-warning" type="button"
+        onclick="toggleFuelMenu()" aria-label="Fuel">
+  ⛽
+</button>
+
 
 </body>
 </html>
