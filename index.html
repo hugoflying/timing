@@ -78,11 +78,9 @@ html.dark .fixed-header{ border-bottom-color: rgba(255,255,255,.08); }
   padding: calc(var(--fixed-header-h) + 14px) 14px 14px;
 }
 
-/* on affiche par défaut */
-.app-wrap{ display:block; }
-
-/* on cache seulement si on sait qu'il n'y a aucun onglet */
-body.no-tab .app-wrap{ display:none; }
+/* rien afficher tant qu'il n'y a pas d'onglet */
+.app-wrap{ display:none; }
+body.has-tab .app-wrap{ display:block; }
 
 /* Topbar */
 .topbar-inner{
