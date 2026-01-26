@@ -2702,18 +2702,25 @@ function updateTOBT() {
   outEl.textContent = fmtHHMM(TOBT_adj);
 }
 
-/* DL CODES (LOGIQUE OK) */
+/* ===== DL (LOGIQUE PROPRE) ===== */
+
+let dlTouched1 = false;
+let dlTouched2 = false;
+let dlTouched3 = false;
+
+// Si tu veux reset propre (ex: changement de vol/tab), tu peux l'appeler
+function resetDLTouches(){
+  dlTouched1 = dlTouched2 = dlTouched3 = false;
+}
+
+/* DL CODES */
 function updateDLCode() {
   const cie = (document.getElementById('Cie')?.value || '').toUpperCase().trim();
   const code93 = (cie === 'W4' || cie === 'W6') ? '93A' : '93';
 
   const c1 = document.getElementById('DLcode1');
   const d1 = document.getElementById('DLduree1');
-  const c2 = document.getElementById('DLcode2');
-  const d2 = document.getElementById('DLduree2');
-  const c3 = document.getElementById('DLcode3');
-  const d3 = document.getElementById('DLduree3');
-  if(!c1||!d1||!c2||!d2||!c3||!d3) return;
+  if(!c1 || !d1) return;
 
   const sobt = parseHHMM(document.getElementById('SOBT')?.value || '');
   const aobt = parseHHMM(document.getElementById('AOBT')?.value || '');
@@ -2722,48 +2729,38 @@ function updateDLCode() {
     ? window._tobtAdjMins
     : parseHHMM((document.getElementById('timer-tobt')?.textContent || '').trim());
 
-  // si incomplet → nettoyage 93
-  if(sobt == null || aobt == null || tobt == null){
-    const v = (c1.value || '').toUpperCase().trim();
-    if(v === '93' || v === '93A'){
-      c1.value = '';
-      d1.value = '';
-    }
-    return;
-  }
+  // si incomplet : on ne force rien
+  if(sobt == null || aobt == null || tobt == null) return;
 
-  // total final
+  // total retard
   let total = aobt - sobt;
   if(total < 0) total += 1440;
 
-  // DL93 / 93A = TOBT - SOBT
+  // 93/93A = TOBT - SOBT (borné)
   let fixed = tobt - sobt;
   if(fixed < 0) fixed += 1440;
   fixed = Math.max(0, Math.min(fixed, total));
 
-  // pousse DL1 non-93 vers DL2 puis DL3
-  function shiftNon93FromDL1(){
-    const v1 = (c1.value || '').toUpperCase().trim();
-    if(!v1 || v1 === '93' || v1 === '93A') return;
+  const v1 = (c1.value || '').toUpperCase().trim();
+  const had93 = (v1 === '93' || v1 === '93A');
+  const want93 = fixed > 0;
 
-    if(!(c2.value||'').trim() && !(d2.value||'').trim()){
-      c2.value = c1.value; d2.value = d1.value;
-    }else{
-      c3.value = c2.value; d3.value = d2.value;
-      c2.value = c1.value; d2.value = d1.value;
-    }
-    c1.value = ''; d1.value = '';
+  // si on passe de "pas de 93" -> "93", on reset le split restant
+  if(!had93 && want93){
+    dlTouched2 = false;
+    dlTouched3 = false;
   }
 
-  if(fixed > 0){
-    shiftNon93FromDL1();
+  if(want93){
     c1.value = code93;
     d1.value = String(fixed);
   }else{
-    const v = (c1.value || '').toUpperCase().trim();
-    if(v === '93' || v === '93A'){
+    // pas de 93 => si c'était 93, on libère
+    if(had93){
       c1.value = '';
       d1.value = '';
+      dlTouched2 = false;
+      dlTouched3 = false;
     }
   }
 }
@@ -2771,6 +2768,9 @@ function updateDLCode() {
 /* DL redistribution */
 function dldChanged(index){
   lastDLChanged = index;
+  if(index === 1) dlTouched1 = true;
+  if(index === 2) dlTouched2 = true;
+  if(index === 3) dlTouched3 = true;
   redistributeDL();
 }
 
@@ -2802,25 +2802,28 @@ function redistributeDL(){
   let d2 = parseInt(f2.value)||0;
   let d3 = parseInt(f3.value)||0;
 
-  const has93 = (()=> {
-    const v = (c1.value || '').toUpperCase().trim();
-    return v === '93' || v === '93A';
-  })();
+  const v1 = (c1.value || '').toUpperCase().trim();
+  const has93 = (v1 === '93' || v1 === '93A');
+
+  const clamp = (x, min, max)=> Math.max(min, Math.min(max, x));
 
   if(has93){
-    // DL1 = 93/93A → tout le reste en DL2 par défaut
-    d1 = Math.max(0, Math.min(d1, total));
+    // DL1 = 93/93A, reste = total - d1
+    d1 = clamp(d1, 0, total);
     const remain = Math.max(0, total - d1);
 
-    if(lastDLChanged === 2){
-      d2 = Math.max(0, Math.min(d2, remain));
-      d3 = remain - d2;
-    }else if(lastDLChanged === 3){
-      d3 = Math.max(0, Math.min(d3, remain));
-      d2 = remain - d3;
-    }else{
+    // ✅ règle clé : tant que l'user n'a pas touché DL2/DL3 -> TOUT en DL2
+    if(!dlTouched2 && !dlTouched3){
       d2 = remain;
       d3 = 0;
+    }else if(dlTouched3){
+      // l'user pilote DL3 => DL2 prend le reste
+      d3 = clamp(d3, 0, remain);
+      d2 = remain - d3;
+    }else{
+      // l'user pilote DL2 => DL3 prend le reste
+      d2 = clamp(d2, 0, remain);
+      d3 = remain - d2;
     }
 
     f1.value = d1 || '';
@@ -2833,21 +2836,34 @@ function redistributeDL(){
     return;
   }
 
-  // SANS 93/93A : DL1 → DL2 → DL3
-  d1 = Math.max(0, Math.min(d1, total));
-
-  if(lastDLChanged === 1){
-    const remain = Math.max(0, total - d1);
-    d2 = Math.max(0, Math.min(d2, remain));
-    d3 = remain - d2;
-  }else if(lastDLChanged === 2){
-    const remain = Math.max(0, total - d1);
-    d2 = Math.max(0, Math.min(d2, remain));
-    d3 = remain - d2;
+  // ===== PAS DE 93/93A : par défaut TOUT en DL1 =====
+  if(!dlTouched1 && !dlTouched2 && !dlTouched3){
+    d1 = total; d2 = 0; d3 = 0;
+  }else if(dlTouched3){
+    // l'user pilote DL3 => DL2 puis DL1 prennent le reste (dans cet ordre)
+    d3 = clamp(d3, 0, total);
+    const rem23 = total - d3;
+    d2 = clamp(d2, 0, rem23);
+    d1 = total - d2 - d3;
+  }else if(dlTouched2){
+    // l'user pilote DL2 => DL3 prend le reste, DL1 complète
+    d2 = clamp(d2, 0, total);
+    const rem2 = total - d2;
+    d3 = clamp(d3, 0, rem2);
+    d1 = total - d2 - d3;
   }else{
-    const remain = Math.max(0, total - d1);
-    d3 = Math.max(0, Math.min(d3, remain));
-    d2 = remain - d3;
+    // l'user pilote DL1 => DL2 prend le reste, DL3 = 0 par défaut
+    d1 = clamp(d1, 0, total);
+    const rem1 = total - d1;
+    if(!dlTouched2 && !dlTouched3){
+      d2 = rem1; d3 = 0;
+    }else if(dlTouched3){
+      d3 = clamp(d3, 0, rem1);
+      d2 = rem1 - d3;
+    }else{
+      d2 = clamp(d2, 0, rem1);
+      d3 = rem1 - d2;
+    }
   }
 
   f1.value = d1 || '';
@@ -2878,6 +2894,7 @@ function clearDLBorders(){
     if(el) el.classList.remove('dl-error');
   });
 }
+
 
 /* Utils time */
 function setNow(fieldId) {
