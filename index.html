@@ -4351,8 +4351,7 @@ function clearAutoSave() {
       <input id="utcToggle" type="checkbox" onchange="setTimeModeUTC(this.checked)">
       <span class="track"><span class="thumb"></span></span>
     </label>
-
-    <button class="button is-small is-light" type="button" onclick="closeSettingsMenu()">Fermer</button>
+   
   </div>
 </div>
 
@@ -4401,7 +4400,11 @@ function clearAutoSave() {
       <input id="TripFuel" class="input" type="number" min="0" step="1">
     </div>
 
-    <button class="button is-small is-light" type="button" onclick="closeFuelMenu()">Fermer</button>
+    <div class="field" style="margin:0;">
+      <label class="label">FUEL UPLIFT</label>
+      <input id="FuelUplift" class="input" type="number" min="0" step="1">
+    </div>
+    
   </div>
 </div>
 
