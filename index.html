@@ -4377,6 +4377,7 @@ function clearAutoSave() {
     location.reload();
   }
 }
+
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
@@ -4495,6 +4496,103 @@ function clearAutoSave() {
         onclick="toggleFuelMenu()" aria-label="Fuel">
   ⛽
 </button>
+
+<!-- ===== début calibration pdf à enlever après ===== -->
+
+<button class="button is-danger is-light"
+        onclick="openPdfCalibrator()">
+  🎯 Calibrer PDF
+</button>
+
+<div id="pdfCalibrator" style="display:none; padding:10px; background:#fff;">
+  <input type="file" id="pdfFile" accept="application/pdf">
+  <br><br>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <button onclick="setCalibKey('FLIGHT')">Flight</button>
+    <button onclick="setCalibKey('REG')">Reg</button>
+    <button onclick="setCalibKey('DATE')">Date</button>
+    <button onclick="setCalibKey('FROM')">From</button>
+    <button onclick="setCalibKey('TO')">To</button>
+  </div>
+
+  <br>
+  <canvas id="pdfCanvas" style="border:1px solid #000; max-width:100%;"></canvas>
+  <pre id="coordOut"></pre>
+</div>
+
+<!-- ===== fin calibration pdf à enlever après ===== -->
+
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<script>
+/* ===== PDF CALIBRATOR ===== */
+let calib = { page: 1, fields: {} };
+let currentKey = null;
+let viewportScale = 1.5;
+let pageHeightPdf = 0;
+
+function openPdfCalibrator(){
+  document.getElementById("pdfCalibrator").style.display = "block";
+}
+
+function setCalibKey(key){
+  currentKey = key;
+  document.getElementById("coordOut").textContent =
+    `Champ sélectionné : ${key}\nClique sur la case dans le PDF.`;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const pdfFile = document.getElementById("pdfFile");
+  const canvas  = document.getElementById("pdfCanvas");
+
+  if(!pdfFile || !canvas) return;
+
+  pdfFile.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const page = await pdf.getPage(1);
+
+    const viewport = page.getViewport({ scale: viewportScale });
+    pageHeightPdf = page.view[3];
+
+    const ctx = canvas.getContext("2d");
+    canvas.width  = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    document.getElementById("coordOut").textContent =
+      "PDF chargé. Choisis un champ puis clique dans le PDF.";
+  });
+
+  canvas.addEventListener("click", (e) => {
+    if (!currentKey) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const xCanvas = e.clientX - rect.left;
+    const yCanvas = e.clientY - rect.top;
+
+    const xPdf = +(xCanvas / viewportScale).toFixed(2);
+    const yPdf = +(pageHeightPdf - yCanvas / viewportScale).toFixed(2);
+
+    calib.fields[currentKey] = { x: xPdf, y: yPdf, size: 10 };
+
+    document.getElementById("coordOut").textContent =
+      `OK ${currentKey}\n\n` + JSON.stringify(calib, null, 2);
+  });
+});
+</script>
+  
 
 </body>
 </html>
