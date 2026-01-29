@@ -4398,50 +4398,51 @@ const LAUDA_LIR_MAP = {
     REG:    { x: 126.87, y: 152.42, size: 12 },
     DATE:   { x: 178.23, y: 152.42, size: 12 },
     FROM:   { x: 220.03, y: 152.42, size: 12 },
-    TO:     { x: 261.74, y: 152.42, size: 12 }
+    TO:     { x: 261.74, y: 152.42, size: 12 },
   }
 };
 
-function fmtDateFR(iso){
-  if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso || "";
-  const [y,m,d] = iso.split("-");
-  return `${d}/${m}/${y}`;
-}
-
-/* ===== GENERATION DES DOCUMENTS DE VOL===== */
 async function LIR_LAUDA(){
-  const pdfUrl = "/assets/pdf/lauda-lir-version-4-mar-22 (5).pdf";
-  const bytes = await fetch(pdfUrl).then(r => r.arrayBuffer());
+  try{
+    const pdfUrl = "assets/pdf/lauda-lir.pdf"; // ✅ relatif, sans espaces
+    const res = await fetch(pdfUrl);
+    if(!res.ok) throw new Error(`PDF fetch failed: ${res.status} ${res.statusText}`);
+    const bytes = await res.arrayBuffer();
 
-  const pdfDoc = await PDFLib.PDFDocument.load(bytes);
-  const page = pdfDoc.getPages()[Math.max(0,(LAUDA_LIR_MAP.page||1)-1)];
+    const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+    const page = pdfDoc.getPages()[LAUDA_LIR_MAP.page - 1];
 
-  const v = id => (document.getElementById(id)?.value || "").trim();
+    const v = id => (document.getElementById(id)?.value || "").trim();
 
-  const draw = (key, text) => {
-    const f = LAUDA_LIR_MAP.fields[key];
-    if(!f || !text) return;
-    page.drawText(text, { x: f.x, y: f.y, size: f.size });
-  };
+    const draw = (key, text) => {
+      const f = LAUDA_LIR_MAP.fields[key];
+      if(!f || !text) return;
+      page.drawText(String(text), { x: f.x, y: f.y, size: f.size });
+    };
 
-  draw("FLIGHT", (v("Cie") + v("NVol")).toUpperCase());
-  draw("REG",    v("Immat").toUpperCase());
-  draw("DATE",   fmtDateFR(v("Date")));
-  draw("FROM",   "BVA");
-  draw("TO",     v("To").toUpperCase());
+    draw("FLIGHT", (v("Cie") + v("NVol")).toUpperCase());
+    draw("REG",    v("Immat").toUpperCase());
+    draw("DATE",   v("Date"));
+    draw("FROM",   "BVA");
+    draw("TO",     v("To").toUpperCase());
 
-  const out = await pdfDoc.save();
-  const blob = new Blob([out], { type: "application/pdf" });
+    const out = await pdfDoc.save();
+    const blob = new Blob([out], { type: "application/pdf" });
 
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "LIR_LAUDA.pdf";
-  a.click();
-  URL.revokeObjectURL(a.href);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "LIR_LAUDA.pdf";
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+  }catch(err){
+    console.error(err);
+    alert("Erreur LIR : " + (err?.message || err));
+  }
 }
 
-// si ton bouton appelle encore generateLIR()
-function generateLIR(){ return LIR_LAUDA(); }
+// ✅ important si onclick HTML
+window.LIR_LAUDA = LIR_LAUDA;
 
   
 </script>
