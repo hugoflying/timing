@@ -975,6 +975,13 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   font-weight: 400 !important;
 }
 
+#btnPdfCalib{
+  position: fixed;
+  left: 14px;
+  bottom: 86px; /* au-dessus du footer */
+  z-index: 9999;
+}
+
 </style>
 </head>
 
@@ -4499,8 +4506,7 @@ function clearAutoSave() {
 
 <!-- ===== début calibration pdf à enlever après ===== -->
 
-<button class="button is-danger is-light"
-        onclick="openPdfCalibrator()">
+<button id="btnPdfCalib" class="button is-danger is-light" onclick="openPdfCalibrator()">
   🎯 Calibrer PDF
 </button>
 
