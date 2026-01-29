@@ -4404,20 +4404,38 @@ const LAUDA_LIR_MAP = {
 
 async function LIR_LAUDA(){
   try{
-    const pdfUrl = "assets/pdf/lauda-lir.pdf"; // ✅ relatif, sans espaces
+    const pdfUrl = "assets/pdf/lauda-lir.pdf"; // relatif
     const res = await fetch(pdfUrl);
     if(!res.ok) throw new Error(`PDF fetch failed: ${res.status} ${res.statusText}`);
     const bytes = await res.arrayBuffer();
 
-    const pdfDoc = await PDFLib.PDFDocument.load(bytes);
-    const page = pdfDoc.getPages()[LAUDA_LIR_MAP.page - 1];
+    if(!window.PDFLib) throw new Error("PDFLib is not loaded");
+
+    const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
+    const pageIndex = Math.max(0, (LAUDA_LIR_MAP?.page || 1) - 1);
+    const page = pdfDoc.getPages()[pageIndex];
+    if(!page) throw new Error(`Page ${pageIndex + 1} not found in PDF`);
+
+    const { height } = page.getSize(); // ✅ pour inverser Y si coords top-left
 
     const v = id => (document.getElementById(id)?.value || "").trim();
 
     const draw = (key, text) => {
-      const f = LAUDA_LIR_MAP.fields[key];
-      if(!f || !text) return;
-      page.drawText(String(text), { x: f.x, y: f.y, size: f.size });
+      const f = LAUDA_LIR_MAP?.fields?.[key];
+      if(!f) return;
+
+      const t = String(text ?? "").trim();
+      if(!t) return;
+
+      // ✅ si tes coords viennent d’un outil "top-left", on convertit vers pdf-lib (bottom-left)
+      const yPdf = height - f.y;
+
+      page.drawText(t, {
+        x: f.x,
+        y: yPdf,
+        size: f.size || 12,
+        color: window.PDFLib.rgb(0,0,0),
+      });
     };
 
     draw("FLIGHT", (v("Cie") + v("NVol")).toUpperCase());
@@ -4432,7 +4450,9 @@ async function LIR_LAUDA(){
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "LIR_LAUDA.pdf";
+    document.body.appendChild(a);
     a.click();
+    a.remove();
     URL.revokeObjectURL(a.href);
 
   }catch(err){
@@ -4441,7 +4461,7 @@ async function LIR_LAUDA(){
   }
 }
 
-// ✅ important si onclick HTML
+// important si onclick HTML
 window.LIR_LAUDA = LIR_LAUDA;
 
   
