@@ -4377,6 +4377,58 @@ function clearAutoSave() {
     location.reload();
   }
 }
+
+// ===== MAPPING LIR LAUDA =====
+const LAUDA_LIR_MAP = {
+  page: 1, // page du PDF (1 = première)
+  fields: {
+    FLIGHT: { x: 57.85, y: 152.42, size: 12 },
+    REG:    { x: 126.87, y: 152.42, size: 12 },
+    DATE:   { x: 178.23, y: 152.42, size: 12 },
+    FROM:   { x: 220.03, y: 152.42, size: 12 },
+    TO:     { x: 261.74, y: 152.42, size: 12 }
+  }
+};
+
+/* ===== GENERATION DES DOCUMENTS DE VOL===== */
+
+async function LIR_LAUDA(){
+  const pdfUrl = "/assets/pdf/lauda-lir.pdf";
+  const bytes = await fetch(pdfUrl).then(r => r.arrayBuffer());
+
+  const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+  const page = pdfDoc.getPages()[0];
+
+  const v = id => (document.getElementById(id)?.value || "").trim();
+
+  const draw = (key, text) => {
+    const f = LAUDA_LIR_MAP.fields[key];
+    if(!f || !text) return;
+    page.drawText(text, {
+      x: f.x,
+      y: f.y,
+      size: f.size,
+    });
+  };
+
+  draw("FLIGHT", (v("Cie") + v("NVol")).toUpperCase());
+  draw("REG",    v("Immat").toUpperCase());
+  draw("DATE",   v("Date"));
+  draw("FROM",   "BVA");          // ← forcé
+  draw("TO",     v("To").toUpperCase());
+
+  const out = await pdfDoc.save();
+  const blob = new Blob([out], { type: "application/pdf" });
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "LIR_LAUDA.pdf";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
+  
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
@@ -4495,6 +4547,11 @@ function clearAutoSave() {
         onclick="toggleFuelMenu()" aria-label="Fuel">
   ⛽
 </button>
+
+<button class="button is-primary" type="button" onclick="generateLIR()">
+  📄 Générer LIR
+</button>
+
 
 </body>
 </html>
