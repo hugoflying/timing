@@ -4398,7 +4398,7 @@ function fmtDateFR(iso){
 
 /* ===== GENERATION DES DOCUMENTS DE VOL===== */
 async function LIR_LAUDA(){
-  const pdfUrl = "/assets/pdf/lauda-lir.pdf";
+  const pdfUrl = "/assets/pdf/lauda-lir-version-4-mar-22 (5).pdf";
   const bytes = await fetch(pdfUrl).then(r => r.arrayBuffer());
 
   const pdfDoc = await PDFLib.PDFDocument.load(bytes);
