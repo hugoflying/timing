@@ -4380,9 +4380,9 @@ function clearAutoSave() {
 
 // ===== MAPPING LIR LAUDA =====
 const LAUDA_LIR_MAP = {
-  page: 1, // page du PDF (1 = première)
+  page: 1,
   fields: {
-    FLIGHT: { x: 57.85, y: 152.42, size: 12 },
+    FLIGHT: { x: 57.85,  y: 152.42, size: 12 },
     REG:    { x: 126.87, y: 152.42, size: 12 },
     DATE:   { x: 178.23, y: 152.42, size: 12 },
     FROM:   { x: 220.03, y: 152.42, size: 12 },
@@ -4390,31 +4390,32 @@ const LAUDA_LIR_MAP = {
   }
 };
 
-/* ===== GENERATION DES DOCUMENTS DE VOL===== */
+function fmtDateFR(iso){
+  if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso || "";
+  const [y,m,d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
 
+/* ===== GENERATION DES DOCUMENTS DE VOL===== */
 async function LIR_LAUDA(){
   const pdfUrl = "/assets/pdf/lauda-lir.pdf";
   const bytes = await fetch(pdfUrl).then(r => r.arrayBuffer());
 
   const pdfDoc = await PDFLib.PDFDocument.load(bytes);
-  const page = pdfDoc.getPages()[0];
+  const page = pdfDoc.getPages()[Math.max(0,(LAUDA_LIR_MAP.page||1)-1)];
 
   const v = id => (document.getElementById(id)?.value || "").trim();
 
   const draw = (key, text) => {
     const f = LAUDA_LIR_MAP.fields[key];
     if(!f || !text) return;
-    page.drawText(text, {
-      x: f.x,
-      y: f.y,
-      size: f.size,
-    });
+    page.drawText(text, { x: f.x, y: f.y, size: f.size });
   };
 
   draw("FLIGHT", (v("Cie") + v("NVol")).toUpperCase());
   draw("REG",    v("Immat").toUpperCase());
-  draw("DATE",   v("Date"));
-  draw("FROM",   "BVA");          // ← forcé
+  draw("DATE",   fmtDateFR(v("Date")));
+  draw("FROM",   "BVA");
   draw("TO",     v("To").toUpperCase());
 
   const out = await pdfDoc.save();
@@ -4426,6 +4427,9 @@ async function LIR_LAUDA(){
   a.click();
   URL.revokeObjectURL(a.href);
 }
+
+// si ton bouton appelle encore generateLIR()
+function generateLIR(){ return LIR_LAUDA(); }
 
   
 </script>
