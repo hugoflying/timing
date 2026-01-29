@@ -959,6 +959,131 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 }
 #fuelMenu input[type=number]{ -moz-appearance: textfield; }
 
+/* ===== NEW ESSENTIAL STRIP ===== */
+.flight-strip{
+  width: 100%;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow2);
+  border: 2px solid #1d4ed8;
+  padding: 14px 16px 12px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  grid-template-areas:
+    "left mid right"
+    "bottom bottom bottom";
+  gap: 10px 12px;
+  align-items: center;
+}
+
+.fs-left{ grid-area:left; display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+.fs-right{ grid-area:right; display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+.fs-mid{ grid-area:mid; display:flex; align-items:center; justify-content:center; gap:14px; }
+
+.fs-iata{
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing:.02em;
+}
+
+.fs-ff{
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.fs-badge{
+  font-weight: 900;
+  border: 2px solid #111;
+  border-radius: 4px;
+  padding: 4px 10px;
+  line-height: 1;
+  background: #fff;
+  color:#111;
+}
+
+body.dark .fs-badge{
+  background: transparent;
+  border-color: rgba(255,255,255,.75);
+  color: var(--text);
+}
+
+.fs-time{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  min-width: 78px;
+}
+
+.fs-k{
+  font-weight: 900;
+  text-decoration: underline;
+  letter-spacing:.06em;
+  color: var(--muted);
+}
+
+.fs-v{
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.fs-park{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  min-width: 90px;
+}
+
+.fs-park-val{
+  font-weight: 900;
+  font-size: 1.6rem;
+  letter-spacing:.04em;
+}
+
+.fs-arrow{
+  width: 110px;
+  height: 8px;
+  background:#0b4f75;
+  position: relative;
+  border-radius: 2px;
+}
+.fs-arrow::after{
+  content:"";
+  position:absolute;
+  right:-18px;
+  top:50%;
+  transform: translateY(-50%);
+  border-left: 18px solid #0b4f75;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+}
+
+.fs-bottom{
+  grid-area: bottom;
+  text-align:center;
+  font-weight: 900;
+  letter-spacing:.02em;
+  opacity:.95;
+}
+
+/* responsive */
+@media (max-width: 650px){
+  .flight-strip{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left"
+      "mid"
+      "right"
+      "bottom";
+    text-align:center;
+  }
+  .fs-left, .fs-right{ align-items:center; }
+  .fs-mid{ justify-content:center; }
+  .fs-arrow{ width: 90px; }
+}
+
 
 </style>
 </head>
@@ -1215,6 +1340,7 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 
     <!-- Bandeau ESSENTIEL -->
     <div class="kv-strip mb-4">
+
       <div class="kv-card">
         <div class="kv-left">
           <div class="kv-title">Vol</div>
@@ -1222,6 +1348,7 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
             <span id="kvArrVol">----</span> → <span id="kvDepVol">----</span>
           </div>
         </div>
+
         <div class="kv-left" style="text-align:right;">
           <div class="kv-title">Route</div>
           <div class="kv-value">
@@ -1237,6 +1364,7 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
             <span id="kvImmat">------</span> · <span id="kvType">--</span>
           </div>
         </div>
+
         <div class="kv-left" style="text-align:right;">
           <div class="kv-title">Salle arr. / Parking</div>
           <div class="kv-value">
@@ -1244,6 +1372,7 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- DÉTAILS (éditables) -->
@@ -2251,19 +2380,28 @@ function updateInfoStrip(){
     if(cie || nvol) depFF = `${cie}${nvol}`.trim();
   }
 
-  set('kvArrVol', arrFF || '—', '—');
-  set('kvDepVol', depFF || '—', '—');
+  // fallback manuel : ARR = CIEA+NVOLA (si existant)
+  if(!arrFF){
+    const cieA  = v('CieA');
+    const nvolA = v('NVolA');
+    if(cieA || nvolA) arrFF = `${cieA}${nvolA}`.trim();
+  }
 
-  set('kvFrom', v('From') || '---', '---');
-  set('kvTo',   v('To')   || '---', '---');
+  // ----- affectation bandeau -----
+  set('kvArrVol', arrFF);
+  set('kvDepVol', depFF);
 
-  set('kvImmat', v('Immat') || '------', '------');
-  set('kvType',  v('TypeAvion') || '----', '----');
+  set('kvFrom', v('FROM'), '---');
+  set('kvTo',   v('TO'),   '---');
 
-  // Salle arrivée : plus de champ BorderControl -> on prend akMeta.bc
-  set('kvBC', bcMeta || '--', '--');
+  set('kvImmat', v('IMMAT'), '------');
+  set('kvType',  v('TYPE'),  '--');
 
-  set('kvPark', v('Parking') || '--', '--');
+  // BC prioritaire meta, sinon champ
+  set('kvBC', bcMeta || v('BC'));
+
+  // Parking
+  set('kvPark', v('PARK'), '--');
 }
 
 /* date défaut */
