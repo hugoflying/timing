@@ -3477,10 +3477,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 // ===== Airport Keeper (AK) =====
-const AK_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJidmFfZXh0IiwidXNlcm5hbWUiOiJidmFfZXh0IiwiYWlycG9ydHMiOiJMRk9CIn0.PkSbBw_BF5dnX0bG3gbP7E7P7SHhW9egJ_in6OaWTnJm0OpirhJP4FZzbztH0r6lQxrA5JliEopo7__CyYvfIA";
-const AK_BASE    = "https://api.app.airport-keeper.com/flights/v1/airport";
-const AK_AIRPORT = "LFOB";
-const HOME_IATA  = "BVA";
+const AK_PROXY = "https://airportkeeper-proxy.deruellehugo-49c.workers.dev/ak";
 
 // Ouvrir/Fermer
 function openAKPicker(){
@@ -3502,10 +3499,15 @@ function closeAKPicker(){
   if(b) b.style.display = 'none';
 }
 
-async function fetchAK(flow, from, to){
-  const url = `${AK_BASE}?airport=${encodeURIComponent(AK_AIRPORT)}&flow=${encodeURIComponent(flow)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-  const res = await fetch(url, { headers: { Authorization: AK_TOKEN }});
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+async function fetchAK(flow, from, to) {
+  const url =
+    `${AK_PROXY}?flow=${encodeURIComponent(flow)}` +
+    `&from=${encodeURIComponent(from)}` +
+    `&to=${encodeURIComponent(to)}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`AK error ${res.status}`);
+
   const data = await res.json();
   return Array.isArray(data?.flights) ? data.flights : [];
 }
