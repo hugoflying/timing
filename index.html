@@ -4679,6 +4679,13 @@ function nextCalibPage(){
   renderPage();
 }
 
+async function loadPdfFromUrl(url){
+  const pdf = await pdfjsLib.getDocument(url).promise;
+  _pdfDoc = pdf;
+  calib.page = 1;
+  await renderPage();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const pdfFile = document.getElementById("pdfFile");
   const canvas  = document.getElementById("pdfCanvas");
