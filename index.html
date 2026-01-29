@@ -975,6 +975,18 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   font-weight: 400 !important;
 }
 
+#lirFab{
+  position: fixed;
+  left: 14px;
+  bottom: 158px; /* au-dessus du footer + au-dessus des autres FAB */
+  z-index: 4902;
+  border-radius: 999px;
+  height: 52px;
+  box-shadow: var(--shadow2);
+  font-weight: 900;
+}
+
+
 </style>
 </head>
 
@@ -4463,11 +4475,6 @@ function generateLIR(){ return LIR_LAUDA(); }
 </div>
 
 
-<!-- ===== boutons lir ===== -->
-<button class="button is-primary" type="button" onclick="LIR_LAUDA()">
-  📄 Générer LIR
-</button>
-
 <!-- ===== SETTINGS MENU (bottom gear) ===== -->
 <div id="settingsBackdrop" onclick="closeSettingsMenu()"></div>
 
@@ -4556,6 +4563,11 @@ function generateLIR(){ return LIR_LAUDA(); }
         onclick="toggleFuelMenu()" aria-label="Fuel">
   ⛽
 </button>
+
+<button id="lirFab" class="button is-primary" type="button" onclick="LIR_LAUDA()">
+  📄 LIR
+</button>
+
 
 </body>
 </html>
