@@ -1221,27 +1221,30 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">BAGS</label>
-      <input class="input ldm-in" id="FinalBAGS"
-             type="text" inputmode="numeric" pattern="[0-9]*"
-             maxlength="4" oninput="digitsOnly(this); updateHBagsValidity('final')">
-    </div>
+    <div class="ldm-row-4">
+      <div class="field">
+        <label class="label">BAGS</label>
+        <input class="input ldm-in" id="FinalBAGS"
+               type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="4"
+               oninput="digitsOnly(this); updateHBagsValidity('final'); updateFinalWeightIfNeeded()">
+      </div>
 
-    <div class="field">
-      <label class="label">POIDS</label>
-       <input class="input ldm-in" id="FinalPOIDS"
-             type="text" inputmode="numeric" pattern="[0-9]*"
-             readonly>
-    </div>
+      <div class="field">
+        <label class="label">POIDS</label>
+        <input class="input ldm-in" id="FinalPOIDS"
+               type="text" inputmode="numeric" pattern="[0-9]*"
+               readonly>
+      </div>
 
+      <div class="field">
+        <label class="label">GB</label>
+        <input class="input ldm-in" id="FinalGB"
+               type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="4"
+               oninput="digitsOnly(this); updateFinalWeightIfNeeded()">
+      </div>
 
-    <div class="field">
-      <label class="label">GB</label>
-      <input class="input ldm-in" id="FinalGB"
-             type="text" inputmode="numeric" pattern="[0-9]*"
-             maxlength="4" oninput="digitsOnly(this)">
-    </div>
 
     <div class="ldm-row-4">
       <div class="field">
