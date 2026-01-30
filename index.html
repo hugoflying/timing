@@ -986,6 +986,46 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   font-weight: 900;
 }
 
+/* Wrapper (par défaut: comportement actuel) */
+.dl-wrap{
+  display: block;
+}
+
+/* MOBILE: 2 colonnes x 3 lignes (Code gauche / Durée droite) */
+@media (max-width: 599px){
+
+  .dl-wrap{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  /* on "déplie" les 2 grilles dans la grille parent */
+  .dl-wrap .dl-grid{
+    display: contents;
+  }
+
+  /* placement fixe : colonne 1 = codes, colonne 2 = durées */
+  .dl-wrap .field:has(#DLcode1){  grid-column: 1; grid-row: 1; }
+  .dl-wrap .field:has(#DLcode2){  grid-column: 1; grid-row: 2; }
+  .dl-wrap .field:has(#DLcode3){  grid-column: 1; grid-row: 3; }
+
+  .dl-wrap .field:has(#DLduree1){ grid-column: 2; grid-row: 1; }
+  .dl-wrap .field:has(#DLduree2){ grid-column: 2; grid-row: 2; }
+  .dl-wrap .field:has(#DLduree3){ grid-column: 2; grid-row: 3; }
+
+  /* champs plus compacts (mobile) */
+  .dl-wrap .input{
+    height: 34px !important;
+    padding: 6px 8px !important;
+    text-align: center;
+  }
+
+  .dl-wrap .label{
+    font-size: .68rem !important;
+    margin-bottom: 6px !important;
+  }
+}
 
 </style>
 </head>
@@ -1475,50 +1515,41 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
 
   <div class="card-content">
 
-    <div class="dl-grid dl-pairs">
+    <div class="dl-wrap">
 
-      <div class="field">
-        <label class="label">DL Code 1</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*" id="DLcode1">
+      <!-- LIGNE 1 : DL CODES -->
+      <div class="dl-grid dl-codes">
+        <div class="field">
+          <label class="label">DL Code 1</label>
+          <div class="control"><input class="input" type="text" id="DLcode1"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">DL Code 2</label>
+          <div class="control"><input class="input" type="text" id="DLcode2"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">DL Code 3</label>
+          <div class="control"><input class="input" type="text" id="DLcode3"></div>
         </div>
       </div>
 
-      <div class="field">
-        <label class="label">DL Durée 1 (min)</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*"
-                 id="DLduree1" oninput="digitsOnly(this); dldChanged(1)">
+      <!-- LIGNE 2 : DL DURÉES -->
+      <div class="dl-grid dl-durees">
+        <div class="field">
+          <label class="label">DL Durée 1 (min)</label>
+          <div class="control"><input class="input" type="number" id="DLduree1" min="0" step="1" oninput="dldChanged(1)"></div>
         </div>
-      </div>
 
-      <div class="field">
-        <label class="label">DL Code 2</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*" id="DLcode2">
+        <div class="field">
+          <label class="label">DL Durée 2 (min)</label>
+          <div class="control"><input class="input" type="number" id="DLduree2" min="0" step="1" oninput="dldChanged(2)"></div>
         </div>
-      </div>
 
-      <div class="field">
-        <label class="label">DL Durée 2 (min)</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*"
-                 id="DLduree2" oninput="digitsOnly(this); dldChanged(2)">
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">DL Code 3</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*" id="DLcode3">
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">DL Durée 3 (min)</label>
-        <div class="control">
-          <input class="input dl-mini" type="text" inputmode="numeric" pattern="[0-9]*"
-                 id="DLduree3" oninput="digitsOnly(this); dldChanged(3)">
+        <div class="field">
+          <label class="label">DL Durée 3 (min)</label>
+          <div class="control"><input class="input" type="number" id="DLduree3" min="0" step="1" oninput="dldChanged(3)"></div>
         </div>
       </div>
 
