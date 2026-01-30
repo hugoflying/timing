@@ -986,12 +986,12 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   font-weight: 900;
 }
 
-/* Wrapper (par défaut: comportement actuel) */
+/* ===== DL WRAPPER ===== */
 .dl-wrap{
   display: block;
 }
 
-/* MOBILE: 2 colonnes x 3 lignes (Code gauche / Durée droite) */
+/* ===== MOBILE : 2 colonnes x 3 lignes (Code / Durée) ===== */
 @media (max-width: 599px){
 
   .dl-wrap{
@@ -1000,59 +1000,25 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
     gap: var(--gap);
   }
 
-  /* on "déplie" les 2 grilles dans la grille parent */
+  /* on "fusionne" visuellement les deux grilles */
   .dl-wrap .dl-grid{
     display: contents;
   }
 
-  /* placement fixe : colonne 1 = codes, colonne 2 = durées */
+  /* colonne gauche : DL CODE */
   .dl-wrap .field:has(#DLcode1){  grid-column: 1; grid-row: 1; }
   .dl-wrap .field:has(#DLcode2){  grid-column: 1; grid-row: 2; }
   .dl-wrap .field:has(#DLcode3){  grid-column: 1; grid-row: 3; }
 
+  /* colonne droite : DL DURÉE */
   .dl-wrap .field:has(#DLduree1){ grid-column: 2; grid-row: 1; }
   .dl-wrap .field:has(#DLduree2){ grid-column: 2; grid-row: 2; }
   .dl-wrap .field:has(#DLduree3){ grid-column: 2; grid-row: 3; }
 
-  /* champs plus compacts (mobile) */
+  /* même taille que les autres champs */
   .dl-wrap .input{
-    height: 34px !important;
-    padding: 6px 8px !important;
-    text-align: center;
-  }
-
-  .dl-wrap .label{
-    font-size: .68rem !important;
-    margin-bottom: 6px !important;
-  }
-}
-
-/* ===== COMPACT INPUTS (GLOBAL) ===== */
-.input,
-.select select,
-.textarea{
-  height: 36px;          /* au lieu de 42–44 */
-  padding: 6px 10px;
-  font-size: .9rem;
-}
-
-/* textarea garde plus de hauteur */
-.textarea{
-  min-height: 90px;
-  height: auto;
-}
-
-@media (max-width: 599px){
-  .input,
-  .select select{
-    height: 32px;
-    padding: 5px 8px;
-    font-size: .85rem;
-  }
-
-  .label{
-    font-size: .7rem;
-    margin-bottom: 6px;
+    height: var(--inputH);
+    padding: 6px 10px;
   }
 }
 
