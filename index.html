@@ -2065,7 +2065,7 @@ function switchLoadPanel(mode){
 
 let _ldmMode = 'arr';
 
-function openLDM(mode='arr'){
+function openLDM(mode=null){
   const b = document.getElementById('ldmBackdrop');
   const m = document.getElementById('ldmModal');
 
@@ -2074,7 +2074,18 @@ function openLDM(mode='arr'){
   if(b) b.style.display = '';
   if(m) m.style.display = 'flex';
 
-  ldmSwitch(mode);
+  // si aucun mode forcé → décision auto
+  if(mode === null){
+    if(shouldOpenFinalLoad()){
+      ldmSwitch('final');
+    }else{
+      ldmSwitch('arr');
+    }
+  }else{
+    // mode forcé (ex: bouton ARR / FINAL)
+    ldmSwitch(mode);
+  }
+
   updateHeaderOffset();
 }
 
@@ -4480,6 +4491,25 @@ function clearAutoSave() {
   }
 }
 
+function shouldOpenFinalLoad(){
+  const sobt = document.getElementById('SOBT')?.value || '';
+  if(!sobt) return false;
+
+  const sobtMin = parseHHMM(sobt);
+  if(sobtMin == null) return false;
+
+  const now = getNowMinutes().mins;
+
+  // seuil = SOBT - 15 min
+  let diff = now - (sobtMin - 15);
+
+  // gestion passage minuit
+  if(diff < -720) diff += 1440;
+  if(diff >  720) diff -= 1440;
+
+  return diff >= 0;
+}
+
 // ===== MAPPING LIR LAUDA =====
 const LAUDA_LIR_MAP = {
   page: 1,
@@ -4589,8 +4619,7 @@ async function LIR_LAUDA(){
 
 window.LIR_LAUDA = LIR_LAUDA;
 
-
-  
+ 
 </script>
 
 <!-- ===== Airport Keeper Picker ===== -->
