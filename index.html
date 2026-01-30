@@ -1027,6 +1027,35 @@ body.dark #fuelMenu{ border-color: rgba(255,255,255,.10); }
   }
 }
 
+/* ===== COMPACT INPUTS (GLOBAL) ===== */
+.input,
+.select select,
+.textarea{
+  height: 36px;          /* au lieu de 42–44 */
+  padding: 6px 10px;
+  font-size: .9rem;
+}
+
+/* textarea garde plus de hauteur */
+.textarea{
+  min-height: 90px;
+  height: auto;
+}
+
+@media (max-width: 599px){
+  .input,
+  .select select{
+    height: 32px;
+    padding: 5px 8px;
+    font-size: .85rem;
+  }
+
+  .label{
+    font-size: .7rem;
+    margin-bottom: 6px;
+  }
+}
+
 </style>
 </head>
 
