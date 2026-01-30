@@ -4490,18 +4490,16 @@ function clearAutoSave() {
 }
 
 function shouldOpenFinalLoad(){
-  const sobt = document.getElementById('SOBT')?.value || '';
-  if(!sobt) return false;
-
-  const sobtMin = parseHHMM(sobt);
-  if(sobtMin == null) return false;
+  // TOBT brut (hors CTOT)
+  const tobtRaw = window._tobtRawMins;
+  if(tobtRaw == null) return false;
 
   const now = getNowMinutes().mins;
 
-  // seuil = SOBT - 15 min
-  let diff = now - (sobtMin - 15);
+  // seuil = TOBT brut - 15
+  let diff = now - (tobtRaw - 15);
 
-  // gestion passage minuit
+  // gestion minuit (diff dans [-720..+720])
   if(diff < -720) diff += 1440;
   if(diff >  720) diff -= 1440;
 
