@@ -851,8 +851,10 @@ function startChipColorTimer(){
 }
 
 function updateChipColors(){
-  const now = new Date();
-  const nowMin = now.getHours()*60 + now.getMinutes();
+  // getNowMinutes() renvoie l'heure courante DANS LE MEME REFERENTIEL que les
+  // pastilles (local ou UTC selon isUTC). Utiliser new Date().getHours() ici
+  // comparerait une heure UTC affichee a un "maintenant" local -> faux ecart.
+  const nowMin = getNowMinutes().mins;
 
   CHIP_TIME_IDS.forEach(id=>{
     const el = document.getElementById(id);
