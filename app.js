@@ -877,6 +877,18 @@ function updateChipColors(){
   });
 }
 
+/* Debut de journee (minuit) du vol courant, en ms absolus, pour dater les
+   echeances du compte a rebours. Source : champ Date (yyyy-mm-dd), rempli
+   automatiquement a la date du jour. Retourne null si absent -> comportement
+   24h conserve. */
+function cdRefDayMs(){
+  const dv = (document.getElementById('Date')?.value || '').trim();
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dv);
+  if(!m) return null;
+  const y = +m[1], mo = +m[2]-1, da = +m[3];
+  return isUTC ? Date.UTC(y, mo, da) : new Date(y, mo, da).getTime();
+}
+
 function updateCountdownOnce(){
   updateChipColors();   // rafraichit vert/orange/rouge chaque seconde
   const el = document.getElementById('timer-cd');
@@ -953,11 +965,22 @@ function updateCountdownOnce(){
   // ===== CAS NORMAL : live avec NOW (décompte puis +) =====
   const now = getNowMinutes();
 
-  let diffMin = targetMin - now.mins;
-  if(diffMin < -720) diffMin += 1440;
-  if(diffMin > 720) diffMin -= 1440;
-
-  const remainingSeconds = diffMin * 60 - now.secs;
+  // Si la date du vol est connue (champ Date), on calcule l'ecart reel en tenant
+  // compte du JOUR : un vol d'hier soir ne "revient" plus comme un vol a venir.
+  let remainingSeconds = null;
+  const refDayMs = cdRefDayMs();
+  if(refDayMs != null){
+    const sobtRefMs = refDayMs + SOBT * 60000;   // ancre "jour du vol"
+    let targetMs = refDayMs + targetMin * 60000;
+    // Echeance qui passe minuit (EOBT du lendemain) : on la reporte au J+1
+    if(targetMs < sobtRefMs - 12*3600000) targetMs += 86400000;
+    remainingSeconds = Math.round((targetMs - Date.now()) / 1000);
+  } else {
+    let diffMin = targetMin - now.mins;
+    if(diffMin < -720) diffMin += 1440;
+    if(diffMin > 720) diffMin -= 1440;
+    remainingSeconds = diffMin * 60 - now.secs;
+  }
 
   const sign = remainingSeconds <= 0 ? '+' : ''; // quand on dépasse => +
   const abs = Math.abs(remainingSeconds);
@@ -1518,15 +1541,58 @@ function attachAutoSave(){
 }
 
 /* Tabs */
+/* Bouton "Vols" (TURNAROUND) : ajoute un vol manuel via appui long (500 ms)
+   ou double-clic. Pas d'action au simple clic : il n'y a pas de liste AK. */
+function wireVolsButton(){
+  const btn = document.getElementById('volsBtn');
+  if(!btn) return;
+
+  let pressTimer = null;
+  let longFired  = false;
+
+  const openManual = ()=>{
+    longFired = true;
+    if(typeof createNewTab === 'function') createNewTab();
+  };
+
+  // Double-clic (souris / clavier)
+  btn.addEventListener('dblclick', (e)=>{
+    e.preventDefault();
+    if(typeof createNewTab === 'function') createNewTab();
+  });
+
+  // Appui long (tactile)
+  const startPress = ()=>{ longFired = false; clearTimeout(pressTimer); pressTimer = setTimeout(openManual, 500); };
+  const cancelPress = ()=>{ clearTimeout(pressTimer); pressTimer = null; };
+  btn.addEventListener('touchstart', startPress, { passive:true });
+  btn.addEventListener('touchend',   cancelPress);
+  btn.addEventListener('touchmove',  cancelPress, { passive:true });
+  btn.addEventListener('touchcancel',cancelPress);
+  btn.addEventListener('contextmenu', e=> e.preventDefault());
+
+  // Indice visuel si l'utilisateur fait juste un clic simple
+  btn.addEventListener('click', ()=>{
+    if(longFired){ longFired = false; return; }
+    if(typeof showPopup === 'function'){
+      showPopup('Appui long ou double-clic pour ajouter un vol', '#334155', 1800);
+    }
+  });
+}
+
 function renderTabs(){
   const tabBar = document.getElementById('tab-bar');
   if(!tabBar) return;
 
+  // Bouton unique "VOL" : pas de liste AK ici -> seul l'appui long (ou le
+  // double-clic) ajoute un vol manuel. Un simple clic ne fait rien (evite les
+  // creations accidentelles).
   tabBar.innerHTML = `
-    <button class="button is-success is-light" type="button" onclick="createNewTab()">
-      +
+    <button class="button is-link is-light" type="button" id="volsBtn"
+            title="Appui long ou double-clic : ajouter un vol">
+      Vols
     </button>
   `;
+  wireVolsButton();
 
   let tabs = JSON.parse(localStorage.getItem('flightTabs') || '[]');
   if(!Array.isArray(tabs)) tabs = [];
