@@ -994,13 +994,18 @@ html.dark #settingsMenu { border-color: rgba(255,255,255,.10); }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px;
-  background: var(--card);
-  border-bottom: 1px solid rgba(0,0,0,.08);
+  padding: 0 16px;
+  min-height: 48px;
+  background: #334155;
+  border-bottom: none;
+  border-start-start-radius: 18px;
+  border-start-end-radius: 18px;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
 }
-html.dark .settings-header { border-bottom-color: rgba(255,255,255,.10); }
-.settings-header strong { font-weight: 900; font-size: 1rem; flex: 1; color: #111; }
-html.dark .settings-header strong { color: var(--text); }
+html.dark .settings-header { border-bottom-color: transparent; }
+.settings-header strong { font-weight: 900; font-size: 1rem; flex: 1; color: #fff; }
+html.dark .settings-header strong { color: #fff; }
 
 .settings-body {
   padding: 12px;
@@ -1797,6 +1802,33 @@ html, body {
   .buttons:has(.dep-extra-btn) { gap: .6rem !important; }
 }
 
+.modal-header {
+  display: flex;
+  align-items: center;
+  border-start-start-radius: var(--radius) !important;
+  border-start-end-radius: var(--radius) !important;
+  border-top-left-radius: var(--radius) !important;
+  border-top-right-radius: var(--radius) !important;
+  background: #334155 !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  min-height: 48px;
+  padding: 0 16px !important;
+}
+.modal-header.is-danger { background: #b91c1c !important; }
+/* Bouton d'action dangereuse : meme rouge que le bandeau, pour la coherence visuelle */
+.button.modal-danger-btn {
+  background: #b91c1c !important;
+  color: #fff !important;
+  border-color: #b91c1c !important;
+  font-weight: 800;
+}
+.button.modal-danger-btn:hover { background: #991b1b !important; }
+.modal-header .card-header-title { color: #fff !important; }
+/* La carte doit rogner ce qui depasse, sinon le fond blanc de la carte
+   apparait aux coins arrondis au-dessus du bandeau (angles non remplis). */
+.card:has(> .modal-header) { overflow: hidden; }
+
 </style>
 </head>
 
@@ -2477,9 +2509,9 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Modal confirmation TOUT FERMER -->
 <!-- ══════════════ MODAL VOL DÉJÀ OUVERT ══════════════ -->
-<div id="dupFlightModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%);">
-    <header class="card-header">
+<div id="dupFlightModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(360px, 100%); overflow:hidden;">
+    <header class="card-header modal-header">
       <p class="card-header-title">Vol déjà ouvert</p>
     </header>
     <div class="card-content" style="padding:1rem;">
@@ -2503,14 +2535,14 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6400; background:rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(340px, 100%);">
-    <header class="card-header">
+<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6400; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(340px, 100%); overflow:hidden;">
+    <header class="card-header modal-header is-danger">
       <p class="card-header-title">Tout fermer ?</p>
     </header>
     <div class="card-content" style="padding:1rem;">
       <div style="display:flex; flex-direction:column; gap:8px;">
-        <button class="button is-danger is-fullwidth" type="button" onclick="confirmCloseAll()" style="font-weight:800;">
+        <button class="button modal-danger-btn is-fullwidth" type="button" onclick="confirmCloseAll()" style="font-weight:800;">
           Fermer tous les vols
         </button>
         <button class="button is-light is-fullwidth" type="button" onclick="document.getElementById('closeAllModal').style.display='none'" style="margin-top:4px;">
@@ -2525,14 +2557,14 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 <!-- Modal fermeture onglet -->
 
 
-<div id="tabCloseModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(340px, 100%);">
-    <header class="card-header">
+<div id="tabCloseModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(340px, 100%); overflow:hidden;">
+    <header class="card-header modal-header is-danger">
       <p class="card-header-title" id="tabCloseModalTitle">Fermer ce vol ?</p>
     </header>
     <div class="card-content" style="padding:1rem;">
       <div style="display:flex; flex-direction:column; gap:8px;">
-        <button class="button is-danger is-fullwidth" type="button" onclick="confirmCloseTab()" style="font-weight:800;">
+        <button class="button modal-danger-btn is-fullwidth" type="button" onclick="confirmCloseTab()" style="font-weight:800;">
           Fermer le vol
         </button>
         <button class="button is-light is-fullwidth" type="button" onclick="closeTabCloseModal()" style="margin-top:4px;">
@@ -2543,32 +2575,32 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6300; background:rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%);">
-    <header class="card-header">
+<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6300; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(360px, 100%); overflow:hidden;">
+    <header class="card-header modal-header is-danger">
       <p class="card-header-title">Effacer les données du vol ?</p>
     </header>
     <div class="card-content">
       <p style="margin-bottom:16px; color:var(--muted); font-size:.9rem;">Les timings, les loads et les retards seront effacés.<br>Les infos vol (Cie, N°, Date…) sont conservées.</p>
       <div class="buttons is-right">
         <button class="button is-light" type="button" onclick="document.getElementById('clearFieldsModal').style.display='none'">Annuler</button>
-        <button class="button is-warning" type="button" onclick="confirmClearFields()">Effacer</button>
+        <button class="button modal-danger-btn" type="button" onclick="confirmClearFields()">Effacer</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- BLOC NOTE — modal confirmation effacement -->
-<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6200; background:rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%);">
-    <header class="card-header">
+<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6200; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
+  <div class="card" style="width:min(360px, 100%); overflow:hidden;">
+    <header class="card-header modal-header is-danger">
       <p class="card-header-title">Effacer le bloc note ?</p>
     </header>
     <div class="card-content">
       <p style="margin-bottom:16px;">Cette action est irréversible.</p>
       <div class="buttons is-right">
         <button class="button is-light" type="button" onclick="document.getElementById('bnClearModal').style.display='none'">Annuler</button>
-        <button class="button is-danger" type="button" onclick="bnConfirmClear()">Effacer</button>
+        <button class="button modal-danger-btn" type="button" onclick="bnConfirmClear()">Effacer</button>
       </div>
     </div>
   </div>
@@ -2706,7 +2738,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724y"></script>
+<script src="./app.js?v=20260724af"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
