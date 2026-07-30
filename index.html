@@ -977,10 +977,11 @@ html.dark .tl-gantt-row:nth-child(even) .tl-sticky-label {
 #settingsMenu {
   position: fixed;
   bottom: calc(var(--fixed-footer-h) + 74px);
-  right: 14px;
+  left: max(14px, calc(50vw - 560px));
+  right: max(14px, calc(50vw - 560px));
   transform: none;
   z-index: 9200;
-  width: min(400px, calc(100vw - 28px));
+  width: auto;
   background: var(--card);
   border-radius: var(--popup-radius);
   box-shadow: var(--shadow);
@@ -2739,7 +2740,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724aj"></script>
+<script src="./app.js?v=20260724ak"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
