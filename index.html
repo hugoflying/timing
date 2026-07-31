@@ -2678,7 +2678,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
       <div class="timer-chip">
         <div class="k">CTOT</div>
-        <div id="timer-ctot" class="v" style="background:#334155;">--:--</div>
+        <div id="timer-ctot" class="v" style="background:#334155; cursor:pointer;" onclick="showCtotManual()" title="Modifier le CTOT">--:--</div>
         <input id="CTOT" type="hidden">
       </div>
 
@@ -2722,6 +2722,21 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </div>
 
 
+<div id="ctotRegModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
+    <header class="card-header modal-header">
+      <p class="card-header-title" style="color:#fff;">
+        CTOT&nbsp;<span id="ctotRegHeure" style="font-weight:800; margin-left:6px;"></span>
+      </p>
+      <button class="button is-small is-light" type="button"
+              onclick="document.getElementById('ctotRegModal').style.display='none'">Fermer</button>
+    </header>
+    <div class="card-content" style="padding:1rem;">
+      <div id="ctotRegBody"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MODAL PRESTATIONS ══════════════ -->
 <div id="prestationsModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
@@ -2755,7 +2770,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724as"></script>
+<script src="./app.js?v=20260724av"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
