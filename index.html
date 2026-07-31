@@ -48,6 +48,7 @@
   /* Forme */
   --radius: 14px;
   --popup-radius: 18px;
+  --wrap-pad-x: 14px; /* padding horizontal des sections = bord reel; repris par les popups */
 
   /* Champs */
   --field-bg:          #ffffff;
@@ -123,7 +124,7 @@ html.dark .fixed-header { border-bottom-color: rgba(255,255,255,.08); }
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  padding: 14px;
+  padding: 14px var(--wrap-pad-x);
   /* Reserve la hauteur des boutons flottants (bagage + reglages) pour que
      le dernier champ puisse toujours defiler au-dessus d'eux. */
   padding-bottom: 96px;
@@ -977,8 +978,8 @@ html.dark .tl-gantt-row:nth-child(even) .tl-sticky-label {
 #settingsMenu {
   position: fixed;
   bottom: calc(var(--fixed-footer-h) + 74px);
-  left: max(14px, calc(50vw - 560px));
-  right: max(14px, calc(50vw - 560px));
+  left: max(var(--wrap-pad-x), calc(50vw - 560px));
+  right: max(var(--wrap-pad-x), calc(50vw - 560px));
   transform: none;
   z-index: 9200;
   width: auto;
@@ -1674,8 +1675,8 @@ html.dark #btn-gpu.is-info { background: #2563eb; color: #fff; border-color: #25
     --radius:         10px;
   }
 
-  /* Layout général */
-  .app-wrap { padding-left: 8px; padding-right: 8px; }
+  /* Layout general : bord reel des sections a 8px sur mobile */
+  :root { --wrap-pad-x: 8px; }
   html .card-header-title { font-size: .85rem; }
 
   /* Inputs */
@@ -2740,7 +2741,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724ak"></script>
+<script src="./app.js?v=20260724am"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
