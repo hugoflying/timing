@@ -3894,6 +3894,7 @@ const PRESTATIONS_DEF = [
   { id:'toiletKit',    label:'Toilet Kit',             type:'yn' },
   { id:'pushPull',     label:'Push-pull',              type:'yn' },
   { id:'cargo',        label:'Cargo',                  type:'cargo' },
+  { id:'roues',        label:'Roues',                  type:'roues' },
 ];
 
 let _prestationsData  = {};
@@ -3961,7 +3962,7 @@ function openPrestationsModal(callback){
       poidsInput.id = 'poidsCargo';
       poidsInput.type = 'number';
       poidsInput.value = _prestationsData.poidsCargo || '';
-      poidsInput.placeholder = 'kg';
+      poidsInput.placeholder = 'Poids';
       poidsInput.style.cssText = 'width:64px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
       const poidsLbl = document.createElement('span');
       poidsLbl.style.cssText = 'font-size:.78rem; color:var(--muted); font-weight:600;';
@@ -3969,6 +3970,34 @@ function openPrestationsModal(callback){
       poidsWrap.appendChild(poidsInput);
       poidsWrap.appendChild(poidsLbl);
       wrap.appendChild(poidsWrap);
+
+      row.appendChild(wrap);
+
+    } else if(p.type === 'roues'){
+      // Roues : nombre + poids (kg a l'exterieur)
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex; align-items:center; gap:6px; justify-content:flex-end;';
+
+      const nbInput = document.createElement('input');
+      nbInput.id = 'rouesNb';
+      nbInput.type = 'number';
+      nbInput.value = _prestationsData.rouesNb || '';
+      nbInput.placeholder = 'Nb';
+      nbInput.style.cssText = 'width:58px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
+      wrap.appendChild(nbInput);
+
+      const rPoidsInput = document.createElement('input');
+      rPoidsInput.id = 'rouesPoids';
+      rPoidsInput.type = 'number';
+      rPoidsInput.value = _prestationsData.rouesPoids || '';
+      rPoidsInput.placeholder = 'Poids';
+      rPoidsInput.style.cssText = 'width:78px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
+      wrap.appendChild(rPoidsInput);
+
+      const rKgLbl = document.createElement('span');
+      rKgLbl.style.cssText = 'font-size:.78rem; color:var(--muted); font-weight:600;';
+      rKgLbl.textContent = 'kg';
+      wrap.appendChild(rKgLbl);
 
       row.appendChild(wrap);
     }
@@ -4026,6 +4055,11 @@ function confirmPrestations(){
       _prestationsData.cargo = chosen.length ? chosen : ['N'];
       const inp = document.getElementById('poidsCargo');
       if(inp) _prestationsData.poidsCargo = inp.value;
+    } else if(p.type === 'roues'){
+      const nb = document.getElementById('rouesNb');
+      const pd = document.getElementById('rouesPoids');
+      if(nb) _prestationsData.rouesNb    = nb.value;
+      if(pd) _prestationsData.rouesPoids = pd.value;
     } else {
       const btns = document.querySelectorAll(`#prestationsBody button[data-toggle-id="${p.id}"]`);
       btns.forEach(b => {
