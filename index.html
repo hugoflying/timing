@@ -2723,64 +2723,59 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 
 <!-- ══════════════ MODAL PRESTATIONS ══════════════ -->
-<div id="prestationsModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
-  <div style="background:var(--card); border-radius:14px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.4); display:flex; flex-direction:column;">
-    <div style="padding:18px 20px 12px; border-bottom:1px solid var(--field-border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:var(--card); border-radius:14px 14px 0 0;">
-      <span style="font-weight:900; font-size:1rem; color:var(--text);">Prestations</span>
-      <button onclick="closePrestationsModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);">✕</button>
+<div id="prestationsModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
+    <header class="card-header modal-header">
+      <p class="card-header-title">Prestations</p>
+    </header>
+    <div class="card-content" style="padding:1rem; overflow-y:auto; flex:1;">
+      <div id="prestationsBody" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
-    <div id="prestationsBody" style="padding:16px 20px; display:flex; flex-direction:column; gap:10px;"></div>
-    <div style="padding:12px 20px 18px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--field-border); position:sticky; bottom:0; background:var(--card); border-radius:0 0 14px 14px;">
-      <button onclick="closePrestationsModal()" style="padding:9px 18px; border-radius:8px; border:1px solid var(--field-border); background:transparent; color:var(--text); font-weight:700; cursor:pointer;">Annuler</button>
-      <button onclick="confirmPrestations()" style="padding:9px 20px; border-radius:8px; border:none; background:#16a34a; color:#fff; font-weight:800; cursor:pointer;">Valider →</button>
+    <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--field-border);">
+      <button class="button is-fullwidth" type="button" onclick="confirmPrestations()" style="background:#16a34a; color:#fff; font-weight:800;">Valider →</button>
+      <button class="button is-light is-fullwidth" type="button" onclick="closePrestationsModal()" style="margin-top:4px;">Annuler</button>
     </div>
   </div>
-</div><!-- ══════════════ MODAL ASSISTANCES ══════════════ -->
-<div id="assistancesModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
-  <div style="background:var(--card); border-radius:14px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,.4); display:flex; flex-direction:column;">
-    <div style="padding:18px 20px 12px; border-bottom:1px solid var(--field-border); display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-weight:900; font-size:1rem; color:var(--text);">Assistances PMR</span>
-      <button onclick="closeAssistancesModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);">✕</button>
+</div>
+<!-- ══════════════ MODAL ASSISTANCES ══════════════ -->
+<div id="assistancesModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
+    <header class="card-header modal-header">
+      <p class="card-header-title">Assistances PMR</p>
+    </header>
+    <div class="card-content" style="padding:1rem; overflow-y:auto; flex:1;">
+      <div id="assistancesBody" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
-    <div id="assistancesBody" style="padding:16px 20px; display:flex; flex-direction:column; gap:8px;"></div>
-    <div style="padding:12px 20px 18px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--field-border);">
-      <button onclick="closeAssistancesModal()" style="padding:9px 18px; border-radius:8px; border:1px solid var(--field-border); background:transparent; color:var(--text); font-weight:700; cursor:pointer;">Annuler</button>
-      <button onclick="confirmAssistances()" style="padding:9px 20px; border-radius:8px; border:none; background:#16a34a; color:#fff; font-weight:800; cursor:pointer;">Valider →</button>
+    <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--field-border);">
+      <button class="button is-fullwidth" type="button" onclick="confirmAssistances()" style="background:#16a34a; color:#fff; font-weight:800;">Valider →</button>
+      <button class="button is-light is-fullwidth" type="button" onclick="closeAssistancesModal()" style="margin-top:4px;">Annuler</button>
     </div>
   </div>
 </div>
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724ap"></script>
+<script src="./app.js?v=20260724ar"></script>
 </body>
 </html>
-<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
-  <div style="background:var(--card); border-radius:14px; width:100%; max-width:380px; box-shadow:0 20px 60px rgba(0,0,0,.4); display:flex; flex-direction:column; gap:0;">
-    <div style="padding:18px 20px 12px; border-bottom:1px solid var(--field-border); display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-weight:900; font-size:1rem; color:var(--text);">Récapitulatif</span>
-      <button onclick="closeRzaModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);">✕</button>
-    </div>
-
-    <!-- Résumé timings -->
-    <div style="padding:14px 20px 8px;">
+<div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
+    <header class="card-header modal-header">
+      <p class="card-header-title">Récapitulatif</p>
+    </header>
+    <div class="card-content" style="padding:1rem; overflow-y:auto; flex:1;">
       <div id="rzaSummaryTable"></div>
+      <div id="rzaWarnings" style="display:none; flex-direction:column; gap:5px; margin-top:10px;"></div>
+      <div style="margin-top:14px;">
+        <label style="font-size:.8rem; font-weight:700; color:var(--muted); display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;">Initiales RZA</label>
+        <input id="rzaInitialesInput" type="text" maxlength="3" placeholder="ex: ABC"
+          oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,''); this.style.borderColor=''"
+          style="width:100%; padding:10px 12px; border:1.5px solid var(--field-border); border-radius:8px; background:var(--field); color:var(--text); font-size:1.1rem; font-weight:800; letter-spacing:.1em; text-align:center; text-transform:uppercase;">
+      </div>
     </div>
-
-    <!-- Alertes -->
-    <div id="rzaWarnings" style="display:none; padding:0 20px 10px; display:flex; flex-direction:column; gap:5px;"></div>
-
-    <!-- RZA -->
-    <div style="padding:12px 20px; border-top:1px solid var(--field-border);">
-      <label style="font-size:.8rem; font-weight:700; color:var(--muted); display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;">Initiales RZA</label>
-      <input id="rzaInitialesInput" type="text" maxlength="3" placeholder="ex: ABC"
-        oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,''); this.style.borderColor=''"
-        style="width:100%; padding:10px 12px; border:1.5px solid var(--field-border); border-radius:8px; background:var(--field); color:var(--text); font-size:1.1rem; font-weight:800; letter-spacing:.1em; text-align:center; text-transform:uppercase;">
-    </div>
-
-    <div style="padding:12px 20px 18px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--field-border);">
-      <button onclick="closeRzaModal()" style="padding:9px 18px; border-radius:8px; border:1px solid var(--field-border); background:transparent; color:var(--text); font-weight:700; cursor:pointer;">Annuler</button>
-      <button onclick="confirmRza()" style="padding:9px 20px; border-radius:8px; border:none; background:#16a34a; color:#fff; font-weight:800; cursor:pointer;">Valider →</button>
+    <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--field-border);">
+      <button class="button is-fullwidth" type="button" onclick="confirmRza()" style="background:#16a34a; color:#fff; font-weight:800;">Valider →</button>
+      <button class="button is-light is-fullwidth" type="button" onclick="closeRzaModal()" style="margin-top:4px;">Annuler</button>
     </div>
   </div>
 </div>
