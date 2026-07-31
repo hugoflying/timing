@@ -1624,29 +1624,7 @@ function renderTabs(){
     btn.onclick = ()=> switchTab(id);
     btn.ondblclick = ()=> openTabCloseModal(id);
 
-    // Bouton refresh ↻ — toujours affiché, grisé si pas de AK
-    const r = document.createElement('button');
-    r.className = 'button is-light tab-refresh';
-    r.type = 'button';
-    r.title = 'Rafraîchir depuis AK';
-    r.innerHTML = '↻';
-    r.onclick = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      r.classList.add('is-loading');
-      try { await refreshAKTab(id); }
-      finally { r.classList.remove('is-loading'); }
-    };
-
-    if (!data.akMeta) {
-      r.disabled = true;
-      r.title = "Pas de vol AK associé";
-      r.style.opacity = '0.45';
-      r.style.cursor = 'not-allowed';
-    }
-
     wrap.appendChild(btn);
-    wrap.appendChild(r);
     tabBar.appendChild(wrap);
   });
 
@@ -2999,6 +2977,52 @@ function setTimeModeUTC(enable, fromInit=false){
   const timerCtot2 = document.getElementById('timer-ctot');
   if(ctotEl2 && timerCtot2) timerCtot2.textContent = ctotEl2.value || '--:--';
 
+  // Si le popup CTOT est ouvert, le redessiner pour suivre le mode local/UTC
+  const ctotModal = document.getElementById('ctotRegModal');
+  if(ctotModal && ctotModal.style.display === 'flex' && typeof showCtotManual === 'function'){
+    showCtotManual();
+  }
+
+}
+
+/* CTOT — edition manuelle (pas de regulation AK dans TURNAROUND) */
+function showCtotManual(){
+  const modal = document.getElementById('ctotRegModal');
+  const body  = document.getElementById('ctotRegBody');
+  const hEl   = document.getElementById('ctotRegHeure');
+  if(!modal || !body) return;
+
+  const ctot  = (document.getElementById('CTOT')?.value || '').trim();
+  const tzSuf = isUTC ? 'Z' : 'LT';
+  if(hEl) hEl.textContent = ctot ? (ctot + ' ' + tzSuf) : '';
+
+  body.innerHTML =
+      '<div style="font-weight:800; color:var(--muted); font-size:.8rem; margin-bottom:6px;">Modifier le CTOT (' + tzSuf + ')</div>'
+    + '<div style="display:flex; gap:8px; align-items:center;">'
+    + '<input id="ctotManualInput" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" value="' + ctot + '" '
+    + 'style="width:96px; padding:8px 10px; border:1.5px solid var(--field-border); border-radius:8px; background:var(--field); color:var(--text); font-size:1rem; font-weight:800; text-align:center; letter-spacing:.05em;">'
+    + '<button type="button" onclick="applyManualCtot()" style="flex:1; padding:9px 14px; border:none; border-radius:8px; background:#2563eb; color:#fff; font-weight:800; cursor:pointer;">Appliquer</button>'
+    + '</div>';
+
+  modal.style.display = 'flex';
+}
+
+function applyManualCtot(){
+  const inp = document.getElementById('ctotManualInput');
+  if(!inp) return;
+  const m = /^(\d{1,2}):?(\d{2})$/.exec((inp.value || '').trim());
+  if(!m){ inp.style.borderColor = '#ef4444'; return; }
+  const hh = parseInt(m[1],10), mm = parseInt(m[2],10);
+  if(hh > 23 || mm > 59){ inp.style.borderColor = '#ef4444'; return; }
+  const val = String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+  const ctotEl = document.getElementById('CTOT');
+  if(ctotEl) ctotEl.value = val;
+  const timerCtot = document.getElementById('timer-ctot');
+  if(timerCtot) timerCtot.textContent = val;
+  if(typeof updateChipColors === 'function') updateChipColors();
+  if(typeof updateAllCalculations === 'function') updateAllCalculations();
+  if(typeof saveCurrentTabData === 'function') saveCurrentTabData();
+  showCtotManual();
 }
 
 /* Popup */
