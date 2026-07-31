@@ -2583,11 +2583,14 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
     <header class="card-header modal-header">
       <p class="card-header-title">Effacer les données du vol ?</p>
     </header>
-    <div class="card-content">
-      <p style="margin-bottom:16px; color:var(--muted); font-size:.9rem;">Les timings, les loads et les retards seront effacés.<br>Les infos vol (Cie, N°, Date…) sont conservées.</p>
-      <div class="buttons is-right">
-        <button class="button is-light" type="button" onclick="document.getElementById('clearFieldsModal').style.display='none'">Annuler</button>
-        <button class="button modal-danger-btn" type="button" onclick="confirmClearFields()">Effacer</button>
+    <div class="card-content" style="padding:1rem;">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button class="button modal-danger-btn is-fullwidth" type="button" onclick="confirmClearFields()" style="font-weight:800;">
+          Effacer les données du vol
+        </button>
+        <button class="button is-light is-fullwidth" type="button" onclick="document.getElementById('clearFieldsModal').style.display='none'" style="margin-top:4px;">
+          Annuler
+        </button>
       </div>
     </div>
   </div>
@@ -2741,7 +2744,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724an"></script>
+<script src="./app.js?v=20260724ao"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
