@@ -69,8 +69,8 @@
 
 /* ===== 2. DARK MODE — Manuel uniquement (bouton Clair/Sombre) ===== */
 html.dark {
-  --bg:                #0f1115;
-  --card:              #151922;
+  --bg:                #14171e;
+  --card:              #1a1f29;
   --text:              #e5e7eb;
   --muted:             #9ca3af;
   --shadow:            0 10px 28px rgba(0,0,0,.45);
@@ -1832,6 +1832,14 @@ html, body {
    apparait aux coins arrondis au-dessus du bandeau (angles non remplis). */
 .card:has(> .modal-header) { overflow: hidden; border-radius: var(--popup-radius); }
 
+
+/* ===== Mode sombre : attenuation anti-neon des pastilles ===== */
+html.dark .timer-chip .v           { background:#a84440; color:#f4e9e8; }
+html.dark #timer-eobt              { background:#2f7350; color:#e8f2ec; }
+html.dark #timer-h8                { background:#a88a2e; color:#15130a; }
+html.dark #timer-lds               { background:#8a3d94; color:#f2e6f4; }
+html.dark .timer-chip .v.chip-ok   { background:#2f7350 !important; color:#e8f2ec !important; }
+html.dark .timer-chip .v.chip-late { background:#a84440 !important; color:#f4e9e8 !important; }
 </style>
 </head>
 
@@ -2744,7 +2752,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724ao"></script>
+<script src="./app.js?v=20260724ap"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
