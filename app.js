@@ -3942,7 +3942,7 @@ function openPrestationsModal(callback){
         const btn = document.createElement('button');
         btn.dataset.cargoOpt = opt;
         btn.textContent = opt;
-        btn.style.cssText = `padding:5px 11px; border-radius:6px; border:1.5px solid ${active?'#2563eb':'var(--field-border)'}; background:${active?'#2563eb':'transparent'}; color:${active?'#fff':'var(--text)'}; font-size:.78rem; font-weight:700; cursor:pointer;`;
+        btn.style.cssText = `padding:5px 6px; width:72px; box-sizing:border-box; text-align:center; border-radius:6px; border:1.5px solid ${active?'#2563eb':'var(--field-border)'}; background:${active?'#2563eb':'transparent'}; color:${active?'#fff':'var(--text)'}; font-size:.78rem; font-weight:700; cursor:pointer;`;
         btn.onclick = () => {
           const isNow = btn.style.background.includes('2563eb') || btn.style.background === 'rgb(37, 99, 235)';
           btn.style.background  = isNow ? 'transparent' : '#2563eb';
@@ -3963,7 +3963,7 @@ function openPrestationsModal(callback){
       poidsInput.type = 'number';
       poidsInput.value = _prestationsData.poidsCargo || '';
       poidsInput.placeholder = 'Poids';
-      poidsInput.style.cssText = 'width:64px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
+      poidsInput.style.cssText = 'width:72px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
       const poidsLbl = document.createElement('span');
       poidsLbl.style.cssText = 'font-size:.78rem; color:var(--muted); font-weight:600;';
       poidsLbl.textContent = 'kg';
@@ -3983,7 +3983,7 @@ function openPrestationsModal(callback){
       nbInput.type = 'number';
       nbInput.value = _prestationsData.rouesNb || '';
       nbInput.placeholder = 'Nb';
-      nbInput.style.cssText = 'width:58px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
+      nbInput.style.cssText = 'width:72px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
       wrap.appendChild(nbInput);
 
       const rPoidsInput = document.createElement('input');
@@ -3991,7 +3991,7 @@ function openPrestationsModal(callback){
       rPoidsInput.type = 'number';
       rPoidsInput.value = _prestationsData.rouesPoids || '';
       rPoidsInput.placeholder = 'Poids';
-      rPoidsInput.style.cssText = 'width:78px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
+      rPoidsInput.style.cssText = 'width:72px; padding:5px 7px; border:1.5px solid var(--field-border); border-radius:6px; background:var(--field); color:var(--text); font-size:.82rem; font-weight:600; text-align:center;';
       wrap.appendChild(rPoidsInput);
 
       const rKgLbl = document.createElement('span');
