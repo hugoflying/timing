@@ -2512,8 +2512,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Modal confirmation TOUT FERMER -->
 <!-- ══════════════ MODAL VOL DÉJÀ OUVERT ══════════════ -->
-<div id="dupFlightModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%); overflow:hidden; border-radius:var(--popup-radius);">
+<div id="dupFlightModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Vol déjà ouvert</p>
     </header>
@@ -2538,8 +2538,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6400; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(340px, 100%); overflow:hidden; border-radius:var(--popup-radius);">
+<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6400; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Tout fermer ?</p>
     </header>
@@ -2560,8 +2560,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 <!-- Modal fermeture onglet -->
 
 
-<div id="tabCloseModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(340px, 100%); overflow:hidden; border-radius:var(--popup-radius);">
+<div id="tabCloseModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title" id="tabCloseModalTitle">Fermer ce vol ?</p>
     </header>
@@ -2578,8 +2578,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6300; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%); overflow:hidden; border-radius:var(--popup-radius);">
+<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6300; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Effacer les données du vol ?</p>
     </header>
@@ -2594,8 +2594,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </div>
 
 <!-- BLOC NOTE — modal confirmation effacement -->
-<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6200; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px;">
-  <div class="card" style="width:min(360px, 100%); overflow:hidden; border-radius:var(--popup-radius);">
+<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6200; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Effacer le bloc note ?</p>
     </header>
@@ -2741,7 +2741,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724am"></script>
+<script src="./app.js?v=20260724an"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); align-items:center; justify-content:center; padding:16px;">
