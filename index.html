@@ -1122,6 +1122,7 @@ html.dark .fixed-footer { border-top-color: rgba(255,255,255,.08); }
 
 /* ===== 22. DL (RETARDS) ===== */
 .dl-wrap  { display: block; }
+.dl-wrap .field { margin-bottom: 0; }  /* la grille gere l'espacement (row-gap) : pas de double marge */
 .dl-grid  { display: grid; grid-template-columns: 1fr; gap: var(--gap); }
 .dl-wrap .input { border-width: 2px; font-weight: 700; height: var(--time-field-h); min-height: var(--time-field-h); }
 #FaitsSaillants { border-width: 2px; }
@@ -2773,7 +2774,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724az"></script>
+<script src="./app.js?v=20260724ba"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
