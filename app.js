@@ -3002,6 +3002,7 @@ function showCtotManual(){
     + '<input id="ctotManualInput" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" value="' + ctot + '" '
     + 'style="width:96px; padding:8px 10px; border:1.5px solid var(--field-border); border-radius:8px; background:var(--field); color:var(--text); font-size:1rem; font-weight:800; text-align:center; letter-spacing:.05em;">'
     + '<button type="button" onclick="applyManualCtot()" style="flex:1; padding:9px 14px; border:none; border-radius:8px; background:#2563eb; color:#fff; font-weight:800; cursor:pointer;">Appliquer</button>'
+    + (ctot ? '<button type="button" onclick="clearManualCtot()" style="padding:9px 14px; border:none; border-radius:8px; background:#ef4444; color:#fff; font-weight:800; cursor:pointer;">Supprimer</button>' : '')
     + '</div>';
 
   modal.style.display = 'flex';
@@ -3022,7 +3023,20 @@ function applyManualCtot(){
   if(typeof updateChipColors === 'function') updateChipColors();
   if(typeof updateAllCalculations === 'function') updateAllCalculations();
   if(typeof saveCurrentTabData === 'function') saveCurrentTabData();
-  showCtotManual();
+  const modal = document.getElementById('ctotRegModal');
+  if(modal) modal.style.display = 'none';
+}
+
+function clearManualCtot(){
+  const ctotEl = document.getElementById('CTOT');
+  if(ctotEl) ctotEl.value = '';
+  const timerCtot = document.getElementById('timer-ctot');
+  if(timerCtot) timerCtot.textContent = '--:--';
+  if(typeof updateChipColors === 'function') updateChipColors();
+  if(typeof updateAllCalculations === 'function') updateAllCalculations();
+  if(typeof saveCurrentTabData === 'function') saveCurrentTabData();
+  const modal = document.getElementById('ctotRegModal');
+  if(modal) modal.style.display = 'none';
 }
 
 /* Popup */
