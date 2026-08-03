@@ -1254,6 +1254,8 @@ function refreshUIForTabs(){
 
   document.body.classList.toggle('has-tab', hasTab);
   document.body.classList.toggle('no-tab', !hasTab);
+  if(!hasTab){ if(!window._wasNoTab && typeof window.homeKickSlideshow === 'function') window.homeKickSlideshow(); window._wasNoTab = true; }
+  else window._wasNoTab = false;
 
   // Mettre à jour le padding immédiatement après affichage du app-wrap
   requestAnimationFrame(() => updateHeaderOffset());
@@ -5394,39 +5396,43 @@ window.addEventListener('load', function(){
 (function(){
   const CANDIDATES = ['./home-bg.jpg'];
   for(let i=1;i<=10;i++) CANDIDATES.push('./home-bg-'+i+'.jpg');
-  const INTERVAL = 7000;               // ms entre deux photos
+  const INTERVAL = 30000;              // 30 s par photo
   const loaded = [];
-  let order = [], idx = 0, cur = 'A', started = false;
+  let cur = 'A', timer = null, ready = false, lastSrc = null;
 
-  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function show(src){
     const a = document.getElementById('homeSlideA'), b = document.getElementById('homeSlideB');
-    if(!a || !b) return;
+    if(!a || !b || !src) return;
     const nextEl = (cur==='A') ? b : a, curEl = (cur==='A') ? a : b;
     nextEl.style.backgroundImage = 'url("' + src + '")';
     nextEl.classList.add('is-active');
     curEl.classList.remove('is-active');
     cur = (cur==='A') ? 'B' : 'A';
+    lastSrc = src;
   }
-  function start(){
-    if(started || !loaded.length) return; started = true;
-    order = shuffle(loaded.slice()); idx = 0; show(order[0]);
-    if(order.length > 1){
-      setInterval(() => {
-        idx++;
-        if(idx >= order.length){ order = shuffle(loaded.slice()); idx = 0; }
-        show(order[idx]);
-      }, INTERVAL);
-    }
+  function randomSrc(){
+    if(loaded.length <= 1) return loaded[0] || null;
+    let s; do { s = loaded[Math.floor(Math.random()*loaded.length)]; } while(s === lastSrc);
+    return s;
   }
+  function next(){ show(randomSrc()); }
+  function schedule(){ clearInterval(timer); if(loaded.length > 1) timer = setInterval(next, INTERVAL); }
+
+  // Appelé à chaque arrivée sur l'accueil : photo aléatoire immédiate + reset du timer
+  window.homeKickSlideshow = function(){
+    if(!ready || !loaded.length) return;
+    next(); schedule();
+  };
+
   function preload(){
     let pending = CANDIDATES.length;
     CANDIDATES.forEach(src => {
       const im = new Image();
-      im.onload  = () => { loaded.push(src); if(--pending === 0) start(); };
-      im.onerror = () => { if(--pending === 0) start(); };
+      im.onload  = () => { loaded.push(src); if(--pending === 0) done(); };
+      im.onerror = () => { if(--pending === 0) done(); };
       im.src = src;
     });
+    function done(){ ready = true; if(loaded.length){ next(); schedule(); } }
   }
   if(document.readyState !== 'loading') preload();
   else document.addEventListener('DOMContentLoaded', preload);
