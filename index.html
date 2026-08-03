@@ -1866,7 +1866,8 @@ body.no-tab .home-screen{ display:flex; top:0; bottom:0; }
 /* Aucun vol : plein écran — header (barre Vols) + footer + FAB bagage masqués */
 body.no-tab .fixed-header,
 body.no-tab .fixed-footer,
-body.no-tab #loadFab{ display:none !important; }
+body.no-tab #loadFab,
+body.no-tab #settingsFab{ display:none !important; }
 
 .home-hero{
   padding: max(30px, calc(env(safe-area-inset-top, 0px) + 24px)) 26px 0;
@@ -2855,7 +2856,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bj"></script>
+<script src="./app.js?v=20260724bk"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
