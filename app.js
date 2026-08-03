@@ -5388,3 +5388,46 @@ window.addEventListener('load', function(){
   }
   setInterval(tick, 1000); tick();
 })();
+
+
+/* ===== Accueil : diaporama de fond (fondu aléatoire, hors-ligne) ===== */
+(function(){
+  const CANDIDATES = ['./home-bg.jpg'];
+  for(let i=1;i<=10;i++) CANDIDATES.push('./home-bg-'+i+'.jpg');
+  const INTERVAL = 7000;               // ms entre deux photos
+  const loaded = [];
+  let order = [], idx = 0, cur = 'A', started = false;
+
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function show(src){
+    const a = document.getElementById('homeSlideA'), b = document.getElementById('homeSlideB');
+    if(!a || !b) return;
+    const nextEl = (cur==='A') ? b : a, curEl = (cur==='A') ? a : b;
+    nextEl.style.backgroundImage = 'url("' + src + '")';
+    nextEl.classList.add('is-active');
+    curEl.classList.remove('is-active');
+    cur = (cur==='A') ? 'B' : 'A';
+  }
+  function start(){
+    if(started || !loaded.length) return; started = true;
+    order = shuffle(loaded.slice()); idx = 0; show(order[0]);
+    if(order.length > 1){
+      setInterval(() => {
+        idx++;
+        if(idx >= order.length){ order = shuffle(loaded.slice()); idx = 0; }
+        show(order[idx]);
+      }, INTERVAL);
+    }
+  }
+  function preload(){
+    let pending = CANDIDATES.length;
+    CANDIDATES.forEach(src => {
+      const im = new Image();
+      im.onload  = () => { loaded.push(src); if(--pending === 0) start(); };
+      im.onerror = () => { if(--pending === 0) start(); };
+      im.src = src;
+    });
+  }
+  if(document.readyState !== 'loading') preload();
+  else document.addEventListener('DOMContentLoaded', preload);
+})();
