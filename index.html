@@ -1844,6 +1844,45 @@ html.dark #timer-h8                { background:#a88a2e; color:#15130a; }
 html.dark #timer-lds               { background:#8a3d94; color:#f2e6f4; }
 html.dark .timer-chip .v.chip-ok   { background:#2f7350 !important; color:#e8f2ec !important; }
 html.dark .timer-chip .v.chip-late { background:#a84440 !important; color:#f4e9e8 !important; }
+
+/* ===== Écran d'accueil (aucun vol ouvert) ===== */
+.home-screen{
+  display:none; position:fixed;
+  top:var(--fixed-header-h); bottom:var(--fixed-footer-h); left:0; right:0;
+  align-items:center; justify-content:center;
+  padding:24px var(--wrap-pad-x); z-index:1;
+}
+body.no-tab .home-screen{ display:flex; bottom:0; }
+/* Aucun vol : on retire les pastilles (haut + bas) et le FAB bagage */
+body.no-tab .timer-row,
+body.no-tab .fixed-footer,
+body.no-tab #loadFab{ display:none !important; }
+
+.home-inner{ display:flex; flex-direction:column; align-items:center; text-align:center; max-width:340px; }
+.home-mark{
+  width:78px; height:78px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:color-mix(in srgb, #2563eb 10%, transparent);
+  color:#2563eb; margin-bottom:24px;
+}
+.home-mark svg{ width:38px; height:38px; }
+.home-brand{ font-size:1.5rem; font-weight:900; letter-spacing:.16em; line-height:1.18; color:var(--text); }
+.home-tagline{
+  margin-top:10px; font-size:.7rem; font-weight:700; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted);
+}
+.home-cta{
+  margin-top:32px; padding:12px 32px; border:none; border-radius:999px;
+  background:#2563eb; color:#fff; font-weight:800; font-size:.95rem; cursor:pointer;
+  box-shadow:0 6px 18px rgba(37,99,235,.28); transition:transform .12s, box-shadow .12s;
+}
+.home-cta:hover{ transform:translateY(-1px); box-shadow:0 8px 22px rgba(37,99,235,.34); }
+.home-cta:active{ transform:translateY(0); }
+.home-alt{
+  margin-top:16px; background:none; border:none; color:var(--muted);
+  font-weight:600; font-size:.82rem; cursor:pointer;
+}
+.home-alt:hover{ color:var(--text); }
 </style>
 </head>
 
@@ -2173,6 +2212,15 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </div>
 
 
+
+<div class="home-screen">
+  <div class="home-inner">
+    <div class="home-mark"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></div>
+    <div class="home-brand">COMPANION<br>TURNAROUND<br>APP</div>
+    <div class="home-tagline">Suivi des rotations · BVA</div>
+    <button class="home-cta" type="button" onclick="createNewTab()">Créer un vol</button>
+  </div>
+</div>
 
 <div class="app-wrap">
 
@@ -2774,7 +2822,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724ba"></script>
+<script src="./app.js?v=20260724be"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
