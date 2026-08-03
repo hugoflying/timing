@@ -5374,3 +5374,17 @@ window.addEventListener('load', function(){
   new MutationObserver(syncOverflow).observe(wrap, { childList:true, subtree:true });
   syncOverflow();
 });
+
+
+/* ===== Accueil : horloge LT/Z ===== */
+(function(){
+  function tick(){
+    const lt = document.getElementById('homeClockLT');
+    const z  = document.getElementById('homeClockZ');
+    if(!lt && !z) return;
+    const d = new Date(), p = n => String(n).padStart(2,'0');
+    if(lt) lt.textContent = p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+    if(z)  z.textContent  = p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds());
+  }
+  setInterval(tick, 1000); tick();
+})();
