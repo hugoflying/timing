@@ -1850,26 +1850,32 @@ html.dark .timer-chip .v.chip-late { background:#a84440 !important; color:#f4e9e
   display:none; position:fixed;
   top:var(--fixed-header-h); bottom:var(--fixed-footer-h); left:0; right:0;
   flex-direction:column; justify-content:space-between; z-index:1; overflow:hidden;
-  /* Photo plein cadre + fond bleu nuit dégradé vers le bas (biais diagonal léger) */
-  background:
-    linear-gradient(196deg,
-      rgba(2,6,23,.52) 0%,
-      rgba(2,6,23,.08) 20%,
-      rgba(2,6,23,.10) 40%,
-      rgba(2,6,23,.78) 72%,
-      rgba(8,12,25,.985) 100%),
-    url('./home-bg.jpg') center/cover no-repeat,
-    linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
   background-color:#0b1020;
 }
 body.no-tab .home-screen{ display:flex; top:0; bottom:0; }
-/* Aucun vol : plein écran — header (barre Vols) + footer + FAB bagage masqués */
+/* Aucun vol : plein écran — header (barre Vols) + footer + FABs masqués */
 body.no-tab .fixed-header,
 body.no-tab .fixed-footer,
 body.no-tab #loadFab,
 body.no-tab #settingsFab{ display:none !important; }
 
+/* Diaporama de fond (fondu enchaîné). Dépose home-bg-1.jpg, home-bg-2.jpg, … (ou home-bg.jpg) */
+.home-slide{
+  position:absolute; inset:0; z-index:0;
+  background-position:center; background-size:cover; background-repeat:no-repeat;
+  opacity:0; transition:opacity 1.4s ease;
+}
+.home-slide.is-active{ opacity:1; }
+.home-scrim{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(196deg,
+    rgba(2,6,23,.52) 0%, rgba(2,6,23,.08) 20%, rgba(2,6,23,.10) 40%,
+    rgba(2,6,23,.78) 72%, rgba(8,12,25,.985) 100%);
+}
+
 .home-hero{
+  position:relative; z-index:2;
   padding: max(30px, calc(env(safe-area-inset-top, 0px) + 24px)) 26px 0;
   color:#fff;
 }
@@ -1887,6 +1893,7 @@ body.no-tab #settingsFab{ display:none !important; }
 }
 
 .home-content{
+  position:relative; z-index:2;
   display:flex; flex-direction:column; align-items:center; gap:28px;
   padding: 0 var(--wrap-pad-x) max(30px, calc(env(safe-area-inset-bottom, 0px) + 26px));
 }
@@ -2239,6 +2246,9 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 
 <div class="home-screen">
+  <div class="home-slide" id="homeSlideA"></div>
+  <div class="home-slide" id="homeSlideB"></div>
+  <div class="home-scrim"></div>
   <div class="home-hero">
     <div class="home-rule"></div>
     <div class="home-brand">COMPANION<br>TURNAROUND<br>APP</div>
@@ -2856,7 +2866,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bm"></script>
+<script src="./app.js?v=20260724bn"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
