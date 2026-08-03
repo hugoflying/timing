@@ -1857,46 +1857,59 @@ body.no-tab .fixed-header,
 body.no-tab .fixed-footer,
 body.no-tab #loadFab{ display:none !important; }
 
-/* Hero photo (grande) coupée en diagonale (dépose ./home-bg.jpg ; sinon dégradé) */
+/* Hero photo coupée en diagonale (dépose ./home-bg.jpg ; sinon dégradé bleu nuit) */
 .home-photo{
-  position:relative; flex:0 0 64%;
+  position:relative; flex:0 0 60%;
   background:
+    linear-gradient(158deg, rgba(30,64,175,.30) 0%, rgba(30,64,175,0) 48%),
     url('./home-bg.jpg') center/cover no-repeat,
-    linear-gradient(135deg, #1e40af 0%, #0f172a 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 100%);
+    linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 52%, 0 100%);
 }
 .home-photo::after{
   content:''; position:absolute; inset:0;
-  background:linear-gradient(180deg, rgba(2,6,23,0) 45%, rgba(2,6,23,.72) 100%);
+  background:linear-gradient(180deg, rgba(2,6,23,.62) 0%, rgba(2,6,23,.06) 34%, rgba(2,6,23,0) 62%);
 }
-.home-hero{ position:absolute; left:22px; right:22px; bottom:26px; z-index:1; color:#fff; }
+.home-hero{
+  position:absolute; z-index:2; left:26px; right:26px;
+  top:max(30px, calc(env(safe-area-inset-top, 0px) + 22px));
+  color:#fff;
+}
+.home-rule{
+  width:44px; height:3px; border-radius:2px; background:#3b82f6;
+  margin-bottom:18px; box-shadow:0 0 14px rgba(59,130,246,.65);
+}
 .home-brand{
-  font-size:1.5rem; font-weight:900; letter-spacing:.14em; line-height:1.16;
-  color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.45);
+  font-size:1.6rem; font-weight:900; letter-spacing:.1em; line-height:1.14;
+  color:#fff; text-shadow:0 2px 18px rgba(0,0,0,.55);
 }
 .home-tagline{
-  margin-top:8px; font-size:.7rem; font-weight:700; letter-spacing:.2em;
-  text-transform:uppercase; color:rgba(255,255,255,.85);
+  margin-top:12px; font-size:.66rem; font-weight:700; letter-spacing:.22em;
+  text-transform:uppercase; color:rgba(255,255,255,.82);
 }
 
 .home-content{
   flex:1 1 auto; min-height:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:26px;
-  padding:10px var(--wrap-pad-x) 26px;
+  align-items:center; justify-content:center; gap:32px;
+  padding:12px var(--wrap-pad-x) 30px;
 }
 /* Horloge LOCALE / ZULU */
-.home-clock{ display:flex; gap:18px; justify-content:center; align-items:stretch; }
-.home-clock .clk{ display:flex; flex-direction:column; align-items:center; gap:3px; }
-.home-clock .clk-t{ font-size:1.8rem; font-weight:900; letter-spacing:.04em; color:var(--text); font-variant-numeric:tabular-nums; }
-.home-clock .clk-l{ font-size:.62rem; font-weight:800; letter-spacing:.18em; color:var(--muted); }
-.home-clock .clk-sep{ width:1px; background:var(--field-border); margin:6px 0; }
-
-.home-actions{ display:flex; flex-direction:column; align-items:center; gap:10px; }
-.home-cta{
-  padding:13px 34px; border:none; border-radius:999px;
-  background:#2563eb; color:#fff; font-weight:800; font-size:.95rem; cursor:pointer;
-  box-shadow:0 6px 18px rgba(37,99,235,.28);
+.home-clock{ display:flex; gap:24px; align-items:center; }
+.home-clock .clk{ display:flex; flex-direction:column; align-items:center; gap:5px; }
+.home-clock .clk-t{
+  font-size:2.05rem; font-weight:800; letter-spacing:.01em; color:var(--text);
+  font-variant-numeric:tabular-nums;
 }
+.home-clock .clk-l{ font-size:.58rem; font-weight:800; letter-spacing:.26em; color:var(--muted); }
+.home-clock .clk-sep{ width:1px; height:46px; background:var(--field-border); }
+
+.home-actions{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+.home-cta{
+  padding:14px 38px; border:none; border-radius:999px;
+  background:#2563eb; color:#fff; font-weight:800; font-size:.98rem; letter-spacing:.01em; cursor:pointer;
+  box-shadow:0 10px 26px rgba(37,99,235,.35);
+}
+.home-cta:active{ transform:translateY(1px); }
 .home-alt{ background:none; border:none; color:var(--muted); font-weight:600; font-size:.82rem; cursor:pointer; }
 </style>
 </head>
@@ -2231,6 +2244,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 <div class="home-screen">
   <div class="home-photo">
     <div class="home-hero">
+      <div class="home-rule"></div>
       <div class="home-brand">COMPANION<br>TURNAROUND<br>APP</div>
       <div class="home-tagline">Suivi des rotations · BVA</div>
     </div>
@@ -2847,7 +2861,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bh"></script>
+<script src="./app.js?v=20260724bi"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
