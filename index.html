@@ -531,43 +531,6 @@ html.dark .kv-card {
 }
 .toggle input:checked + .track .thumb { transform: translateX(18px); }
 
-/* ===== 17. AK POPOVER ===== */
-#akPopover {
-  position: fixed;
-  inset: calc(var(--fixed-header-h) + 12px) max(var(--wrap-pad-x), calc(50vw - 560px)) 12px max(var(--wrap-pad-x), calc(50vw - 560px));
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border-radius: var(--popup-radius);
-  z-index: 4700;
-  padding: 0;
-  border: 1px solid rgba(0,0,0,.08);
-  display: none;
-  overflow: hidden;
-  flex-direction: column;
-}
-html.dark #akPopover { border-color: rgba(255,255,255,.10); }
-
-body.ak-open #loadFab,
-body.ak-open #settingsFab { display: none; }
-
-#akBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 4600;
-  display: none;
-}
-#akPopover .ak-header {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--card);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-html.dark #akPopover .ak-header { border-bottom-color: rgba(255,255,255,.10); }
-#akList { flex: 1 1 auto; overflow-y: auto; }
-
 /* ===== 18. TIMELINE ===== */
 /* ===== TIMELINE GANTT ===== */
 .timeline-toolbar {
@@ -1611,37 +1574,6 @@ html.dark .tw-color-is-bordeaux { border-color: #ef4444; color: #ef4444; }
   flex-shrink: 0;
 }
 
-/* ===== 30. AK LIST ===== */
-.ak-pair-row {
-  display: flex;
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: var(--radius);
-  background: var(--card);
-  margin-bottom: 10px;
-  overflow: hidden;
-  box-shadow: var(--shadow2);
-}
-html.dark .ak-pair-row { border-color: rgba(255,255,255,.10); }
-
-/* Teinte de fond différente ARR (gauche) vs DEP (droite) */
-.ak-half-arr { background: rgba(219,234,254,.25); }   /* bleu très léger */
-.ak-half-dep { background: rgba(220,252,231,.25); }   /* vert très léger */
-html.dark .ak-half-arr { background: rgba(30,58,138,.15); }
-html.dark .ak-half-dep { background: rgba(20,83,45,.15); }
-
-.ak-half         { flex: 1; padding: 10px 10px 10px 14px; min-width: 0; }
-.ak-half-done    { opacity: .5; }
-.ak-half-empty   { flex: 1; background: rgba(0,0,0,.02); min-height: 60px; }
-html.dark .ak-half-empty { background: rgba(255,255,255,.02); }
-.ak-pair-divider { width: 1px; flex-shrink: 0; background: rgba(0,0,0,.08); display: flex; align-items: center; justify-content: center; padding: 0 6px; font-size: .9rem; color: var(--muted); }
-html.dark .ak-pair-divider { background: rgba(255,255,255,.10); }
-.ak-half-top     { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 2px; }
-.ak-flow-badge   { font-size: .62rem; font-weight: 900; padding: 1px 6px; border-radius: 6px; }
-.ak-iata         { font-weight: 900; font-size: .95rem; }
-.ak-half-sub     { font-size: .78rem; font-weight: 700; color: var(--muted); line-height: 1.3; }
-.ak-tsuffix      { font-size: .7em; opacity: .7; font-weight: 600; }
-.ak-use-btn      { margin-top: 6px; }
-
 /* ===== 31. DARK MODE — BOUTONS SPÉCIAUX ===== */
 html.dark #btn-recherche-bag,
 html.dark #btn-inad,
@@ -1803,11 +1735,6 @@ html.dark #btn-gpu.is-info { background: #2563eb; color: #fff; border-color: #25
   html .ldm-ta { min-height: 86px; }
   .ldm-header  { padding: 8px 10px; gap: 6px; }
   .lm-seg .button { height: 30px; font-size: .74rem; padding: 0 8px; }
-
-  /* AK list */
-  .ak-half        { padding: 7px; }
-  .ak-iata        { font-size: .82rem; }
-  .ak-flow-badge  { font-size: .55rem; padding: 1px 4px; }
   .ak-half-sub    { font-size: .68rem; }
   .ak-use-btn     { font-size: .72rem; height: 26px; padding: 0 8px; margin-top: 4px; }
   .ak-half-top    { gap: 3px; }
@@ -1882,11 +1809,6 @@ html, body {
   .buttons:has(.dep-extra-btn) { gap: .6rem !important; }
 }
 
-
-/* ═══ POPUPS UNIFIES (hors LOAD et Parametres) ═══
-   En-tete standard : bleu nuit pour info/confirmation neutre,
-   rouge pour les actions dangereuses (suppression/fermeture).
-   Distinct de .card-header (titres de section) pour ne pas les melanger. */
 .modal-header {
   display: flex;
   align-items: center;
@@ -1910,7 +1832,6 @@ html, body {
 }
 .button.modal-danger-btn:hover { background: #991b1b !important; }
 .modal-header .card-header-title { color: #fff !important; }
-
 /* La carte doit rogner ce qui depasse, sinon le fond blanc de la carte
    apparait aux coins arrondis au-dessus du bandeau (angles non remplis). */
 .card:has(> .modal-header) { overflow: hidden; border-radius: var(--popup-radius); }
@@ -2007,6 +1928,7 @@ body.no-tab #loadFab{ display:none !important; }
     background:#1e293b; border-radius:16px; padding:40px 32px;
     width:min(360px,90vw); text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.5);">
     <div style="font-size:2rem; margin-bottom:8px;">📊</div>
+
     <div style="color:#f1f5f9; font-size:1.2rem; font-weight:600; margin-bottom:4px;">Suivi Performance</div>
     <div style="color:#94a3b8; font-size:.85rem; margin-bottom:24px;">Accès restreint</div>
     <input id="pwInput" type="password"
@@ -2083,6 +2005,8 @@ if(sessionStorage.getItem(_PV_KEY)==="1"){
 /* Disponible immédiatement, avant le chargement de app.js */
 function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </script>
+
+
 
 <!-- ===== LDM (FULLSCREEN) ===== -->
 
@@ -2333,13 +2257,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
       <div class="clk-sep"></div>
       <div class="clk"><span class="clk-t" id="homeClockZ">--:--:--</span><span class="clk-l">ZULU</span></div>
     </div>
-    <div class="home-deps">
-      <div class="home-deps-title">Prochains départs</div>
-      <div id="homeDepList" class="home-deps-list"><div class="home-dep-empty">…</div></div>
-    </div>
-    <div class="home-actions">
-      <button class="home-cta" type="button" onclick="openAKPicker()">Ouvrir un vol</button>
-      <button class="home-alt" type="button" onclick="createNewTab()">Créer un vol manuel</button>
+    <div class="home-actions" style="margin-top:auto;">
+      <button class="home-cta" type="button" onclick="createNewTab()">Créer un vol</button>
     </div>
   </div>
 </div>
@@ -2375,8 +2294,8 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
           <div class="kv-value"><span id="kvImmat">------</span> · <span id="kvType">--</span></div>
         </div>
         <div class="kv-left" style="text-align:right;">
-          <div class="kv-title" id="kvParkTitle">Parking</div>
-          <div class="kv-value"><span id="kvPark">--</span><span id="kvBCWrap"> · <span id="kvBC">--</span></span></div>
+          <div class="kv-title">Parking</div>
+          <div class="kv-value"><span id="kvPark">--</span></div>
         </div>
       </div>
     </div>
@@ -2694,22 +2613,6 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Modal confirmation TOUT FERMER -->
 <!-- ══════════════ MODAL VOL DÉJÀ OUVERT ══════════════ -->
-<!-- ══════════════ MODAL REGULATION CTOT ══════════════ -->
-<div id="ctotRegModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
-  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
-    <header class="card-header modal-header">
-      <p class="card-header-title" style="color:#fff;">
-        Régulation CTOT&nbsp;<span id="ctotRegHeure" style="font-weight:800; margin-left:6px;"></span>
-      </p>
-      <button class="button is-small is-light" type="button"
-              onclick="document.getElementById('ctotRegModal').style.display='none'">Fermer</button>
-    </header>
-    <div class="card-content" style="padding:1rem;">
-      <div id="ctotRegBody"></div>
-    </div>
-  </div>
-</div>
-
 <div id="dupFlightModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
@@ -2736,7 +2639,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+<div id="closeAllModal" style="display:none; position:fixed; inset:0; z-index:6400; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Tout fermer ?</p>
@@ -2776,7 +2679,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
   </div>
 </div>
 
-<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+<div id="clearFieldsModal" style="display:none; position:fixed; inset:0; z-index:6300; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Effacer les données du vol ?</p>
@@ -2795,7 +2698,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </div>
 
 <!-- BLOC NOTE — modal confirmation effacement -->
-<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+<div id="bnClearModal" style="display:none; position:fixed; inset:0; z-index:6200; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
     <header class="card-header modal-header">
       <p class="card-header-title">Effacer le bloc note ?</p>
@@ -2812,23 +2715,6 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 
 <!-- ===== Airport Keeper Picker ===== -->
-<div id="akBackdrop" onclick="closeAKPicker()"></div>
-
-<div id="akPopover">
-  <div class="ak-header modal-header">
-    <p class="card-header-title" style="color:#fff; margin:0; padding:0; flex:1;">Choisir l'arrivée ou le départ</p>
-    <button class="button is-small is-light" type="button"
-            onclick="closeAKPicker()">
-      Fermer
-    </button>
-  </div>
-
-  <div class="ak-substatus" style="padding:10px 16px 0;">
-    <span class="tag is-light" id="akStatus">—</span>
-  </div>
-
-  <div id="akList" style="padding:12px 16px 16px;"></div>
-</div>
 
 <!-- ===== SETTINGS MENU (bottom gear) ===== -->
 <div id="settingsBackdrop" onclick="closeSettingsMenu()"></div>
@@ -2885,7 +2771,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
       <div class="timer-chip">
         <div class="k">CTOT</div>
-        <div id="timer-ctot" class="v" style="background:#334155;" onclick="showCtotRegulation()" title="Voir la cause du CTOT">--:--</div>
+        <div id="timer-ctot" class="v" style="background:#334155; cursor:pointer;" onclick="showCtotManual()" title="Modifier le CTOT">--:--</div>
         <input id="CTOT" type="hidden">
       </div>
 
@@ -2929,6 +2815,21 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 </div>
 
 
+<div id="ctotRegModal" style="display:none; position:fixed; inset:0; z-index:6500; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; overflow:hidden; border-radius:var(--popup-radius);">
+    <header class="card-header modal-header">
+      <p class="card-header-title" style="color:#fff;">
+        Régulation CTOT&nbsp;<span id="ctotRegHeure" style="font-weight:800; margin-left:6px;"></span>
+      </p>
+      <button class="button is-small is-light" type="button"
+              onclick="document.getElementById('ctotRegModal').style.display='none'">Fermer</button>
+    </header>
+    <div class="card-content" style="padding:1rem;">
+      <div id="ctotRegBody"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MODAL PRESTATIONS ══════════════ -->
 <div id="prestationsModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
@@ -2944,7 +2845,27 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
     </div>
   </div>
 </div>
-<!-- ══════════════ MODAL RZA + RÉSUMÉ ══════════════ -->
+<!-- ══════════════ MODAL ASSISTANCES ══════════════ -->
+<div id="assistancesModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
+  <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
+    <header class="card-header modal-header">
+      <p class="card-header-title">Assistances PMR</p>
+    </header>
+    <div class="card-content" style="padding:1rem; overflow-y:auto; flex:1;">
+      <div id="assistancesBody" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+    <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--field-border);">
+      <button class="button is-fullwidth" type="button" onclick="confirmAssistances()" style="background:#16a34a; color:#fff; font-weight:800;">Valider →</button>
+      <button class="button is-light is-fullwidth" type="button" onclick="closeAssistancesModal()" style="margin-top:4px;">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
+     les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
+<script src="./app.js?v=20260724bg"></script>
+</body>
+</html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
   <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
     <header class="card-header modal-header">
@@ -2966,24 +2887,3 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
     </div>
   </div>
 </div>
-
-<!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
-     les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bg"></script>
-</body>
-<div id="assistancesModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
-  <div class="card" style="width:100%; max-width:1120px; max-height:90vh; overflow:hidden; border-radius:var(--popup-radius); display:flex; flex-direction:column;">
-    <header class="card-header modal-header">
-      <p class="card-header-title">Assistances PMR</p>
-    </header>
-    <div class="card-content" style="padding:1rem; overflow-y:auto; flex:1;">
-      <div id="assistancesBody" style="display:flex; flex-direction:column; gap:8px;"></div>
-    </div>
-    <div style="padding:12px 16px 16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--field-border);">
-      <button class="button is-fullwidth" type="button" onclick="confirmAssistances()" style="background:#16a34a; color:#fff; font-weight:800;">Valider →</button>
-      <button class="button is-light is-fullwidth" type="button" onclick="closeAssistancesModal()" style="margin-top:4px;">Annuler</button>
-    </div>
-  </div>
-</div>
-
-</html>
