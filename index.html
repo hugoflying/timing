@@ -1915,37 +1915,36 @@ body.no-tab #settingsFab{ display:none !important; }
 }
 .home-cta:active{ transform:translateY(1px); }
 .home-alt{ background:none; border:none; color:rgba(255,255,255,.72); font-weight:600; font-size:.82rem; cursor:pointer; }
+
+/* ===== Verrou mot de passe intégré à l'accueil ===== */
+body.pv-locked .home-screen{ display:flex !important; top:0 !important; bottom:0 !important; z-index:99999; }
+body.pv-locked .app-wrap,
+body.pv-locked .fixed-header,
+body.pv-locked .fixed-footer,
+body.pv-locked #loadFab,
+body.pv-locked #settingsFab{ display:none !important; }
+.home-login{ display:none; flex-direction:column; align-items:center; gap:10px; width:100%; max-width:300px; }
+body.pv-locked .home-login{ display:flex; }
+body.pv-locked .home-actions{ display:none; }
+.home-login input{
+  width:100%; padding:13px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.12); color:#fff; font-size:1rem; text-align:center; outline:none;
+  box-sizing:border-box; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+}
+.home-login input::placeholder{ color:rgba(255,255,255,.6); }
+.home-login #pwError{ color:#fca5a5; font-size:.8rem; min-height:16px; }
+.home-login button{
+  width:100%; padding:14px; border-radius:999px; border:none;
+  background:#2563eb; color:#fff; font-weight:800; font-size:.98rem; cursor:pointer;
+  box-shadow:0 12px 30px rgba(37,99,235,.45);
+}
+.home-login button:active{ transform:translateY(1px); }
 </style>
 </head>
 
 <body>
 
 <!-- ===== ÉCRAN MOT DE PASSE ===== -->
-<div id="pwScreen" style="
-  display:flex; position:fixed; inset:0; z-index:99999;
-  align-items:center; justify-content:center;
-  background:#0f172a;">
-  <div style="
-    background:#1e293b; border-radius:16px; padding:40px 32px;
-    width:min(360px,90vw); text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.5);">
-    <div style="font-size:2rem; margin-bottom:8px;">📊</div>
-
-    <div style="color:#f1f5f9; font-size:1.2rem; font-weight:600; margin-bottom:4px;">Suivi Performance</div>
-    <div style="color:#94a3b8; font-size:.85rem; margin-bottom:24px;">Accès restreint</div>
-    <input id="pwInput" type="password"
-      placeholder="Mot de passe"
-      style="
-        width:100%; padding:10px 14px; border-radius:8px; border:1px solid #334155;
-        background:#0f172a; color:#f1f5f9; font-size:1rem; margin-bottom:12px;
-        outline:none; box-sizing:border-box;"
-      onkeydown="if(event.key==='Enter') checkPW()">
-    <div id="pwError" style="color:#f87171; font-size:.82rem; min-height:18px; margin-bottom:8px;"></div>
-    <button onclick="checkPW()" style="
-      width:100%; padding:10px; border-radius:8px; border:none;
-      background:#3b82f6; color:#fff; font-size:1rem; font-weight:600;
-      cursor:pointer;">Entrer</button>
-  </div>
-</div>
 <script>
 var _PV_KEY  = "pv_auth";
 var _PV_HASH = "c42cd2853e562db228c3e730dcf0bea1";
@@ -1991,16 +1990,16 @@ function checkPW(){
   const v=document.getElementById("pwInput").value;
   if(_pwMd5(v)===_PV_HASH){
     sessionStorage.setItem(_PV_KEY,"1");
-    document.getElementById("pwScreen").style.display="none";
+    document.body.classList.remove("pv-locked");
+    document.body.classList.add("pv-authed");
+    if(typeof window.homeKickSlideshow==="function") window.homeKickSlideshow();
   } else {
     document.getElementById("pwError").textContent="Mot de passe incorrect.";
     document.getElementById("pwInput").value="";
     document.getElementById("pwInput").focus();
   }
 }
-if(sessionStorage.getItem(_PV_KEY)==="1"){
-  document.getElementById("pwScreen").style.display="none";
-}
+document.body.classList.add(sessionStorage.getItem(_PV_KEY)==="1" ? "pv-authed" : "pv-locked");
 </script>
 <script>
 /* Disponible immédiatement, avant le chargement de app.js */
@@ -2259,6 +2258,12 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
       <div class="clk"><span class="clk-t" id="homeClockLT">--:--:--</span><span class="clk-l">LOCALE</span></div>
       <div class="clk-sep"></div>
       <div class="clk"><span class="clk-t" id="homeClockZ">--:--:--</span><span class="clk-l">ZULU</span></div>
+    </div>
+    <div class="home-login">
+      <input id="pwInput" type="password" placeholder="Mot de passe" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') checkPW()">
+      <div id="pwError"></div>
+      <button type="button" onclick="checkPW()">Entrer</button>
     </div>
     <div class="home-actions">
       <button class="home-cta" type="button" onclick="createNewTab()">Créer un vol</button>
@@ -2866,7 +2871,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bq"></script>
+<script src="./app.js?v=20260724br"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
