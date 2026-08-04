@@ -5394,45 +5394,50 @@ window.addEventListener('load', function(){
 
 /* ===== Accueil : diaporama de fond (fondu aléatoire, hors-ligne) ===== */
 (function(){
-  const CANDIDATES = ['./home-bg.jpg'];
+  const CANDIDATES = [];
   for(let i=1;i<=10;i++) CANDIDATES.push('./home-bg-'+i+'.jpg');
-  const INTERVAL = 30000;              // 30 s par photo
-  const loaded = [];
-  let cur = 'A', timer = null, ready = false, lastSrc = null;
+  const INTERVAL = 10000;              // 10 s par photo
+  let pool = [];                        // photos réellement utilisées
+  let cur = 'A', timer = null, ready = false, activeSrc = null;
 
   function show(src){
     const a = document.getElementById('homeSlideA'), b = document.getElementById('homeSlideB');
-    if(!a || !b || !src) return;
+    if(!a || !b || !src || src === activeSrc) return;   // jamais deux fois la même
     const nextEl = (cur==='A') ? b : a, curEl = (cur==='A') ? a : b;
     nextEl.style.backgroundImage = 'url("' + src + '")';
     nextEl.classList.add('is-active');
     curEl.classList.remove('is-active');
     cur = (cur==='A') ? 'B' : 'A';
-    lastSrc = src;
+    activeSrc = src;
   }
   function randomSrc(){
-    if(loaded.length <= 1) return loaded[0] || null;
-    let s; do { s = loaded[Math.floor(Math.random()*loaded.length)]; } while(s === lastSrc);
+    if(pool.length <= 1) return pool[0] || null;
+    let s; do { s = pool[Math.floor(Math.random()*pool.length)]; } while(s === activeSrc);
     return s;
   }
   function next(){ show(randomSrc()); }
-  function schedule(){ clearInterval(timer); if(loaded.length > 1) timer = setInterval(next, INTERVAL); }
+  function schedule(){ clearInterval(timer); if(pool.length > 1) timer = setInterval(next, INTERVAL); }
 
   // Appelé à chaque arrivée sur l'accueil : photo aléatoire immédiate + reset du timer
   window.homeKickSlideshow = function(){
-    if(!ready || !loaded.length) return;
+    if(!ready || !pool.length) return;
     next(); schedule();
   };
 
   function preload(){
+    const loaded = [];
     let pending = CANDIDATES.length;
     CANDIDATES.forEach(src => {
       const im = new Image();
-      im.onload  = () => { loaded.push(src); if(--pending === 0) done(); };
-      im.onerror = () => { if(--pending === 0) done(); };
+      im.onload  = () => { loaded.push(src); if(--pending === 0) done(loaded); };
+      im.onerror = () => { if(--pending === 0) done(loaded); };
       im.src = src;
     });
-    function done(){ ready = true; if(loaded.length){ next(); schedule(); } }
+  }
+  function done(loaded){
+    ready = true;
+    pool = loaded;
+    if(pool.length){ next(); schedule(); }
   }
   if(document.readyState !== 'loading') preload();
   else document.addEventListener('DOMContentLoaded', preload);
