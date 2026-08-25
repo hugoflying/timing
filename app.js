@@ -1946,6 +1946,8 @@ function saveCurrentTabData(){
   // on les rattache a l'onglet pour qu'elles survivent au changement d'onglet
   // et au rechargement de la page.
   data.prestations = _prestationsData || {};
+  data.assistances = _assistancesData || {};
+  data.rza = _rzaData || {};
 
   // État du modal LOAD (ouvert/fermé + onglet actif)
   const ldmModal = document.getElementById('ldmModal');
@@ -1968,6 +1970,8 @@ function loadTabData(id){
   // Prestations : variable globale -> on repart de zero, sinon celles de
   // l'onglet precedent resteraient visibles sur ce vol.
   _prestationsData = {};
+  _assistancesData = {};
+  _rzaData = {};
 
   const raw = localStorage.getItem('tab-'+currentTabId);
   if(!raw) return;
@@ -1978,6 +1982,8 @@ function loadTabData(id){
   if(data.prestations && typeof data.prestations === 'object'){
     _prestationsData = data.prestations;
   }
+  if(data.assistances && typeof data.assistances === 'object') _assistancesData = data.assistances;
+  if(data.rza && typeof data.rza === 'object') _rzaData = data.rza;
     for(const k in data){
       // ✅ toggles globaux : jamais restaurés depuis l’onglet
       if(k === 'utcToggle' || k === 'darkToggle') continue;
@@ -4160,6 +4166,7 @@ function confirmAssistances(){
     if(inp) _assistancesData['assist_' + type] = inp.value || '0';
   });
   closeAssistancesModal();
+  if(typeof saveCurrentTabData === 'function') saveCurrentTabData();
   openRzaModal(_validateCallback);
 }
 
@@ -4196,7 +4203,7 @@ function openRzaModal(callback){
     ['EOBT', eobtVal || '—'],
     ['AOBT', aobtVal || '—'],
     ['Turnaround', tat != null ? fmtDur(tat) : '—'],
-    ['Retard total', ret != null ? (ret > 0 ? `+${fmtDur(ret)}` : fmtDur(ret)) : '—'],
+    ['Retard total', ret == null ? '—' : (ret > 0 ? `+${fmtDur(ret)}` : ret < 0 ? `−${fmtDur(ret)}` : "à l'heure")],
   ];
   const table = document.getElementById('rzaSummaryTable');
   if(table){
@@ -5441,4 +5448,19 @@ window.addEventListener('load', function(){
   }
   if(document.readyState !== 'loading') preload();
   else document.addEventListener('DOMContentLoaded', preload);
+})();
+
+
+/* ===== Accueil : date du jour ===== */
+(function(){
+  function majDate(){
+    var el = document.getElementById('homeDate');
+    if(!el) return;
+    var s = new Date().toLocaleDateString('fr-FR', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric'
+    });
+    el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  majDate();
+  setInterval(majDate, 60*1000);
 })();
