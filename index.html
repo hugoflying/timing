@@ -2353,7 +2353,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
       <div class="field span-3">
         <label class="label">Cie</label>
         <div class="control">
-          <input class="input uppercase" type="text" id="Cie" list="cieList" autocomplete="off" maxlength="4" placeholder="--" oninput="updateFinalWeightIfNeeded(); updateDLCodeInputMode();">
+          <input class="input uppercase" type="text" id="Cie" list="cieList" autocomplete="off" maxlength="4" placeholder="--" oninput="updateFinalWeightIfNeeded(); updateDLCodeInputMode(); updateTabLabelInstant();">
           <datalist id="cieList">
             <option>FR</option><option>RK</option><option>W4</option><option>W6</option>
             <option>H4</option><option>H6</option><option>U5</option><option>U7</option>
@@ -2364,7 +2364,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
       <div class="field span-3">
         <label class="label">N° DE VOL</label>
-        <input class="input uppercase" type="text" id="NVol">
+        <input class="input uppercase" type="text" id="NVol" oninput="updateTabLabelInstant();">
       </div>
 
       <div class="field span-3">
@@ -2375,7 +2375,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
       <div class="field span-3">
         <label class="label">To</label>
-        <input class="input uppercase" type="text" id="To" maxlength="3">
+        <input class="input uppercase" type="text" id="To" maxlength="3" oninput="updateTabLabelInstant();">
       </div>
 
 
@@ -2875,7 +2875,7 @@ function digitsOnly(el){ el.value = (el.value || '').replace(/[^0-9]/g, ''); }
 
 <!-- Cache-busting : incrementer ?v= a CHAQUE deploiement pour forcer
      les navigateurs (et iOS) a recharger app.js au lieu du cache. -->
-<script src="./app.js?v=20260724bx"></script>
+<script src="./app.js?v=20260724by"></script>
 </body>
 </html>
 <div id="rzaModal" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.5); align-items:center; justify-content:center; padding:14px var(--wrap-pad-x);">
