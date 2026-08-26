@@ -4194,7 +4194,7 @@ function openRzaModal(callback){
   if(aibtM != null && aobtM != null){
     tat = aobtM - aibtM; if(tat < 0) tat += 1440;
     const sobtM = parseHM(v('SOBT'));
-    if(sobtM != null){ ret = aobtM - sobtM; if(ret < 0) ret += 1440; if(ret > 720) ret -= 1440; }
+    if(sobtM != null){ ret = aobtM - sobtM; if(ret < 0) ret += 1440; if(ret > 720) ret -= 1440; if(ret < 0) ret = 0; }
   }
 
   // Remplissage du résumé
@@ -4203,7 +4203,7 @@ function openRzaModal(callback){
     ['EOBT', eobtVal || '—'],
     ['AOBT', aobtVal || '—'],
     ['Turnaround', tat != null ? fmtDur(tat) : '—'],
-    ['Retard total', ret == null ? '—' : (ret > 0 ? `+${fmtDur(ret)}` : ret < 0 ? `−${fmtDur(ret)}` : "à l'heure")],
+    ['Retard total', ret == null ? '—' : (ret > 0 ? `+${fmtDur(ret)}` : '0')],
   ];
   const table = document.getElementById('rzaSummaryTable');
   if(table){
@@ -4377,11 +4377,12 @@ function doValidate() {
   if(t('ConnexionAgentCasque')) { body += r('CONNEXION CASQUE', t('ConnexionAgentCasque')); }
 
   // ── OPS : INAD / NAYAK ───────────────────────────────────────────────────
-  const hasInad = t('ArriveeINAD') || v('ArrSI');
+  const hasInad = t('ArriveeINAD') || v('ArrSI') || v('PreviSI');
   if(hasInad){
     body += s();
     if(t('ArriveeINAD')) body += r('INAD / NAYAK', t('ArriveeINAD'));
-    if(v('ArrSI'))       body += r('SI',            v('ArrSI'));
+    if(v('ArrSI'))       body += r('SI (ARR)',      v('ArrSI'));
+    if(v('PreviSI'))     body += r('SI (PREVI)',    v('PreviSI'));
   }
 
   // ── LOAD FINAL ────────────────────────────────────────────────────────────
@@ -4424,7 +4425,7 @@ function doValidate() {
     body += br();
     if(v('CommChiffresPorte')) body += r('COMM. CHIFFRES PORTE', v('CommChiffresPorte'));
     if(v('CommChargementPiste')) body += r('COMM. CHARGEMENT PISTE', v('CommChargementPiste'));
-    if(v('FinalSI'))           body += r('SI', v('FinalSI'));
+    if(v('FinalSI'))           body += r('SI (FINAL)', v('FinalSI'));
   }
 
   // ── RETARDS ───────────────────────────────────────────────────────────────
