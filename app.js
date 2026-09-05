@@ -889,6 +889,26 @@ function cdRefDayMs(){
   return isUTC ? Date.UTC(y, mo, da) : new Date(y, mo, da).getTime();
 }
 
+/* ===== MTT — Minimum Turnaround Time (en minutes) =====
+   H4         : 30
+   W4 / W6    : A321/A21N -> 35 ; A320/A20N -> 30
+   FR / RK    : 25 ; 35 si changement d'equipage (Arr PNT et/ou Arr PNC renseignes)
+   Autres     : null (non defini) */
+function getMTT(){
+  const cie  = (document.getElementById('Cie')?.value || '').toUpperCase().trim();
+  const type = (document.getElementById('TypeAvion')?.value || '').toUpperCase();
+  const isA321fam = type.includes('321') || type.includes('21N');
+
+  if(cie === 'H4' || cie === 'V7') return 30;
+  if(cie === 'W4' || cie === 'W6') return isA321fam ? 35 : 30;
+  if(cie === 'FR' || cie === 'RK'){
+    const crewChange = !!((document.getElementById('ArrPNT')?.value || '').trim()
+                        || (document.getElementById('ArrPNC')?.value || '').trim());
+    return crewChange ? 35 : 25;   // 25 de base, +10 (=> 35) si changement d'equipage
+  }
+  return null;
+}
+
 function updateCountdownOnce(){
   updateChipColors();   // rafraichit vert/orange/rouge chaque seconde
   const el = document.getElementById('timer-cd');
@@ -2443,7 +2463,7 @@ function updateSOBTDefault() {
   let [sH, sM] = sibt.split(':').map(Number);
   const base = new Date(); base.setHours(sH, sM);
 
-  const add = (document.getElementById('TypeAvion')?.value === 'A321') ? 35 : 30;
+  const add = getMTT() || 30;   // MTT W4/W6 (A321/A21N -> 35, sinon 30)
   const sobtCalc = new Date(base.getTime() + add * 60000);
 
   sobtEl.value =
@@ -3195,11 +3215,9 @@ function collectTimelineData(){
   // seulement sa duree max de 3 a 10 min (voir cabinMaxMin dans renderTimeline).
   const cieTL    = (document.getElementById('Cie')?.value || '').toUpperCase().trim();
   const isFRRKTL = (cieTL === 'FR' || cieTL === 'RK');
-  const showCabinRelease =
-    !!cabinPair &&
-    (isFRRKTL || !hasArrCrew) &&
-    !bvaCase &&
-    (turnMin != null && turnMin <= 35);
+  // Cabin cleaning/tidy : toujours present des qu'il y a une escale hors BVA
+  // (From/To != BVA), quelle que soit la compagnie et la duree d'escale.
+  const showCabinRelease = !!cabinPair && !bvaCase;
 
   const rows = [
     {label:'Débarquement', pair:getPairWindow('PremierDebarque','DernierDebarque'), cls:'tl--turn', color:null},
@@ -3273,6 +3291,7 @@ function renderTimeline(){
   const cie        = (document.getElementById('Cie')?.value || '').toUpperCase().trim();
   const isFRRK     = cie === 'FR' || cie === 'RK';
   const isW4W6     = cie === 'W4' || cie === 'W6';
+  const isV7       = cie === 'V7';
   // Cibles affichées dès que EOBT+AIBT sont renseignés, pour toutes les compagnies
   const hasTargets = true;
 
@@ -3353,7 +3372,14 @@ function renderTimeline(){
 
   const TARGETS_W4W6 = isA321fam ? TARGETS_W4W6_A321 : TARGETS_W4W6_A320;
 
-  const FRRK_TARGETS = isFRRK ? TARGETS_FRRK : isW4W6 ? TARGETS_W4W6 : {};
+  // V7 (Volotea) — MTT 30 min, cibles EOBT-relatif
+  const TARGETS_V7 = {
+    'Débarquement':        { ref:'EOBT', from:-28, to:-23, fromField:null,              toOffset:null, label:null              },
+    'Cabin release':       { ref:'EOBT', from:-23, to:-21, fromField:'DernierDebarque', toOffset:null, label:'Cabin cleaning'  },
+    'Embarquement':        { ref:'EOBT', from:-20, to: -7, fromField:null,              toOffset:null, label:null              },
+    'FermeturePorteAvion': { ref:'EOBT', from: -5, to: -5, fromField:null,              toOffset:null, label:'Fermeture porte' },
+  };
+  const FRRK_TARGETS = isFRRK ? TARGETS_FRRK : isW4W6 ? TARGETS_W4W6 : isV7 ? TARGETS_V7 : {};
   const aibt = parseHHMM((document.getElementById('AIBT')?.value || '').trim());
 
   // Mapping champs DOM pour chaque action
